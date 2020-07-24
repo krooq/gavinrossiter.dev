@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,24 @@
   to {
     transform: rotate(360deg);
   }
+} */
+body {
+  /* required */
+  height:100%;
+  /* aesthetic */
+  background-color: #0f0f0f;
+}
+#app div {
+  /* required */
+  position:absolute;
+  top:0;
+  bottom:0;
+  right:0;
+  left:0;
+  /* aesthetic */
+  box-sizing: border-box;
+  background-color: #1e1e1e;
+  border-style: solid;
+  border-width: 4px;
+  border-color:#0f0f0f;
 }
