@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
 import { Map } from 'immutable';
-import { useDrag } from 'react-use-gesture'
+import { useGesture, useDrag } from 'react-use-gesture'
+import { useSpring, animated } from 'react-spring';
 import { FullGestureState, Vector2 } from 'react-use-gesture/dist/types';
 import useWindowDimensions from './useWindowDimensions';
-import { prettyDOM } from '@testing-library/react';
 import { dir } from 'console';
 
 // type State = { keys: Set<any>, panels: Set<string> }
@@ -52,7 +52,7 @@ import { dir } from 'console';
 //     })
 //   }
 // }
-type vec2 = Vector2
+
 type bounds = { t: number, r: number, b: number, l: number }
 type Panel = { id: string, bounds: bounds }
 
@@ -63,67 +63,101 @@ function App() {
   // console.log({ w, h })
   // console.log(defaultPanel.w)
   const [panels, setPanels] = useState(Map<string, Panel>().set(defaultPanel.id, defaultPanel))
-  const bind = useDrag(e => onDragComplete(e, t => {
-    var panel = panels.get(t.id)
-    if (panel !== undefined) {
-      var [p1, p2] = splitPanel(panel, e.initial, e.direction, [w, h])
-      var rebuiltPanels = panels.remove(t.id).set(p1.id, p1).set(p2.id, p2)
-      setPanels(rebuiltPanels)
-    }
-  }))
+  const [target, setEvent] = useTargetElement()
+  const [transform, setSplitIndicator] = useState(() => 'translate3d(0px,0,0) scale(1) rotateX(0deg)')
+  const bind = useGesture({
+    onDragStart: setEvent,
+    onDrag: e => {
+      var [dx, dy] = e.direction.map(Math.abs)
+      if ((dx === 1 && dy === 0) || (dx === 0 && dy === 1)) {
+        var height = Math.max(2, (target?.clientHeight ?? 0))
+        var width = Math.max(2, (target?.clientWidth ?? 0))
+        setSplitIndicator(
+          createTransform(
+            (dx * e.xy[0]) + 10,
+            (dy * e.xy[1]) + height / 2,
+            20,
+            height,
+          )
+        )
+      }
+    },
+    onDragEnd: e => {
+      // if (target !== null) {
+      //   var panel = panels.get(target.id)
+      //   if (panel !== undefined) {
+      //     var [p1, p2] = splitPanel(panel, e.initial, e.direction, [w, h])
+      //     if (p1 !== undefined && p2 !== undefined) {
+      //       var rebuiltPanels = panels.remove(target.id).set(p1.id, p1).set(p2.id, p2)
+      //       setPanels(rebuiltPanels)
+      //     }
+      //   }
+      // }
+      setEvent(null)
+    },
+  },
+    {
+      drag: { filterTaps: true, lockDirection: true }
+    })
+
   return (
     <div id="app">
+      <animated.div id="split-indicator" {...bind()} style={{ transform }} />
       {panels.map(p => {
-        return <div {...bind()} key={p.id} id={p.id} style={style(p)} />
+        return (
+          <div {...bind()} key={p.id} id={p.id} className='panel' style={style(p)} />
+        )
       }).valueSeq()}
     </div >
   )
 }
 
+function createTransform(x: number, y: number, sx: number, sy: number) {
+  return `translate3d(${x}px,${y}px,0) scale(${sx},${sy}) rotateX(0deg)`
+}
+
+function useTargetElement(): [Element | null, (e: FullGestureState<any>) => void] {
+  const [target, setTarget] = useState<Element | null>(null)
+
+  // might be able to attach listener for when events are installed
+
+  return [target, (e: FullGestureState<any> | null) => {
+    setTarget(e?.event?.target instanceof Element ? e.event.target : null)
+  }];
+}
+
 function style(panel: Panel) {
   const { t, b, r, l } = panel.bounds
-  return { top: t + '%', right: r + '%', bottom: b + '%', left: l + '%' }
+  return { top: 100 * t + '%', right: 100 * r + '%', bottom: 100 * b + '%', left: 100 * l + '%' }
 }
 
 // Creates 2 new panels from the given panel using direction to determine the axis of the split
-function splitPanel(panel: Panel, initial: Vector2, direction: Vector2, windowSize: Vector2): [Panel, Panel] {
+function splitPanel(panel: Panel, initial: Vector2, direction: Vector2, windowSize: Vector2): [Panel?, Panel?] {
   var id1 = uuidv4()
   var id2 = uuidv4()
   const [w, h] = windowSize
   const { t, r, b, l } = panel.bounds
-  const [dx, dy] = axis(direction)
+  console.log(direction)
+  const [dx, dy] = direction
   const [x, y] = [initial[0] / w, initial[1] / h]
   // horizontal slice, dy=0
-  if (dy === 0) {
-    var p1 = { id: id1, bounds: { t: t, r: r, b: 100 * (1 - y), l: l } }
-    var p2 = { id: id2, bounds: { t: 100 * y, r: r, b: b, l: l } }
+  if (dx === 1 && dy === 0) {
+    var p1 = { id: id1, bounds: { t: t, r: r, b: (1 - y), l: l } }
+    var p2 = { id: id2, bounds: { t: y, r: r, b: b, l: l } }
+    return [p1, p2]
+  } else if (dx === 0 && dy === 1) {
+    // vertical slice, dx=0
+    var p1 = { id: id1, bounds: { t: t, r: (1 - x), b: b, l: l } }
+    var p2 = { id: id2, bounds: { t: t, r: r, b: b, l: x } }
     return [p1, p2]
   }
-  // vertical slice, dx=0
-  var p1 = { id: id1, bounds: { t: t, r: 100 * (1 - x), b: b, l: l } }
-  var p2 = { id: id2, bounds: { t: t, r: r, b: b, l: 100 * x } }
-  return [p1, p2]
+  return [undefined, undefined]
 }
 
-function axis(direction: vec2) {
-  var [dx, dy] = [Math.abs(direction[0]), Math.abs(direction[1])]
-  return dx === dy ? [0, 0] : (dx > dy ? [1, 0] : [0, 1])
-}
-
-function clampToUnit(initial: Vector2, direction: Vector2): Vector2 {
-  var x = initial[0]
-  var y = initial[1]
-  var dx = direction[0]
-  var dy = direction[1]
-  if (Math.abs(dx) > Math.abs(dy)) {
-    return [0, y]
-  }
-  return [x, 0]
-}
 
 // Performs an action when a drag completes
 function onDragComplete(e: FullGestureState<"drag">, action: (t: EventTarget & Element) => any | void) {
-  if (e.distance > 10 && e.last && !e.canceled) {
+  if (e.distance > 15 && e.last && !e.canceled) {
     if (e.cancel !== undefined) {
       e.cancel()
     }

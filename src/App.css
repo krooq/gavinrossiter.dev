@@ -42,10 +42,10 @@ body {
   /* aesthetic */
   background-color: #0f0f0f;
 }
-#app div {
+.panel {
   /* required */
   position: absolute;
-  top: 20px;
+  top: 0px;
   bottom: 0px;
   right: 0px;
   left: 0px;
@@ -54,6 +54,15 @@ body {
   background-color: grey;
   /* background-color: #1e1e1e; */
   border-style: solid;
-  border-width: 4px;
+  border-width: 2px;
   border-color:#0f0f0f;
+}
+
+#split-indicator{
+  position: absolute;
+  z-index: 100;
+  background-color: #0f0f0f;
+  border:none;
+  width: 1px;
+  height: 1px;
 }
