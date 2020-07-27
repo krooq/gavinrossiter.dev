@@ -1,29 +1,52 @@
-#app {
-    /* aesthetic */
-    background-color: #0f0f0f;
-}
-.panel {
-  /* required */
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  right: 0px;
-  left: 0px;
-  /* aesthetic */
-  box-sizing: border-box;
-  background-color: #1e1e1e;
-  margin: 8px;
-  /* background-color: #1e1e1e; */
-  /* border-style: solid;
-  border-width: 2px;
-  border-color:#0f0f0f; */
+:root {
+  --main-background-color: #0f0f0f;
+  --panel-background-color: #1e1e1e;
+  --panel-highlight-color: #4f4f4f;
+  --toolbar-background-color: #0f0f0f;
+  --toolbar-button-background-color: #1e1e1e;
+  --toolbar-button-active-background-color: #4f4f4f;
 }
 
-#split-indicator{
+#app {
+  display: flex;
+  flex-flow: column;
+  background-color: var(--main-background-color);
+}
+.panel {
+  position: absolute;
+  margin: 8px;
+  background-color: var(--panel-background-color);
+}
+
+/* #split-indicator{
   position: absolute;
   z-index: 100;
-  background-color: white;
-  border:none;
   width: 1px;
   height: 1px;
+  background-color: white;
+} */
+#main {
+  position: relative;
+  flex: 1 1 auto;
+}
+
+#toolbar {
+  flex: 0 1 auto;
+  margin:8px;
+  margin-bottom:16px;
+  text-align: center;
+  background-color: var(--toolbar-background-color);
+}
+
+#toolbar button {
+  background-color: var(--toolbar-button-background-color);
+  color: white;
+  border: none;
+  padding: 8px;
+  margin:4px;
+  font-family: monospace;
+}
+
+#toolbar button:active  { 
+  background-color:var(--toolbar-button-active-background-color); 
 }
