@@ -1,7 +1,7 @@
 import React, { useState, CSSProperties } from 'react';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
-import { Map } from 'immutable';
+import { Map, OrderedMap } from 'immutable';
 import { useGesture, useDrag } from 'react-use-gesture'
 import { useSpring, animated, to, config, Spring } from 'react-spring';
 import { FullGestureState, Vector2 } from 'react-use-gesture/dist/types';
@@ -45,7 +45,7 @@ function App() {
   const { w: windowWidth, h: windowHeight } = useWindowDimensions();
 
   const defaultPanel = { id: uuidv4(), insets: { top: 0, right: 0, bottom: 0, left: 0 }, selected: false }
-  const [panels, setPanels] = useState(Map<string, Panel>().set(defaultPanel.id, defaultPanel))
+  const [panels, setPanels] = useState(OrderedMap<string, Panel>().set(defaultPanel.id, defaultPanel))
   // const [target, setGesture] = useTargetElement()
 
   const bind = useGesture({
@@ -103,30 +103,25 @@ function App() {
       <div id="main">
         {panels.map(p => {
           return (
-            <Spring
+            <Spring key={p.id}
               to={{
-                backgroundColor: p.selected ? style("--panel-highlight-color") : style("--panel-background-color")
+                background: p.selected ? style("--panel-highlight-color") : style("--panel-background-color")
               }}>
-              {({ backgroundColor }) => <animated.div {...bind()} key={p.id} id={p.id} className='panel' style={{ backgroundColor, ...mapValues(p.insets, percent) }} />}
+              {({ background }) =>
+                <animated.div
+                  {...bind()}
+                  key={p.id}
+                  id={p.id}
+                  className='panel'
+                  style={{ background, ...mapValues(p.insets, percent) }}
+                />}
             </Spring>
           )
         }).valueSeq()}
       </div>
       <div id="toolbar">
-        <button onClick={e => {
-          let p = panels.find(p => p.selected)
-          if (p != null) {
-            let [p1, p2] = splitPanel(p, "vertical")
-            setPanels(panels.remove(p.id).set(p1.id, p1).set(p2.id, p2))
-          }
-        }}>Split Vertically</button>
-        <button onClick={e => {
-          let p = panels.find(p => p.selected)
-          if (p != null) {
-            let [p1, p2] = splitPanel(p, "horizontal")
-            setPanels(panels.remove(p.id).set(p1.id, p1).set(p2.id, p2))
-          }
-        }}>Split Horizontally</button>
+        <button onClick={e => setPanels(splitSelectedPanels(panels, "vertical"))}>Split Vertically</button>
+        <button onClick={e => setPanels(splitSelectedPanels(panels, "horizontal"))}>Split Horizontally</button>
       </div>
     </div >
   )
@@ -134,9 +129,6 @@ function App() {
 
 function style(variable: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(variable);
-  //     --main - background - color: #0f0f0f;
-  // --panel - background - color: #1e1e1e;
-  // --panel - highlight - color: #4f4f4f;
 }
 
 // Clamps a 1D interval within a 1D bound.
@@ -173,6 +165,17 @@ function mapValues<V, U>(obj: { [s: string]: V }, fn: (v: V) => U) {
   )
 }
 
+function splitSelectedPanels(panels: OrderedMap<string, Panel>, axis: Axis): OrderedMap<string, Panel> {
+  let selectedPanels = panels.valueSeq().filter(p => p.selected)
+  let splitPanels = selectedPanels
+    .flatMap(p => splitPanel(p, axis))
+    .groupBy(p => p.id)
+    .map(ps => ps.first<Panel>() /* We know there will be at least one panel since we just did a groupBy */)
+    .toOrderedMap()
+  return panels
+    .removeAll(selectedPanels.map(p => p.id))
+    .concat(splitPanels)
+}
 function splitPanel(panel: Panel, axis: Axis): [Panel, Panel] {
   var id1 = uuidv4()
   var id2 = uuidv4()
