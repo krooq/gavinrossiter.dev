@@ -5,6 +5,9 @@
   --toolbar-background-color: #0f0f0f;
   --toolbar-button-background-color: #1e1e1e;
   --toolbar-button-active-background-color: #4f4f4f;
+  --toolbar-button-disabled-background-color: #161616;
+  --toolbar-button-disabled-text-color: #4f4f4f;
+  overflow-x: hidden;
 }
 
 #app {
@@ -14,7 +17,7 @@
 }
 .panel {
   position: absolute;
-  margin: 8px;
+  margin: 2px;
   background-color: var(--panel-background-color);
 }
 
@@ -49,4 +52,8 @@
 
 #toolbar button:active  { 
   background-color:var(--toolbar-button-active-background-color); 
+}
+#toolbar button:disabled {
+  color: var(--toolbar-button-disabled-text-color); 
+  background-color:var(--toolbar-button-disabled-background-color); 
 }

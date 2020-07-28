@@ -1,4 +1,4 @@
-import React, { useState, CSSProperties } from 'react';
+import React, { useState, CSSProperties, useLayoutEffect, useRef, useEffect } from 'react';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
 import { Stack, Map, OrderedMap } from 'immutable';
@@ -43,14 +43,17 @@ type State = { panels: Map<string, Panel> }
 
 // App
 function App() {
-  const { w: windowWidth, h: windowHeight } = useWindowDimensions();
+  const [windowWidth, windowHeight] = useWindowDimensions();
 
   const initialPanel = { id: uuidv4(), insets: { top: 0, right: 0, bottom: 0, left: 0 }, selected: false }
   const initialState = {
     panels: Map<string, Panel>().set(initialPanel.id, initialPanel)
   }
 
-  const maxHistory = 5
+  const [mainStyle, mainRef] = useStyle<HTMLDivElement>()
+
+  const maxHistory = 50
+  const maxPanels = 512
   const [future, setFuture] = useState(Stack<State>())
   const [state, setState] = useState(initialState)
   const [history, setHistory] = useState(Stack<State>())
@@ -61,6 +64,7 @@ function App() {
     setState(history.first())
     setHistory(history.pop())
   }
+
   function redo() {
     if (future.isEmpty()) { return }
     setHistory(history.push(state))
@@ -74,6 +78,11 @@ function App() {
     setFuture(future.clear())
   }
 
+  function tooManyPanels() {
+    let nbSelectedPanels = state.panels.filter(p => p.selected).size
+    console.log(((state.panels.size + nbSelectedPanels * 2)))
+    return ((state.panels.size + nbSelectedPanels * 2) > maxPanels) || (nbSelectedPanels === 0)
+  }
 
   // const [target, setGesture] = useTargetElement()
   const bind = useGesture({
@@ -125,10 +134,10 @@ function App() {
     {
       // drag: { filterTaps: true }
     })
-
+  console.log(mainRef?.current?.clientWidth)
   return (
     <div id="app" style={{ width: windowWidth, height: windowHeight }} >
-      <div id="main">
+      <div id="main" ref={mainRef}>
         {state.panels.map(p => {
           return (
             <Spring key={p.id}
@@ -141,7 +150,15 @@ function App() {
                   key={p.id}
                   id={p.id}
                   className='panel'
-                  style={{ background, ...mapValues(p.insets, percent) }}
+                  style={{
+                    background,
+                    ...mapValues(p.insets, percent),
+                    // width: "1px",
+                    // height: "1px",
+                    // transform: styleOfTransform(transform(p.insets, [mainRef?.current?.clientWidth ?? 0, mainRef?.current?.clientHeight ?? 0])),
+                  }}
+                // [parseInt(mainStyle?.width ?? '0'), parseInt(mainStyle?.height ?? '0')]
+                // [mainRef?.current?.scrollWidth ?? 0, mainRef?.current?.scrollHeight ?? 0]
                 />}
             </Spring>
           )
@@ -149,10 +166,10 @@ function App() {
       </div>
       <div id="toolbar">
         <button onClick={e => pushState(clearSelectedPanels(state.panels))}>Clear Selection</button>
-        <button onClick={e => pushState(splitSelectedPanels(state.panels, "vertical"))}>Split Vertically</button>
-        <button onClick={e => pushState(splitSelectedPanels(state.panels, "horizontal"))}>Split Horizontally</button>
-        <button onClick={e => undo()}>Undo</button>
-        <button onClick={e => redo()}>Redo</button>
+        <button onClick={e => pushState(splitSelectedPanels(state.panels, "vertical"))} disabled={tooManyPanels()}>Split Vertically</button>
+        <button onClick={e => pushState(splitSelectedPanels(state.panels, "horizontal"))} disabled={tooManyPanels()}>Split Horizontally</button>
+        <button onClick={e => undo()} disabled={history.isEmpty()}>Undo</button>
+        <button onClick={e => redo()} disabled={future.isEmpty()}>Redo</button>
       </div>
     </div >
   )
@@ -199,14 +216,43 @@ function splitPanel(panel: Panel, axis: Axis): [Panel, Panel] {
   var id1 = uuidv4()
   var id2 = uuidv4()
   let insets = panel.insets;
-  const { top: t, right: r, bottom: b, left: l } = insets;
-  let w = 1 - r - l
-  let h = 1 - t - b
+  let { top: t, right: r, bottom: b, left: l } = insets;
+  let [w, h] = [1 - r - l, 1 - t - b]
   let [insets1, insets2] =
     axis === "vertical"
       ? [{ ...insets, right: r + w / 2 }, { ...insets, left: l + w / 2 }]
       : [{ ...insets, bottom: b + h / 2 }, { ...insets, top: t + h / 2 }]
   return [{ id: id1, selected: true, insets: insets1 }, { id: id2, selected: true, insets: insets2 }]
+}
+
+
+function transform(insets: Insets, containerSize: vec2): Transform {
+  let [cx, cy] = containerSize
+  let { top: t, right: r, bottom: b, left: l } = insets;
+  let [w, h] = [1 - r - l, 1 - t - b]
+  console.log(cx)
+  return {
+    translate: [Math.floor((l + w / 2) * cx), Math.floor((t + h / 2) * cy)],
+    scale: [Math.floor(w * cx), Math.floor(h * cy)]
+  }
+}
+
+function styleOfTransform(transform: Transform): string {
+  let [tx, ty, sx, sy] = [...transform.translate, ...transform.scale]
+  return `translate(${tx}px,${ty}px) scale(${sx},${sy}) rotateX(0deg)`
+}
+
+
+function useStyle<T extends Element>(): [CSSStyleDeclaration | null, React.RefObject<T>] {
+  const ref = useRef<T>(null);
+  const [style, setStyle] = useState<CSSStyleDeclaration | null>(null);
+  useLayoutEffect(() => {
+    // I don't think it can be null at this point, but better safe than sorry
+    if (ref.current != null) {
+      setStyle(window.getComputedStyle(ref.current));
+    }
+  }, []);
+  return [style, ref]
 }
 
 export default App;
