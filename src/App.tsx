@@ -50,6 +50,7 @@ function App() {
     panels: Map<string, Panel>().set(initialPanel.id, initialPanel)
   }
 
+  const maxHistory = 5
   const [future, setFuture] = useState(Stack<State>())
   const [state, setState] = useState(initialState)
   const [history, setHistory] = useState(Stack<State>())
@@ -68,7 +69,7 @@ function App() {
   }
 
   function pushState(panels: Map<string, Panel>) {
-    setHistory(history.push(state))
+    setHistory(history.push(state).take(maxHistory))
     setState({ panels })
     setFuture(future.clear())
   }
