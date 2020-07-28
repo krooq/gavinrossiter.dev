@@ -1,7 +1,7 @@
 import React, { useState, CSSProperties } from 'react';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
-import { Map, OrderedMap } from 'immutable';
+import { Stack, Map, OrderedMap } from 'immutable';
 import { useGesture, useDrag } from 'react-use-gesture'
 import { useSpring, animated, to, config, Spring } from 'react-spring';
 import { FullGestureState, Vector2 } from 'react-use-gesture/dist/types';
@@ -39,20 +39,47 @@ const styles = {
   toolbar_button_background_color: "#1e1e1e",
   toolbar_button_active_background_color: "#4f4f4f",
 }
+type State = { panels: Map<string, Panel> }
 
 // App
 function App() {
   const { w: windowWidth, h: windowHeight } = useWindowDimensions();
 
-  const defaultPanel = { id: uuidv4(), insets: { top: 0, right: 0, bottom: 0, left: 0 }, selected: false }
-  const [panels, setPanels] = useState(OrderedMap<string, Panel>().set(defaultPanel.id, defaultPanel))
-  // const [target, setGesture] = useTargetElement()
+  const initialPanel = { id: uuidv4(), insets: { top: 0, right: 0, bottom: 0, left: 0 }, selected: false }
+  const initialState = {
+    panels: Map<string, Panel>().set(initialPanel.id, initialPanel)
+  }
 
+  const [future, setFuture] = useState(Stack<State>())
+  const [state, setState] = useState(initialState)
+  const [history, setHistory] = useState(Stack<State>())
+
+  function undo() {
+    if (history.isEmpty()) { return }
+    setFuture(future.push(state))
+    setState(history.first())
+    setHistory(history.pop())
+  }
+  function redo() {
+    if (future.isEmpty()) { return }
+    setHistory(history.push(state))
+    setState(future.first())
+    setFuture(future.pop())
+  }
+
+  function pushState(panels: Map<string, Panel>) {
+    setHistory(history.push(state))
+    setState({ panels })
+    setFuture(future.clear())
+  }
+
+
+  // const [target, setGesture] = useTargetElement()
   const bind = useGesture({
     onDragStart: gesture => {
-      let panel = panels.get(gestureTarget(gesture)?.id ?? '')
+      let panel = state.panels.get(gestureTarget(gesture)?.id ?? '')
       if (panel?.id != null) {
-        setPanels(panels.update(panel.id, p => ({ ...p, selected: !p.selected })))
+        pushState(state.panels.update(panel.id, p => ({ ...p, selected: !p.selected })))
       }
       // setGesture(null)
     },
@@ -101,7 +128,7 @@ function App() {
   return (
     <div id="app" style={{ width: windowWidth, height: windowHeight }} >
       <div id="main">
-        {panels.map(p => {
+        {state.panels.map(p => {
           return (
             <Spring key={p.id}
               to={{
@@ -120,8 +147,11 @@ function App() {
         }).valueSeq()}
       </div>
       <div id="toolbar">
-        <button onClick={e => setPanels(splitSelectedPanels(panels, "vertical"))}>Split Vertically</button>
-        <button onClick={e => setPanels(splitSelectedPanels(panels, "horizontal"))}>Split Horizontally</button>
+        <button onClick={e => pushState(clearSelectedPanels(state.panels))}>Clear Selection</button>
+        <button onClick={e => pushState(splitSelectedPanels(state.panels, "vertical"))}>Split Vertically</button>
+        <button onClick={e => pushState(splitSelectedPanels(state.panels, "horizontal"))}>Split Horizontally</button>
+        <button onClick={e => undo()}>Undo</button>
+        <button onClick={e => redo()}>Redo</button>
       </div>
     </div >
   )
@@ -131,25 +161,8 @@ function style(variable: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(variable);
 }
 
-// Clamps a 1D interval within a 1D bound.
-function clampInterval(interval: { left: number, width: number }, bound: { left: number, width: number }) {
-  let intervalRadius = Math.ceil(interval.width / 2)
-  return Math.max(Math.min(interval.left, bound.left + bound.width - intervalRadius), bound.left + intervalRadius)
-}
-
-function computedBounds(element: HTMLElement) {
-  return [element.offsetTop, element.offsetLeft, element.offsetWidth, element.offsetHeight]
-}
-
 function gestureTarget(gesture: FullGestureState<any>) {
   return gesture?.event?.target instanceof HTMLElement ? gesture.event.target : null
-}
-
-function useTargetElement(): [HTMLElement | null, (gesture: FullGestureState<any>) => void] {
-  const [target, setTarget] = useState<HTMLElement | null>(null)
-  return [target, (gesture: FullGestureState<any> | null) => {
-    setTarget(gesture?.event?.target instanceof HTMLElement ? gesture.event.target : null)
-  }];
 }
 
 function percent(n: number): string {
@@ -165,17 +178,22 @@ function mapValues<V, U>(obj: { [s: string]: V }, fn: (v: V) => U) {
   )
 }
 
-function splitSelectedPanels(panels: OrderedMap<string, Panel>, axis: Axis): OrderedMap<string, Panel> {
+function clearSelectedPanels(panels: Map<string, Panel>): Map<string, Panel> {
+  return panels.map(p => ({ ...p, selected: false }))
+}
+
+function splitSelectedPanels(panels: Map<string, Panel>, axis: Axis): Map<string, Panel> {
   let selectedPanels = panels.valueSeq().filter(p => p.selected)
   let splitPanels = selectedPanels
     .flatMap(p => splitPanel(p, axis))
     .groupBy(p => p.id)
     .map(ps => ps.first<Panel>() /* We know there will be at least one panel since we just did a groupBy */)
-    .toOrderedMap()
+    .toMap()
   return panels
     .removeAll(selectedPanels.map(p => p.id))
     .concat(splitPanels)
 }
+
 function splitPanel(panel: Panel, axis: Axis): [Panel, Panel] {
   var id1 = uuidv4()
   var id2 = uuidv4()
@@ -189,29 +207,5 @@ function splitPanel(panel: Panel, axis: Axis): [Panel, Panel] {
       : [{ ...insets, bottom: b + h / 2 }, { ...insets, top: t + h / 2 }]
   return [{ id: id1, selected: true, insets: insets1 }, { id: id2, selected: true, insets: insets2 }]
 }
-
-
-// Creates 2 new panels from the given panel using direction to determine the axis of the split
-// function splitPanel(panel: Panel, initial: Vector2, direction: Vector2, windowSize: Vector2): [Panel?, Panel?] {
-//   var id1 = uuidv4()
-//   var id2 = uuidv4()
-//   const [w, h] = windowSize
-//   console.log(direction)
-//   const [dx, dy] = direction
-//   const [x, y] = [initial[0] / w, initial[1] / h]
-//   // horizontal slice, dy=0
-//   if (dx === 1 && dy === 0) {
-//     var p1 = { id: id1, insets: { ...panel.insets, bottom: (1 - y) } }
-//     var p2 = { id: id2, insets: { ...panel.insets, top: y } }
-//     return [p1, p2]
-//   } else if (dx === 0 && dy === 1) {
-//     // vertical slice, dx=0
-//     var p1 = { id: id1, insets: { ...panel.insets, right: (1 - x) } }
-//     var p2 = { id: id2, insets: { ...panel.insets, left: x } }
-//     return [p1, p2]
-//   }
-//   return [undefined, undefined]
-// }
-
 
 export default App;
