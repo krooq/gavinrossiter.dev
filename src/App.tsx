@@ -78,11 +78,9 @@ function App() {
     setFuture(future.clear())
   }
 
-  function tooManyPanels() {
-    let nbSelectedPanels = state.panels.filter(p => p.selected).size
-    console.log(((state.panels.size + nbSelectedPanels * 2)))
-    return ((state.panels.size + nbSelectedPanels * 2) > maxPanels) || (nbSelectedPanels === 0)
-  }
+  function nbSelectedPanels() { return state.panels.filter(p => p.selected).size }
+  function noSelectedPanels() { return nbSelectedPanels() === 0 }
+  function tooManyPanels() { return (state.panels.size + nbSelectedPanels() * 2) > maxPanels }
 
   // const [target, setGesture] = useTargetElement()
   const bind = useGesture({
@@ -165,9 +163,9 @@ function App() {
         }).valueSeq()}
       </div>
       <div id="toolbar">
-        <button onClick={e => pushState(clearSelectedPanels(state.panels))}>Clear Selection</button>
-        <button onClick={e => pushState(splitSelectedPanels(state.panels, "vertical"))} disabled={tooManyPanels()}>Split Vertically</button>
-        <button onClick={e => pushState(splitSelectedPanels(state.panels, "horizontal"))} disabled={tooManyPanels()}>Split Horizontally</button>
+        <button onClick={e => pushState(clearSelectedPanels(state.panels))} disabled={noSelectedPanels()}>Clear Selection</button>
+        <button onClick={e => pushState(splitSelectedPanels(state.panels, "vertical"))} disabled={tooManyPanels() || noSelectedPanels()}>Split Vertically</button>
+        <button onClick={e => pushState(splitSelectedPanels(state.panels, "horizontal"))} disabled={tooManyPanels() || noSelectedPanels()}>Split Horizontally</button>
         <button onClick={e => undo()} disabled={history.isEmpty()}>Undo</button>
         <button onClick={e => redo()} disabled={future.isEmpty()}>Redo</button>
       </div>
