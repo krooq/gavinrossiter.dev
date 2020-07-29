@@ -1,12 +1,29 @@
 import React, { useState, CSSProperties, useLayoutEffect, useRef, useEffect } from 'react';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
-import { Stack, Map, OrderedMap } from 'immutable';
 import { useGesture, useDrag } from 'react-use-gesture'
 import { useSpring, animated, to, config, Spring } from 'react-spring';
 import { FullGestureState, Vector2 } from 'react-use-gesture/dist/types';
 import useWindowDimensions from './useWindowDimensions';
 import { createGlobalStyle } from 'styled-components';
+import _ from 'lodash'
+import produce from 'immer'
+
+const GlobalStyle = createGlobalStyle`
+  html {
+    --main-background-color: #0f0f0f;
+    --panel-background-color: #1e1e1e;
+    --panel-highlight-color: #4e4e4e
+  }
+`
+const styles = {
+  main_background_color: "#0f0f0f",
+  panel_background_color: "#1e1e1e",
+  panel_highlight_color: "#4f4f4f",
+  toolbar_background_color: "#0f0f0f",
+  toolbar_button_background_color: "#1e1e1e",
+  toolbar_button_active_background_color: "#4f4f4f",
+}
 
 type vec2 = [number, number]
 
@@ -24,119 +41,103 @@ type Axis = "vertical" | "horizontal"
 // Panel
 type Panel = { id: string, insets: Insets, selected: boolean }
 
-const GlobalStyle = createGlobalStyle`
-  html {
-    --main-background-color: #0f0f0f;
-    --panel-background-color: #1e1e1e;
-    --panel-highlight-color: #4e4e4e
-  }
-`
-const styles = {
-  main_background_color: "#0f0f0f",
-  panel_background_color: "#1e1e1e",
-  panel_highlight_color: "#4f4f4f",
-  toolbar_background_color: "#0f0f0f",
-  toolbar_button_background_color: "#1e1e1e",
-  toolbar_button_active_background_color: "#4f4f4f",
-}
+// State
 type State = { panels: Map<string, Panel> }
+
+type MetaState = { past: Array<State>, present: State, future: Array<State> }
+
+function coalesce<T, U>(t: T | null | undefined, fn: (t: T) => U) { return t != null ? fn(t) : null }
+
 
 // App
 function App() {
   const [windowWidth, windowHeight] = useWindowDimensions();
 
+
   const initialPanel = { id: uuidv4(), insets: { top: 0, right: 0, bottom: 0, left: 0 }, selected: false }
   const initialState = {
-    panels: Map<string, Panel>().set(initialPanel.id, initialPanel)
+    panels: new Map<string, Panel>().set(initialPanel.id, initialPanel)
   }
 
   const [mainStyle, mainRef] = useStyle<HTMLDivElement>()
 
+  // const savedState = loadState();
+
   const maxHistory = 50
   const maxPanels = 512
-  const [future, setFuture] = useState(Stack<State>())
-  const [state, setState] = useState(initialState)
-  const [history, setHistory] = useState(Stack<State>())
+  const [future, setFuture] = useState<Array<State>>([])
+  const [state, setState] = useState<State>(initialState)
+  const [history, setHistory] = useState<Array<State>>([])
 
+  const [metaState, setMetaState] = useState<MetaState>({ past: [], present: initialState, future: [] })
+
+  // saveState(history, initialState, future)
+  // console.log(JSON.stringify(state.toJS()))
+  // console.log(NewState().toJS())
   function undo() {
-    if (history.isEmpty()) { return }
-    setFuture(future.push(state))
-    setState(history.first())
-    setHistory(history.pop())
+    setMetaState(produce(metaState, nextMetaState => {
+      let { past, present, future } = metaState
+      let nextState = past.pop()
+      if (nextState != null) {
+        future.push(present)
+        present = nextState
+      }
+    }))
   }
 
   function redo() {
-    if (future.isEmpty()) { return }
-    setHistory(history.push(state))
-    setState(future.first())
-    setFuture(future.pop())
+    setMetaState(produce(metaState, nextMetaState => {
+      let { past, present, future } = metaState
+      let nextState = future.pop()
+      if (nextState != null) {
+        past.push(present)
+        present = nextState
+      }
+    }))
   }
 
   function pushState(panels: Map<string, Panel>) {
-    setHistory(history.push(state).take(maxHistory))
-    setState({ panels })
-    setFuture(future.clear())
+    setMetaState(produce(metaState, nextMetaState => {
+      let { past, present, future } = metaState
+      past.push(present)
+      present = { panels }
+      future = []
+    }))
   }
 
-  function nbSelectedPanels() { return state.panels.filter(p => p.selected).size }
+
+  // function saveState(history: Stack<State>, state: State, future: Stack<State>) {
+  //   localStorage.setItem("auto-saved-state", JSON.stringify(state.toJS()))
+  // }
+
+  // function loadState() {
+  //   return {
+  //     history: null,
+  //     state: coalesce(localStorage.getItem("auto-saved-state"), json => fromJS(JSON.parse(json)) as State),
+  //     future: null
+  //   }
+  // }
+
+  function nbSelectedPanels() { return [...state.panels.values()].filter(p => p.selected).length }
   function noSelectedPanels() { return nbSelectedPanels() === 0 }
   function tooManyPanels() { return (state.panels.size + nbSelectedPanels() * 2) > maxPanels }
 
   // const [target, setGesture] = useTargetElement()
   const bind = useGesture({
     onDragStart: gesture => {
-      let panel = state.panels.get(gestureTarget(gesture)?.id ?? '')
-      if (panel?.id != null) {
-        pushState(state.panels.update(panel.id, p => ({ ...p, selected: !p.selected })))
-      }
-      // setGesture(null)
-    },
-    // onDragStart: setGesture,
-    // onMoveStart: setGesture,
-    // onDrag: e => {
-    //   var [dx, dy] = e.direction.map(Math.abs)
-    //   if (dx === 1 && dy === 0) {
-    //     var x = e.xy[0]
-    //     var y = e.xy[1]
-    //     var height = 500//Math.max(2, (target?.clientHeight ?? 0))
-    //     var width = 5
-    //     setSplitIndicator({ translate: [x, y], scale: [width, height] })
-    //   }
-    // if ((dx === 1 && dy === 0) || (dx === 0 && dy === 1)) {
-    //   var height = Math.max(2, (target?.clientHeight ?? 0))
-    //   var width = Math.max(2, (target?.clientWidth ?? 0))
-    // setSplitIndicator(
-    //   createTransform(
-    //     (dx * e.xy[0]) + 10,
-    //     (dy * e.xy[1]) + height / 2,
-    //     20,
-    //     height,
-    //   )
-    // )
-    // }
-  },
-    // onDragEnd: e => {
-    //   // if (target !== null) {
-    //   //   var panel = panels.get(target.id)
-    //   //   if (panel !== undefined) {
-    //   //     var [p1, p2] = splitPanel(panel, e.initial, e.direction, [w, h])
-    //   //     if (p1 !== undefined && p2 !== undefined) {
-    //   //       var rebuiltPanels = panels.remove(target.id).set(p1.id, p1).set(p2.id, p2)
-    //   //       setPanels(rebuiltPanels)
-    //   //     }
-    //   //   }
-    //   // }
-    //   setEvent(null)
-    // },
-    // },
-    {
-      // drag: { filterTaps: true }
-    })
-  console.log(mainRef?.current?.clientWidth)
+      pushState(produce(state.panels, newPanels => {
+        let panel = newPanels.get(gestureTarget(gesture)?.id ?? '')
+        if (panel != null) {
+          panel.selected = !panel.selected
+        }
+      }))
+    }
+  }, {})
+
   return (
     <div id="app" style={{ width: windowWidth, height: windowHeight }} >
       <div id="main" ref={mainRef}>
-        {state.panels.map(p => {
+        {[...state.panels.values()].map(p => {
           return (
             <Spring key={p.id}
               to={{
@@ -160,7 +161,7 @@ function App() {
                 />}
             </Spring>
           )
-        }).valueSeq()}
+        })}
       </div>
       <div id="toolbar">
         <button onClick={e => pushState(clearSelectedPanels(state.panels))} disabled={noSelectedPanels()}>Clear Selection</button>
@@ -187,6 +188,7 @@ function percent(n: number): string {
 
 // Maps object values using the provide mapping function
 function mapValues<V, U>(obj: { [s: string]: V }, fn: (v: V) => U) {
+  console.log(obj)
   return Object.fromEntries(
     Object.entries(obj).map(
       ([k, v], i) => [k, fn(v)]
@@ -195,7 +197,7 @@ function mapValues<V, U>(obj: { [s: string]: V }, fn: (v: V) => U) {
 }
 
 function clearSelectedPanels(panels: Map<string, Panel>): Map<string, Panel> {
-  return panels.map(p => ({ ...p, selected: false }))
+  return panels.map(p => new Panel({ ...p, selected: false }))
 }
 
 function splitSelectedPanels(panels: Map<string, Panel>, axis: Axis): Map<string, Panel> {
@@ -220,7 +222,7 @@ function splitPanel(panel: Panel, axis: Axis): [Panel, Panel] {
     axis === "vertical"
       ? [{ ...insets, right: r + w / 2 }, { ...insets, left: l + w / 2 }]
       : [{ ...insets, bottom: b + h / 2 }, { ...insets, top: t + h / 2 }]
-  return [{ id: id1, selected: true, insets: insets1 }, { id: id2, selected: true, insets: insets2 }]
+  return [new Panel({ id: id1, insets: insets1, selected: true }), new Panel({ id: id2, insets: insets2, selected: true })]
 }
 
 
