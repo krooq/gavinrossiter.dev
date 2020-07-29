@@ -1,41 +1,25 @@
-import React, { useState, CSSProperties, useLayoutEffect, useRef, useEffect } from 'react';
+import React, { useState, useLayoutEffect, useRef } from 'react';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
-import { useGesture, useDrag } from 'react-use-gesture'
-import { useSpring, animated, to, config, Spring } from 'react-spring';
-import { FullGestureState, Vector2 } from 'react-use-gesture/dist/types';
+import { useGesture } from 'react-use-gesture'
+import { animated, Spring } from 'react-spring';
+import { FullGestureState } from 'react-use-gesture/dist/types';
 import useWindowDimensions from './useWindowDimensions';
-import { createGlobalStyle } from 'styled-components';
-import _ from 'lodash'
 import { enableMapSet, produce } from 'immer'
+import _ from 'lodash'
 enableMapSet()
 
-const GlobalStyle = createGlobalStyle`
-  html {
-    --main-background-color: #0f0f0f;
-    --panel-background-color: #1e1e1e;
-    --panel-highlight-color: #4e4e4e
-  }
-`
-const styles = {
-  main_background_color: "#0f0f0f",
-  panel_background_color: "#1e1e1e",
-  panel_highlight_color: "#4f4f4f",
-  toolbar_background_color: "#0f0f0f",
-  toolbar_button_background_color: "#1e1e1e",
-  toolbar_button_active_background_color: "#4f4f4f",
-}
 
 type vec2 = [number, number]
 
 // Rect
-type Rect = { x: number, y: number, width: number, height: number }
+// type Rect = { x: number, y: number, width: number, height: number }
 
 // Insets
 type Insets = { top: number, right: number, bottom: number, left: number }
 
 // Transform
-type Transform = { translate: vec2, scale: vec2 }
+// type Transform = { translate: vec2, scale: vec2 }
 
 type Axis = "vertical" | "horizontal"
 
@@ -47,7 +31,7 @@ type State = { panels: Map<string, Panel> }
 
 type MetaState = { past: Array<State>, present: State, future: Array<State> }
 
-function coalesce<T, U>(t: T | null | undefined, fn: (t: T) => U) { return t != null ? fn(t) : null }
+// function coalesce<T, U>(t: T | null | undefined, fn: (t: T) => U) { return t != null ? fn(t) : null }
 
 
 // App
@@ -59,8 +43,6 @@ function App() {
   const initialState = {
     panels: new Map<string, Panel>().set(initialPanel.id, initialPanel)
   }
-
-  const [mainStyle, mainRef] = useStyle<HTMLDivElement>()
 
   // const savedState = loadState();
   const maxHistory = 50
@@ -94,8 +76,9 @@ function App() {
 
   function pushState(fn: (state: State) => void) {
     setMetaState(produce(metaState, draft => {
-      const { present } = draft
-      draft.past.push(present)
+      const { past, present } = draft
+      past.push(present)
+      draft.past = _.takeRight(past, maxHistory)
       draft.present = produce(present, fn)
       draft.future = []
     }))
@@ -118,7 +101,6 @@ function App() {
   function noSelectedPanels() { return nbSelectedPanels() === 0 }
   function tooManyPanels() { return (metaState.present.panels.size + nbSelectedPanels() * 2) > maxPanels }
 
-  // const [target, setGesture] = useTargetElement()
   const bind = useGesture({
     onDragStart: gesture => {
       pushState(state => {
@@ -132,7 +114,7 @@ function App() {
 
   return (
     <div id="app" style={{ width: windowWidth, height: windowHeight }} >
-      <div id="main" ref={mainRef}>
+      <div id="main">
         {[...metaState.present.panels.values()].map(p => {
           return (
             <Spring key={p.id}
@@ -192,7 +174,7 @@ function mapValues<V, U>(obj: { [s: string]: V }, fn: (v: V) => U) {
 }
 
 function clearSelectedPanels(panels: Map<string, Panel>) {
-  for (const [id, panel] of panels) { panel.selected = false }
+  for (const [, panel] of panels) { panel.selected = false }
 }
 
 function splitSelectedPanels(panels: Map<string, Panel>, axis: Axis) {
@@ -216,33 +198,33 @@ function splitPanel(panel: Panel, axis: Axis): [Panel, Panel] {
 }
 
 
-function transform(insets: Insets, containerSize: vec2): Transform {
-  let [cx, cy] = containerSize
-  let { top: t, right: r, bottom: b, left: l } = insets;
-  let [w, h] = [1 - r - l, 1 - t - b]
-  console.log(cx)
-  return {
-    translate: [Math.floor((l + w / 2) * cx), Math.floor((t + h / 2) * cy)],
-    scale: [Math.floor(w * cx), Math.floor(h * cy)]
-  }
-}
+// function transform(insets: Insets, containerSize: vec2): Transform {
+//   let [cx, cy] = containerSize
+//   let { top: t, right: r, bottom: b, left: l } = insets;
+//   let [w, h] = [1 - r - l, 1 - t - b]
+//   console.log(cx)
+//   return {
+//     translate: [Math.floor((l + w / 2) * cx), Math.floor((t + h / 2) * cy)],
+//     scale: [Math.floor(w * cx), Math.floor(h * cy)]
+//   }
+// }
 
-function styleOfTransform(transform: Transform): string {
-  let [tx, ty, sx, sy] = [...transform.translate, ...transform.scale]
-  return `translate(${tx}px,${ty}px) scale(${sx},${sy}) rotateX(0deg)`
-}
+// function styleOfTransform(transform: Transform): string {
+//   let [tx, ty, sx, sy] = [...transform.translate, ...transform.scale]
+//   return `translate(${tx}px,${ty}px) scale(${sx},${sy}) rotateX(0deg)`
+// }
 
 
-function useStyle<T extends Element>(): [CSSStyleDeclaration | null, React.RefObject<T>] {
-  const ref = useRef<T>(null);
-  const [style, setStyle] = useState<CSSStyleDeclaration | null>(null);
-  useLayoutEffect(() => {
-    // I don't think it can be null at this point, but better safe than sorry
-    if (ref.current != null) {
-      setStyle(window.getComputedStyle(ref.current));
-    }
-  }, []);
-  return [style, ref]
-}
+// function useStyle<T extends Element>(): [CSSStyleDeclaration | null, React.RefObject<T>] {
+//   const ref = useRef<T>(null);
+//   const [style, setStyle] = useState<CSSStyleDeclaration | null>(null);
+//   useLayoutEffect(() => {
+//     // I don't think it can be null at this point, but better safe than sorry
+//     if (ref.current != null) {
+//       setStyle(window.getComputedStyle(ref.current));
+//     }
+//   }, []);
+//   return [style, ref]
+// }
 
 export default App;
