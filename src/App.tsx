@@ -7,7 +7,8 @@ import { FullGestureState, Vector2 } from 'react-use-gesture/dist/types';
 import useWindowDimensions from './useWindowDimensions';
 import { createGlobalStyle } from 'styled-components';
 import _ from 'lodash'
-import produce from 'immer'
+import { enableMapSet, produce } from 'immer'
+enableMapSet()
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -62,46 +63,41 @@ function App() {
   const [mainStyle, mainRef] = useStyle<HTMLDivElement>()
 
   // const savedState = loadState();
-
   const maxHistory = 50
   const maxPanels = 512
-  const [future, setFuture] = useState<Array<State>>([])
-  const [state, setState] = useState<State>(initialState)
-  const [history, setHistory] = useState<Array<State>>([])
-
   const [metaState, setMetaState] = useState<MetaState>({ past: [], present: initialState, future: [] })
-
   // saveState(history, initialState, future)
-  // console.log(JSON.stringify(state.toJS()))
-  // console.log(NewState().toJS())
+
   function undo() {
-    setMetaState(produce(metaState, nextMetaState => {
-      let { past, present, future } = metaState
-      let nextState = past.pop()
-      if (nextState != null) {
-        future.push(present)
-        present = nextState
+    setMetaState(produce(metaState, draft => {
+      const { past, present } = draft
+      let next = past.pop()
+      if (next != null) {
+        draft.past = past
+        draft.present = next
+        draft.future.push(present)
       }
     }))
   }
 
   function redo() {
-    setMetaState(produce(metaState, nextMetaState => {
-      let { past, present, future } = metaState
-      let nextState = future.pop()
-      if (nextState != null) {
-        past.push(present)
-        present = nextState
+    setMetaState(produce(metaState, draft => {
+      const { present, future } = draft
+      let next = future.pop()
+      if (next != null) {
+        draft.past.push(present)
+        draft.present = next
+        draft.future = future
       }
     }))
   }
 
-  function pushState(panels: Map<string, Panel>) {
-    setMetaState(produce(metaState, nextMetaState => {
-      let { past, present, future } = metaState
-      past.push(present)
-      present = { panels }
-      future = []
+  function pushState(fn: (state: State) => void) {
+    setMetaState(produce(metaState, draft => {
+      const { present } = draft
+      draft.past.push(present)
+      draft.present = produce(present, fn)
+      draft.future = []
     }))
   }
 
@@ -118,26 +114,26 @@ function App() {
   //   }
   // }
 
-  function nbSelectedPanels() { return [...state.panels.values()].filter(p => p.selected).length }
+  function nbSelectedPanels() { return [...metaState.present.panels.values()].filter(p => p.selected).length }
   function noSelectedPanels() { return nbSelectedPanels() === 0 }
-  function tooManyPanels() { return (state.panels.size + nbSelectedPanels() * 2) > maxPanels }
+  function tooManyPanels() { return (metaState.present.panels.size + nbSelectedPanels() * 2) > maxPanels }
 
   // const [target, setGesture] = useTargetElement()
   const bind = useGesture({
     onDragStart: gesture => {
-      pushState(produce(state.panels, newPanels => {
-        let panel = newPanels.get(gestureTarget(gesture)?.id ?? '')
+      pushState(state => {
+        const panel = state.panels.get(gestureTarget(gesture)?.id ?? '')
         if (panel != null) {
           panel.selected = !panel.selected
         }
-      }))
+      })
     }
   }, {})
 
   return (
     <div id="app" style={{ width: windowWidth, height: windowHeight }} >
       <div id="main" ref={mainRef}>
-        {[...state.panels.values()].map(p => {
+        {[...metaState.present.panels.values()].map(p => {
           return (
             <Spring key={p.id}
               to={{
@@ -164,13 +160,13 @@ function App() {
         })}
       </div>
       <div id="toolbar">
-        <button onClick={e => pushState(clearSelectedPanels(state.panels))} disabled={noSelectedPanels()}>Clear Selection</button>
-        <button onClick={e => pushState(splitSelectedPanels(state.panels, "vertical"))} disabled={tooManyPanels() || noSelectedPanels()}>Split Vertically</button>
-        <button onClick={e => pushState(splitSelectedPanels(state.panels, "horizontal"))} disabled={tooManyPanels() || noSelectedPanels()}>Split Horizontally</button>
-        <button onClick={e => undo()} disabled={history.isEmpty()}>Undo</button>
-        <button onClick={e => redo()} disabled={future.isEmpty()}>Redo</button>
+        <button onClick={e => pushState(state => { clearSelectedPanels(state.panels); return state; })} disabled={noSelectedPanels()}>Clear Selection</button>
+        <button onClick={e => pushState(state => { splitSelectedPanels(state.panels, "vertical"); return state; })} disabled={tooManyPanels() || noSelectedPanels()}>Split Vertically</button>
+        <button onClick={e => pushState(state => { splitSelectedPanels(state.panels, "horizontal"); return state; })} disabled={tooManyPanels() || noSelectedPanels()}>Split Horizontally</button>
+        <button onClick={e => undo()} disabled={metaState.past.length === 0}>Undo</button>
+        <button onClick={e => redo()} disabled={metaState.future.length === 0}>Redo</button>
       </div>
-    </div >
+    </div>
   )
 }
 
@@ -188,7 +184,6 @@ function percent(n: number): string {
 
 // Maps object values using the provide mapping function
 function mapValues<V, U>(obj: { [s: string]: V }, fn: (v: V) => U) {
-  console.log(obj)
   return Object.fromEntries(
     Object.entries(obj).map(
       ([k, v], i) => [k, fn(v)]
@@ -196,20 +191,15 @@ function mapValues<V, U>(obj: { [s: string]: V }, fn: (v: V) => U) {
   )
 }
 
-function clearSelectedPanels(panels: Map<string, Panel>): Map<string, Panel> {
-  return panels.map(p => new Panel({ ...p, selected: false }))
+function clearSelectedPanels(panels: Map<string, Panel>) {
+  for (const [id, panel] of panels) { panel.selected = false }
 }
 
-function splitSelectedPanels(panels: Map<string, Panel>, axis: Axis): Map<string, Panel> {
-  let selectedPanels = panels.valueSeq().filter(p => p.selected)
-  let splitPanels = selectedPanels
-    .flatMap(p => splitPanel(p, axis))
-    .groupBy(p => p.id)
-    .map(ps => ps.first<Panel>() /* We know there will be at least one panel since we just did a groupBy */)
-    .toMap()
-  return panels
-    .removeAll(selectedPanels.map(p => p.id))
-    .concat(splitPanels)
+function splitSelectedPanels(panels: Map<string, Panel>, axis: Axis) {
+  const selectedPanels = [...panels.values()].filter(p => p.selected)
+  const splitPanels = selectedPanels.flatMap(p => splitPanel(p, axis))
+  for (const panel of selectedPanels) { panels.delete(panel.id) }
+  for (const panel of splitPanels) { panels.set(panel.id, panel) }
 }
 
 function splitPanel(panel: Panel, axis: Axis): [Panel, Panel] {
@@ -222,7 +212,7 @@ function splitPanel(panel: Panel, axis: Axis): [Panel, Panel] {
     axis === "vertical"
       ? [{ ...insets, right: r + w / 2 }, { ...insets, left: l + w / 2 }]
       : [{ ...insets, bottom: b + h / 2 }, { ...insets, top: t + h / 2 }]
-  return [new Panel({ id: id1, insets: insets1, selected: true }), new Panel({ id: id2, insets: insets2, selected: true })]
+  return [{ id: id1, insets: insets1, selected: true }, { id: id2, insets: insets2, selected: true }]
 }
 
 
