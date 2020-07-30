@@ -18,6 +18,19 @@
 
 
 
+// Converts Insets to a set of screen coordinates
+// function toScreen(insets: Insets) {
+//     const { top: t, right: r, bottom: b, left: l } = insets;
+//     // const [w, h] = [1 - r - l, 1 - t - b]
+//     // return [[l, t], [l + w, t], [l + w, t + h], [l, t + h]]
+//     return [t, 1 - r, 1 - b, l]
+//   }
+
+// bounding box check
+// if (t < y && y < b && y > t && l < x && x < r) {
+
+// }
+
 // const splitGuide = useDrag(e => {
 //     let panel = target
 //     if (panel != null) {

@@ -11,7 +11,7 @@ enableMapSet()
 
 
 type vec2 = [number, number]
-
+type vec4 = [number, number, number, number]
 // Rect
 // type Rect = { x: number, y: number, width: number, height: number }
 
@@ -84,6 +84,7 @@ function App() {
     }))
   }
 
+  const mainRef = useRef<HTMLDivElement>(null);
 
   // function saveState(history: Stack<State>, state: State, future: Stack<State>) {
   //   localStorage.setItem("auto-saved-state", JSON.stringify(state.toJS()))
@@ -101,20 +102,52 @@ function App() {
   function noSelectedPanels() { return nbSelectedPanels() === 0 }
   function tooManyPanels() { return (metaState.present.panels.size + nbSelectedPanels() * 2) > maxPanels }
 
+
+  const [gesture, setGesture] = useState<FullGestureState<any> | null>(null)
+
   const bind = useGesture({
-    onDragStart: gesture => {
+    onDragStart: g => {
+      setGesture(g)
+
+
+      let [width, height] = [mainRef?.current?.clientWidth ?? 1, mainRef?.current?.clientHeight ?? 1]
+      var [x, y] = g.xy
+
+      let dragEdges: [{ id: string, edge: string }] | [] = []
+      for (const panel of metaState.present.panels.values()) {
+        const { top: t, right: r, bottom: b, left: l } = panel.insets;
+        const [w, h] = [(1 - r - l) * width, (1 - t - b) * height]
+        const [px, py] = [l * width, t * height]
+        const radius = 20
+        let intersect = circleIntersectsRect([x, y], radius, [px, py, w, h])
+        if (intersect.includes("t")) {
+          if (mainRef.current != null) {
+            mainRef.current.style.cursor = "move"
+          }
+          console.log("t")
+        }
+      }
+
+
+
       pushState(state => {
-        const panel = state.panels.get(gestureTarget(gesture)?.id ?? '')
+        const panel = state.panels.get(gestureTarget(g)?.id ?? '')
         if (panel != null) {
           panel.selected = !panel.selected
         }
       })
+    },
+    onDrag: ({ xy }) => {
+
+      // if (target != null) {
+      //   
+      // }
     }
   }, {})
 
   return (
     <div id="app" style={{ width: windowWidth, height: windowHeight }} >
-      <div id="main">
+      <div id="main" ref={mainRef}>
         {[...metaState.present.panels.values()].map(p => {
           return (
             <Spring key={p.id}
@@ -152,6 +185,25 @@ function App() {
     </div>
   )
 }
+
+// Checks if a circle intersects an axis aliged rectangle and returns a string with the edges that intersect
+function circleIntersectsRect([cx, cy]: vec2, radius: number, [x, y, w, h]: vec4): string {
+  let edges = ""
+  const dt = Math.abs(cy - y)
+  const dr = Math.abs(cx - x + w)
+  const db = Math.abs(cy - y + h)
+  const dl = Math.abs(cx - x)
+  const dx = cx - Math.max(x, Math.min(cx, x + w));
+  const dy = cy - Math.max(y, Math.min(cy, y + h));
+  if ((dx * dx + dy * dy) < (radius * radius)) {
+    if (dt < radius) { edges = edges.concat("t") }
+    if (dr < radius) { edges = edges.concat("r") }
+    if (db < radius) { edges = edges.concat("b") }
+    if (dl < radius) { edges = edges.concat("l") }
+  }
+  return edges
+}
+
 
 function style(variable: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(variable);
