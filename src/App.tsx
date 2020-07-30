@@ -142,9 +142,10 @@ function App() {
         })}
       </div>
       <div id="toolbar">
-        <button onClick={e => pushState(state => { clearSelectedPanels(state.panels); return state; })} disabled={noSelectedPanels()}>Clear Selection</button>
-        <button onClick={e => pushState(state => { splitSelectedPanels(state.panels, "vertical"); return state; })} disabled={tooManyPanels() || noSelectedPanels()}>Split Vertically</button>
-        <button onClick={e => pushState(state => { splitSelectedPanels(state.panels, "horizontal"); return state; })} disabled={tooManyPanels() || noSelectedPanels()}>Split Horizontally</button>
+        <button onClick={e => pushState(state => clearSelectedPanels(state.panels))} disabled={noSelectedPanels()}>Clear Selection</button>
+        <button onClick={e => pushState(state => splitSelectedPanels(state.panels, "vertical"))} disabled={tooManyPanels() || noSelectedPanels()}>Split Vertically</button>
+        <button onClick={e => pushState(state => splitSelectedPanels(state.panels, "horizontal"))} disabled={tooManyPanels() || noSelectedPanels()}>Split Horizontally</button>
+        <button onClick={e => pushState(state => deleteSelectedPanels(state.panels))} disabled={noSelectedPanels()}>Delete</button>
         <button onClick={e => undo()} disabled={metaState.past.length === 0}>Undo</button>
         <button onClick={e => redo()} disabled={metaState.future.length === 0}>Redo</button>
       </div>
@@ -171,6 +172,11 @@ function mapValues<V, U>(obj: { [s: string]: V }, fn: (v: V) => U) {
       ([k, v], i) => [k, fn(v)]
     )
   )
+}
+
+function deleteSelectedPanels(panels: Map<string, Panel>) {
+  const selectedPanels = [...panels.values()].filter(p => p.selected)
+  for (const panel of selectedPanels) { panels.delete(panel.id) }
 }
 
 function clearSelectedPanels(panels: Map<string, Panel>) {
