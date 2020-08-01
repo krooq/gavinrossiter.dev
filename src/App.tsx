@@ -33,27 +33,16 @@ type Panel = { id: string, insets: vec4 }
 // State - Snapshot view of the domain data state
 type State = { panels: Map<string, Panel> }
 // Eon - States past, present and future
-type Eon = { past: Array<State>, present: State, future: Array<State> }
+type Eon<T> = { past: Array<T>, present: T, future: Array<T> }
 // Metadata - State that is not recorded in an Eon
-type Metadata = { selectedPanels: Set<string>, selectedEdges: Map<string, string> }
+type Metadata = { selectedPanels: Set<string>, selectedEdges: Map<string, string>, resizingPanel: string }
 
 // function coalesce<T, U>(t: T | null | undefined, fn: (t: T) => U) { return t != null ? fn(t) : null }
 
-
-// App
-function App() {
-  const [windowWidth, windowHeight] = useWindowDimensions();
-  const initialPanel: Panel = { id: uuidv4(), insets: [0, 0, 0, 0] }
-  const initialSnapshot = {
-    panels: new Map<string, Panel>().set(initialPanel.id, initialPanel)
-  }
-
-  // const savedState = loadState();
-  const maxHistory = 50
-  const maxPanels = 512
-  const [eon, setEon] = useState<Eon>({ past: [], present: initialSnapshot, future: [] })
-  const [metadata, setMetadata] = useState<Metadata>({ selectedPanels: new Set(), selectedEdges: new Map() })
-  // saveState(history, initialState, future)
+//TODO: Replace with immer patches
+function useUndoRedo<T>(initialState: T, maxHistory = 50): [T[], T, T[], () => void, (update: (present: T) => void) => void, () => void] {
+  type Eon = { past: T[], present: T, future: T[] }
+  const [eon, setEon] = useState<Eon>({ past: [], present: initialState, future: [] })
 
   function undo() {
     setEon(produce(eon, draft => {
@@ -64,6 +53,16 @@ function App() {
         draft.present = next
         draft.future.push(present)
       }
+    }))
+  }
+
+  function set(update: (present: T) => void) {
+    setEon(produce(eon, draft => {
+      const { past, present } = draft
+      past.push(present)
+      draft.past = _.takeRight(past, maxHistory)
+      draft.present = produce(present, update)
+      draft.future = []
     }))
   }
 
@@ -78,22 +77,32 @@ function App() {
       }
     }))
   }
+  return [eon.past, eon.present, eon.future, undo, set, redo]
+}
 
-  function pushState(update: (present: State) => void) {
-    setEon(produce(eon, draft => {
-      const { past, present } = draft
-      past.push(present)
-      draft.past = _.takeRight(past, maxHistory)
-      draft.present = produce(present, update)
-      draft.future = []
-    }))
+// App
+function App() {
+  const [windowWidth, windowHeight] = useWindowDimensions();
+  const initialPanel: Panel = { id: uuidv4(), insets: [0, 0, 0, 0] }
+  const initialSnapshot = {
+    panels: new Map<string, Panel>().set(initialPanel.id, initialPanel)
   }
 
-  function updateState(update: (present: State) => void) {
-    setEon(produce(eon, draft => {
-      update(draft.present)
-    }))
-  }
+  // const savedState = loadState();
+  const maxHistory = 50
+  const maxPanels = 512
+  const [metadata, setMetadata] = useState<Metadata>({ selectedPanels: new Set(), selectedEdges: new Map(), resizingPanel: "" })
+  const [past, present, future, undo, pushState, redo] = useUndoRedo<State>(initialSnapshot)
+  const { selectedPanels, selectedEdges } = metadata
+  const { panels } = Object.freeze(present)
+
+  // saveState(history, initialState, future)
+
+  // function updateState(update: (present: State) => void) {
+  //   setEon(produce(eon, draft => {
+  //     update(draft.present)
+  //   }))
+  // }
 
   function interact(action: (data: Metadata) => void) {
     setMetadata(produce(metadata, action))
@@ -117,6 +126,7 @@ function App() {
       const splitPanels = selectedPanels.flatMap(p => splitPanel(p, axis))
       for (const panel of metadata.selectedPanels) { state.panels.delete(panel) }
       for (const panel of splitPanels) { state.panels.set(panel.id, panel) }
+      metadata.selectedPanels.clear()
     }))
   }
   const mainRef = useRef<HTMLDivElement>(null);
@@ -133,55 +143,49 @@ function App() {
   //   }
   // }
 
-  function nbSelectedPanels() { return metadata.selectedPanels.size }
+  function nbSelectedPanels() { return selectedPanels.size }
   function noSelectedPanels() { return nbSelectedPanels() === 0 }
-  function tooManyPanels() { return (eon.present.panels.size + nbSelectedPanels() * 2) > maxPanels }
+  function tooManyPanels() { return (panels.size + nbSelectedPanels() * 2) > maxPanels }
 
 
   const [gesture, setGesture] = useState<FullGestureState<any> | null>(null)
-  const [dragEdges, setDragEdges] = useState<Map<string, string>>(new Map())
 
   const bind = useGesture({
     onMove: g => {
-      setGesture(g)
-      let [width, height] = [mainRef?.current?.clientWidth ?? 1, mainRef?.current?.clientHeight ?? 1]
-      var [x, y] = g.xy
-      const edgeSize = 40
+
 
       let theseDragEdges: Map<string, string> = new Map()
-      for (const panel of eon.present.panels.values()) {
 
-        var [t, r, b, l] = insetsToBounds(panel.insets)
-        var [t, r, b, l] = [t * height, r * width, b * height, l * width]
-        let edges = ""
-        if (pointInBounds([x, y], [t, r, t + edgeSize, l])) { edges = edges.concat("t") }
-        if (pointInBounds([x, y], [t, r, b, r - edgeSize])) { edges = edges.concat("r") }
-        if (pointInBounds([x, y], [b - edgeSize, r, b, l])) { edges = edges.concat("b") }
-        if (pointInBounds([x, y], [t, l + edgeSize, b, l])) { edges = edges.concat("l") }
-        if (edges.length > 0) {
-          theseDragEdges.set(panel.id, edges);
-        }
-      }
       interact(metadata => {
-        metadata.selectedEdges = theseDragEdges
+        metadata.selectedEdges.clear()
+
+        let [width, height] = [mainRef?.current?.clientWidth ?? 1, mainRef?.current?.clientHeight ?? 1]
+        var [x, y] = g.xy
+        const edgeSize = 40
+        for (const panel of panels.values()) {
+          var [t, r, b, l] = insetsToBounds(panel.insets)
+          var [t, r, b, l] = [t * height, r * width, b * height, l * width]
+          let edges = ""
+          if (pointInBounds([x, y], [t, r, t + edgeSize, l])) { edges = edges.concat("t") }
+          if (pointInBounds([x, y], [t, r, b, r - edgeSize])) { edges = edges.concat("r") }
+          if (pointInBounds([x, y], [b - edgeSize, r, b, l])) { edges = edges.concat("b") }
+          if (pointInBounds([x, y], [t, l + edgeSize, b, l])) { edges = edges.concat("l") }
+          if (edges.length > 0) {
+            metadata.selectedEdges.set(panel.id, edges);
+          }
+        }
+        //TODO: fix this hack
+        metadata.selectedEdges.set(metadata.resizingPanel, "trbl")
+        document.body.style.cursor = resizeCursor(metadata.selectedEdges);
       })
-      setDragEdges(theseDragEdges)
 
-      document.body.style.cursor = resizeCursor(dragEdges);
-
-      // updateState(({ panels }) => {
-      //   for (const panel of panels.values()) {
-      //     if (dragEdges.get(panel.id)?.length ?? 0 > 0) {
-      //       panel.selected = true
-      //     } else {
-      //       panel.selected = false
-      //     }
-      //   }
-      // })
     },
     onDragStart: g => {
       interact(metadata => {
-        const panel = eon.present.panels.get(gestureTarget(g)?.id ?? '')
+        const panel = panels.get(gestureTarget(g)?.id ?? '')
+        metadata.resizingPanel = gestureTarget(g)?.id
+        // metadata.selectedEdges.set(metadata.resizingPanel, )
+
         if (panel != null) {
           if (metadata.selectedPanels.has(panel.id) && !metadata.selectedEdges.has(panel.id)) {
             metadata.selectedPanels = new Set([])
@@ -192,14 +196,29 @@ function App() {
           }
         }
       })
-
-
     },
-    onDrag: ({ xy }) => {
+    onDrag: g => {
+      // setGesture(g)
 
-      // if (target != null) {
-      //   
-      // }
+      let [width, height] = [mainRef?.current?.clientWidth ?? 1, mainRef?.current?.clientHeight ?? 1]
+      var [x, y] = g.xy
+
+      pushState(state => {
+        const panel = state.panels.get(metadata.resizingPanel ?? '')
+        if (panel != null) {
+          if (metadata.selectedEdges.get(panel.id)?.includes("t")) {
+            let [t, r, b, l] = panel.insets
+            panel.insets = [y / height, r, b, l]
+          } if (metadata.selectedEdges.get(panel.id)?.includes("l")) {
+            let [t, r, b, l] = panel.insets
+            panel.insets = [t, r, b, x / width]
+          }
+
+        }
+      })
+    },
+    onDragEnd: g => {
+      interact(metadata => { metadata.selectedEdges.delete(metadata.resizingPanel); metadata.resizingPanel = ""; })
     }
   }, {})
 
@@ -207,17 +226,17 @@ function App() {
   return (
     <div id="app" style={{ width: windowWidth, height: windowHeight }} >
       <div id="main" ref={mainRef}>
-        {[...eon.present.panels.values()].map(p => {
+        {[...panels.values()].map(p => {
           var [top, right, bottom, left] = p.insets.map(percent)
           return (
             <Spring key={p.id}
               to={{
                 backgroundImage: `
-                  linear-gradient(${metadata.selectedPanels.has(p.id) ? "#ffffff09,#ffffff09" : "#00000000,#00000000"}),
-                  linear-gradient(to bottom, ${metadata.selectedEdges.get(p.id)?.includes("t") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px),
-                  linear-gradient(to left, ${metadata.selectedEdges.get(p.id)?.includes("r") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px),
-                  linear-gradient(to top, ${metadata.selectedEdges.get(p.id)?.includes("b") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px),
-                  linear-gradient(to right, ${metadata.selectedEdges.get(p.id)?.includes("l") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px)
+                  linear-gradient(${selectedPanels.has(p.id) ? "#ffffff10,#ffffff10" : "#00000000,#00000000"}),
+                  linear-gradient(to bottom, ${selectedEdges.get(p.id)?.includes("t") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px),
+                  linear-gradient(to left, ${selectedEdges.get(p.id)?.includes("r") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px),
+                  linear-gradient(to top, ${selectedEdges.get(p.id)?.includes("b") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px),
+                  linear-gradient(to right, ${selectedEdges.get(p.id)?.includes("l") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px)
                   `,
                 // style("--panel-highlight-color") : style("--panel-background-color"),
                 top,
@@ -253,8 +272,8 @@ function App() {
         <button onClick={e => splitSelectedPanels("vertical")} disabled={tooManyPanels() || noSelectedPanels()}>Split Vertically</button>
         <button onClick={e => splitSelectedPanels("horizontal")} disabled={tooManyPanels() || noSelectedPanels()}>Split Horizontally</button>
         <button onClick={e => deleteSelectedPanels()} disabled={noSelectedPanels()}>Delete</button>
-        <button onClick={e => undo()} disabled={eon.past.length === 0}>Undo</button>
-        <button onClick={e => redo()} disabled={eon.future.length === 0}>Redo</button>
+        <button onClick={e => undo()} disabled={past.length === 0}>Undo</button>
+        <button onClick={e => redo()} disabled={future.length === 0}>Redo</button>
       </div>
     </div>
   )
