@@ -7,6 +7,7 @@ import { FullGestureState } from 'react-use-gesture/dist/types';
 import useWindowDimensions from './useWindowDimensions';
 import { enableAllPlugins, produce } from 'immer'
 import _ from 'lodash'
+import { has } from 'immer/dist/internal';
 enableAllPlugins()
 
 
@@ -26,12 +27,15 @@ type Insets = { top: number, right: number, bottom: number, left: number }
 type Axis = "vertical" | "horizontal"
 
 // Panel
-type Panel = { id: string, insets: vec4, selected: boolean }
+type Panel = { id: string, insets: vec4 }
 
-// State
-type Snapshot = { panels: Map<string, Panel> }
 
-type State = { past: Array<Snapshot>, present: Snapshot, future: Array<Snapshot> }
+// State - Snapshot view of the domain data state
+type State = { panels: Map<string, Panel> }
+// Eon - States past, present and future
+type Eon = { past: Array<State>, present: State, future: Array<State> }
+// Metadata - State that is not recorded in an Eon
+type Metadata = { selectedPanels: Set<string>, selectedEdges: Map<string, string> }
 
 // function coalesce<T, U>(t: T | null | undefined, fn: (t: T) => U) { return t != null ? fn(t) : null }
 
@@ -39,21 +43,20 @@ type State = { past: Array<Snapshot>, present: Snapshot, future: Array<Snapshot>
 // App
 function App() {
   const [windowWidth, windowHeight] = useWindowDimensions();
-
-
-  const initialPanel: Panel = { id: uuidv4(), insets: [0, 0, 0, 0], selected: false }
-  const initialState = {
+  const initialPanel: Panel = { id: uuidv4(), insets: [0, 0, 0, 0] }
+  const initialSnapshot = {
     panels: new Map<string, Panel>().set(initialPanel.id, initialPanel)
   }
 
   // const savedState = loadState();
   const maxHistory = 50
   const maxPanels = 512
-  const [state, setState] = useState<State>({ past: [], present: initialState, future: [] })
+  const [eon, setEon] = useState<Eon>({ past: [], present: initialSnapshot, future: [] })
+  const [metadata, setMetadata] = useState<Metadata>({ selectedPanels: new Set(), selectedEdges: new Map() })
   // saveState(history, initialState, future)
 
   function undo() {
-    setState(produce(state, draft => {
+    setEon(produce(eon, draft => {
       const { past, present } = draft
       let next = past.pop()
       if (next != null) {
@@ -65,7 +68,7 @@ function App() {
   }
 
   function redo() {
-    setState(produce(state, draft => {
+    setEon(produce(eon, draft => {
       const { present, future } = draft
       let next = future.pop()
       if (next != null) {
@@ -76,8 +79,8 @@ function App() {
     }))
   }
 
-  function pushState(update: (present: Snapshot) => void) {
-    setState(produce(state, draft => {
+  function pushState(update: (present: State) => void) {
+    setEon(produce(eon, draft => {
       const { past, present } = draft
       past.push(present)
       draft.past = _.takeRight(past, maxHistory)
@@ -86,12 +89,36 @@ function App() {
     }))
   }
 
-  function updateState(update: (present: Snapshot) => void) {
-    setState(produce(state, draft => {
+  function updateState(update: (present: State) => void) {
+    setEon(produce(eon, draft => {
       update(draft.present)
     }))
   }
 
+  function interact(action: (data: Metadata) => void) {
+    setMetadata(produce(metadata, action))
+  }
+
+  function deleteSelectedPanels() {
+    pushState(state => interact(metadata => {
+      for (const panel of metadata.selectedPanels) {
+        state.panels.delete(panel)
+      }
+    }))
+  }
+
+  function clearSelectedPanels() {
+    interact(metadata => { metadata.selectedPanels = new Set() })
+  }
+
+  function splitSelectedPanels(axis: Axis) {
+    pushState(state => interact(metadata => {
+      const selectedPanels = [...state.panels.values()].filter(p => metadata.selectedPanels.has(p.id))
+      const splitPanels = selectedPanels.flatMap(p => splitPanel(p, axis))
+      for (const panel of metadata.selectedPanels) { state.panels.delete(panel) }
+      for (const panel of splitPanels) { state.panels.set(panel.id, panel) }
+    }))
+  }
   const mainRef = useRef<HTMLDivElement>(null);
 
   // function saveState(history: Stack<State>, state: State, future: Stack<State>) {
@@ -106,9 +133,9 @@ function App() {
   //   }
   // }
 
-  function nbSelectedPanels() { return [...state.present.panels.values()].filter(p => p.selected).length }
+  function nbSelectedPanels() { return metadata.selectedPanels.size }
   function noSelectedPanels() { return nbSelectedPanels() === 0 }
-  function tooManyPanels() { return (state.present.panels.size + nbSelectedPanels() * 2) > maxPanels }
+  function tooManyPanels() { return (eon.present.panels.size + nbSelectedPanels() * 2) > maxPanels }
 
 
   const [gesture, setGesture] = useState<FullGestureState<any> | null>(null)
@@ -119,23 +146,28 @@ function App() {
       setGesture(g)
       let [width, height] = [mainRef?.current?.clientWidth ?? 1, mainRef?.current?.clientHeight ?? 1]
       var [x, y] = g.xy
+      const edgeSize = 40
 
       let theseDragEdges: Map<string, string> = new Map()
-      for (const panel of state.present.panels.values()) {
-        const [t, r, b, l] = panel.insets
-        const [w, h] = [(1 - r - l) * width, (1 - t - b) * height]
-        const [px, py] = [l * width, t * height]
-        const radius = 20
-        let edges = circleIntersectsRect([x, y, radius], [px, py, w, h])
-        theseDragEdges.set(panel.id, edges);
-        // if (intersect.includes("t")) {
-        //   if (mainRef.current != null) {
-        //     mainRef.current.style.cursor = "move"
-        //   }
-        //   console.log("t")
-        // }
+      for (const panel of eon.present.panels.values()) {
+
+        var [t, r, b, l] = insetsToBounds(panel.insets)
+        var [t, r, b, l] = [t * height, r * width, b * height, l * width]
+        let edges = ""
+        if (pointInBounds([x, y], [t, r, t + edgeSize, l])) { edges = edges.concat("t") }
+        if (pointInBounds([x, y], [t, r, b, r - edgeSize])) { edges = edges.concat("r") }
+        if (pointInBounds([x, y], [b - edgeSize, r, b, l])) { edges = edges.concat("b") }
+        if (pointInBounds([x, y], [t, l + edgeSize, b, l])) { edges = edges.concat("l") }
+        if (edges.length > 0) {
+          theseDragEdges.set(panel.id, edges);
+        }
       }
+      interact(metadata => {
+        metadata.selectedEdges = theseDragEdges
+      })
       setDragEdges(theseDragEdges)
+
+      document.body.style.cursor = resizeCursor(dragEdges);
 
       // updateState(({ panels }) => {
       //   for (const panel of panels.values()) {
@@ -148,10 +180,16 @@ function App() {
       // })
     },
     onDragStart: g => {
-      pushState(state => {
-        const panel = state.panels.get(gestureTarget(g)?.id ?? '')
+      interact(metadata => {
+        const panel = eon.present.panels.get(gestureTarget(g)?.id ?? '')
         if (panel != null) {
-          panel.selected = !panel.selected
+          if (metadata.selectedPanels.has(panel.id) && !metadata.selectedEdges.has(panel.id)) {
+            metadata.selectedPanels = new Set([])
+            // metadata.selectedPanels.delete(panel.id)
+          } else {
+            metadata.selectedPanels = new Set([panel.id])
+            // metadata.selectedPanels.add(panel.id)
+          }
         }
       })
 
@@ -169,28 +207,36 @@ function App() {
   return (
     <div id="app" style={{ width: windowWidth, height: windowHeight }} >
       <div id="main" ref={mainRef}>
-        {[...state.present.panels.values()].map(p => {
+        {[...eon.present.panels.values()].map(p => {
           var [top, right, bottom, left] = p.insets.map(percent)
           return (
             <Spring key={p.id}
               to={{
-                background: p.selected ? style("--panel-highlight-color") : style("--panel-background-color"),
-                // borderTop: p.selected ? "" : ""
+                backgroundImage: `
+                  linear-gradient(${metadata.selectedPanels.has(p.id) ? "#ffffff09,#ffffff09" : "#00000000,#00000000"}),
+                  linear-gradient(to bottom, ${metadata.selectedEdges.get(p.id)?.includes("t") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px),
+                  linear-gradient(to left, ${metadata.selectedEdges.get(p.id)?.includes("r") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px),
+                  linear-gradient(to top, ${metadata.selectedEdges.get(p.id)?.includes("b") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px),
+                  linear-gradient(to right, ${metadata.selectedEdges.get(p.id)?.includes("l") ? "#ffffff22" : "#00000000"}, 20px, #00000000 30px)
+                  `,
+                // style("--panel-highlight-color") : style("--panel-background-color"),
                 top,
                 right,
                 bottom,
                 left,
               }}>
-              {({ background, top, right, bottom, left }) =>
+              {({ backgroundImage, top, right, bottom, left }) =>
                 <animated.div
                   {...bind()}
                   key={p.id}
                   id={p.id}
                   className='panel'
                   style={{
-                    background,
-                    top, right, bottom, left
-                    // ,
+                    backgroundImage,
+                    top, right, bottom, left,
+                    // borderWidth: "100px",
+                    // borderStyle: "solid",
+                    // backgroundImage: "linear-gradient(to left, #ffffffaa, 5px, #00000000 20px)"
                     // width: "1px",
                     // height: "1px",
                     // transform: styleOfTransform(transform(p.insets, [mainRef?.current?.clientWidth ?? 0, mainRef?.current?.clientHeight ?? 0])),
@@ -203,32 +249,60 @@ function App() {
         })}
       </div>
       <div id="toolbar">
-        <button onClick={e => pushState(state => clearSelectedPanels(state.panels))} disabled={noSelectedPanels()}>Clear Selection</button>
-        <button onClick={e => pushState(state => splitSelectedPanels(state.panels, "vertical"))} disabled={tooManyPanels() || noSelectedPanels()}>Split Vertically</button>
-        <button onClick={e => pushState(state => splitSelectedPanels(state.panels, "horizontal"))} disabled={tooManyPanels() || noSelectedPanels()}>Split Horizontally</button>
-        <button onClick={e => pushState(state => deleteSelectedPanels(state.panels))} disabled={noSelectedPanels()}>Delete</button>
-        <button onClick={e => undo()} disabled={state.past.length === 0}>Undo</button>
-        <button onClick={e => redo()} disabled={state.future.length === 0}>Redo</button>
+        <button onClick={e => clearSelectedPanels()} disabled={noSelectedPanels()}>Clear Selection</button>
+        <button onClick={e => splitSelectedPanels("vertical")} disabled={tooManyPanels() || noSelectedPanels()}>Split Vertically</button>
+        <button onClick={e => splitSelectedPanels("horizontal")} disabled={tooManyPanels() || noSelectedPanels()}>Split Horizontally</button>
+        <button onClick={e => deleteSelectedPanels()} disabled={noSelectedPanels()}>Delete</button>
+        <button onClick={e => undo()} disabled={eon.past.length === 0}>Undo</button>
+        <button onClick={e => redo()} disabled={eon.future.length === 0}>Redo</button>
       </div>
     </div>
   )
 }
 
+function resizeCursor(dragEdges: Map<string, string>): string {
+  for (var e of dragEdges.values()) {
+    if ((e.includes("t") && e.includes("l")) || (e.includes("b") && e.includes("r"))) {
+      return "nw-resize"
+    } else if ((e.includes("t") && e.includes("r")) || (e.includes("b") && e.includes("l"))) {
+      return "ne-resize"
+    } else if (e.includes("t") || e.includes("b")) {
+      return "ns-resize"
+    } else if (e.includes("r") || e.includes("l")) {
+      return "ew-resize"
+    }
+  }
+  return "auto"
+}
+
+// Converts layout relative insets to inverted cartesian relative coordinate bounds
+// Insets and Bounds are the most efficient choice of basis for 2D rectangle computations
+// Insets are used frequently during rendering of the DOM
+// Bounds allow for the the most efficent bounds checks for events
+// These coordinates are preferred over normal rect coordinates contianing width and height
+function insetsToBounds([t, r, b, l]: vec4) {
+  return [t, 1 - r, 1 - b, l]
+}
+
+function pointInBounds([x, y]: vec2, [t, r, b, l]: vec4): boolean {
+  return t < y && y < b && l < x && x < r
+}
+
 // Checks if a circle collides with a rect
-function collisionCheck([cx, cy, cr]: vec3, [x, y, w, h]: vec4) {
+function circleIntersectsRect([cx, cy, cr]: vec3, [x, y, w, h]: vec4): boolean {
   const dx = cx - Math.max(x, Math.min(cx, x + w));
   const dy = cy - Math.max(y, Math.min(cy, y + h));
   return (dx * dx + dy * dy) < (cr * cr)
 }
 
 // Checks if a circle intersects an axis aliged rectangle and returns a string with the edges that intersect
-function circleIntersectsRect([cx, cy, cr]: vec3, [x, y, w, h]: vec4): string {
+function circleIntersectsRectEdges([cx, cy, cr]: vec3, [l, t, w, h]: vec4): string {
   let edges = ""
-  const dt = Math.abs(cy - y)
-  const dr = Math.abs(cx - (x + w))
-  const db = Math.abs(cy - (y + h))
-  const dl = Math.abs(cx - x)
-  if (collisionCheck([cx, cy, cr], [x, y, w, h])) {
+  const dt = Math.abs(cy - t)
+  const dr = Math.abs(cx - (l + w))
+  const db = Math.abs(cy - (t + h))
+  const dl = Math.abs(cx - l)
+  if (circleIntersectsRect([cx, cy, cr], [l, t, w, h])) {
     if (dt < cr) { edges = edges.concat("t") }
     if (dr < cr) { edges = edges.concat("r") }
     if (db < cr) { edges = edges.concat("b") }
@@ -236,6 +310,7 @@ function circleIntersectsRect([cx, cy, cr]: vec3, [x, y, w, h]: vec4): string {
   }
   return edges
 }
+
 
 
 function style(variable: string): string {
@@ -259,21 +334,6 @@ function mapValues<V, U>(obj: { [s: string]: V }, fn: (v: V) => U) {
   )
 }
 
-function deleteSelectedPanels(panels: Map<string, Panel>) {
-  const selectedPanels = [...panels.values()].filter(p => p.selected)
-  for (const panel of selectedPanels) { panels.delete(panel.id) }
-}
-
-function clearSelectedPanels(panels: Map<string, Panel>) {
-  for (const [, panel] of panels) { panel.selected = false }
-}
-
-function splitSelectedPanels(panels: Map<string, Panel>, axis: Axis) {
-  const selectedPanels = [...panels.values()].filter(p => p.selected)
-  const splitPanels = selectedPanels.flatMap(p => splitPanel(p, axis))
-  for (const panel of selectedPanels) { panels.delete(panel.id) }
-  for (const panel of splitPanels) { panels.set(panel.id, panel) }
-}
 
 function splitPanel(panel: Panel, axis: Axis): [Panel, Panel] {
   const id1 = uuidv4()
@@ -285,7 +345,7 @@ function splitPanel(panel: Panel, axis: Axis): [Panel, Panel] {
     axis === "vertical"
       ? [[t, r + w / 2, b, l], [t, r, b, l + w / 2]]
       : [[t, r, b + h / 2, l], [t + h / 2, r, b, l]]
-  return [{ id: id1, insets: insets1, selected: true }, { id: id2, insets: insets2, selected: true }]
+  return [{ id: id1, insets: insets1 }, { id: id2, insets: insets2 }]
 }
 
 

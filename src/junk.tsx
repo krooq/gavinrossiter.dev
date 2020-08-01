@@ -16,7 +16,13 @@
 // const [{ splitTranslate }, setSplitTranslate] = useSpring(() => ({ splitTranslate: [0, 0] }))
 // const [{ splitScale }, setSplitScale] = useSpring(() => ({ splitScale: [1, 1] }))
 
-
+// Collision for edges
+// const [t, r, b, l] = panel.insets
+// const [w, h] = [(1 - r - l) * width, (1 - t - b) * height]
+// const [px, py] = [l * width, t * height]
+// const radius = 40
+// let edges = circleIntersectsRectEdges([x, y, radius], [px, py, w, h])
+// theseDragEdges.set(panel.id, edges);
 
 // Converts Insets to a set of screen coordinates
 // function toScreen(insets: Insets) {
