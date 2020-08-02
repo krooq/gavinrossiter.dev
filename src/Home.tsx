@@ -74,7 +74,7 @@ function Home() {
             <h2 id="languages">Languages</h2>
             <p>Java, Python, Rust, Dart, Bash, JavaScript, TypeScript, HTML, CSS</p>
             <h2 id="projects">Projects</h2>
-            <p><a href="./app">layout app</a></p>
+            <p><a href="/app">layout app</a></p>
             <div />
 
             <hr />

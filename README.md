@@ -8,7 +8,6 @@
 | **Location:** | Melbourne Region, Victoria, Australia                                        |
 
 ### Motivation
-- Right now, I spend my spare time working on improving the interface between human and machine
 - It is my goal to help humanity build a safe and symbiotic relationship with a future artificial general intelligence
 - So that ultimately humanity can enjoy the freedoms of a post scarcity economy awarded by such technologies
 - I also like to keep the lights on, so at my day job I help make the skies safer by building the next generation of air traffic management systems
