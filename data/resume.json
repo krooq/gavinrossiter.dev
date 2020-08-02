@@ -1,50 +1,92 @@
-// # Gavin Rossiter
-// |               |                                                                              |
-// |---------------|------------------------------------------------------------------------------|
-// | **Website:**  | [gavinrossiter.dev](https://gavinrossiter.dev)                               |
-// | **Github:**   | [github.com/krooq](https://github.com/krooq)                                 |
-// | **LinkedIn:** | [linkedin.com/in/gavin-rossiter](https://www.linkedin.com/in/gavin-rossiter) |
-// | **Location:** | Melbourne Region, Victoria, Australia                                        |
-// ### Motivation
-// - Right now, I spend my spare time working on improving the interface between human and machine
-// - It is my goal to help humanity build a safe and symbiotic relationship with a future artificial general intelligence
-// - So that ultimately humanity can enjoy the freedoms of a post scarcity economy awarded by such technologies
-// - I also like to keep the lights on, so at my day job I help make the skies safer by building the next generation of air traffic management systems
-// ## Education
-// #### Bachelor of Computer Science
-// - Swinburne University
-// - Software Development Major
-// - 2015 – 2017
-// - [GPA 2.857](https://www.swinburneonline.edu.au/future-students/graduation-beyond/grade-point-average)
-// #### Bachelor of Science
-// - La Trobe University
-// - Mathematics Major
-// - 2012 – 2015
-// - [WAM 81.95](https://www.latrobe.edu.au/mylatrobe/calculating-your-weighted-average-mark-wam/)
-// ## Technical Experience
-// #### Software Engineer
-// - Thales
-// - Airspace Mobility Solutions
-// - Melbourne, Australia
-// - 2018 - Present
-// #### Software Engineer Intern
-// - Thales
-// - Airspace Mobility Solutions Innovation Lab
-// - Melbourne, Australia
-// - 2016 - 2017  
-// ## Languages
-// Java, Python, Rust, Dart, Bash, JavaScript, TypeScript, HTML, CSS
-// ## Projects
-// [layout app](https://gavinrossiter.dev/layout_app.html)
-// <div/>
-// ---
-// **LinkedIn:** [linkedin.com/in/gavin-rossiter](https://www.linkedin.com/in/gavin-rossiter)
 {
     "name": "Gavin Rossiter",
     "website": "https://gavinrossiter.dev",
     "github": "https://github.com/krooq",
     "linkedin": "https://www.linkedin.com/in/gavin-rossiter",
     "location": "Melbourne, Australia",
-    "motivation": "It is my goal to help humanity build a safe and symbiotic relationship with a future artificial general intelligence.\nSo that ultimately humanity can enjoy the freedoms of a post scarcity economy awarded by such technologies.\nI also like to keep the lights on, so at my day job I help make the skies safer by building the next generation of air traffic management systems",
-    ""
+    "motivation": "It is my goal to help humanity build a safe and symbiotic relationship with a future artificial general intelligence.\nSo that ultimately humanity can enjoy the freedoms of a post scarcity economy awarded by such technologies.\nI also like to keep the lights on, so at my day job I help make the skies safer by building the next generation of air traffic management systems.",
+    "education": [
+        {
+            "institution": "Swinburne University",
+            "course": "Bachelor of Computer Science",
+            "majors": [
+                "Software Development"
+            ],
+            "minors": [],
+            "start": "mid 2015",
+            "end": "late 2017"
+        },
+        {
+            "institution": "La Trobe University",
+            "course": "Bachelor of Science",
+            "majors": "Mathematics",
+            "minors": [
+                "Physics"
+            ],
+            "start": "early 2012",
+            "end": "early 2015"
+        }
+    ],
+    "work": [
+        {
+            "role": "Software Engineer",
+            "company": "Thales",
+            "domain": "Air Traffic Management",
+            "location": "Melbourne, Australia",
+            "start": "early 2018",
+            "end": "Present"
+        },
+        {
+            "role": "Software Engineer Intern",
+            "company": "Thales",
+            "domain": "Air Traffic Management",
+            "location": "Melbourne, Australia",
+            "start": "mid 2016",
+            "end": "mid 2017"
+        }
+    ],
+    "projects": [
+        {
+            "name": "Layout App",
+            "org": null,
+            "description": "React powered WYSIWYG layout editor designed for simple web apps",
+            "link": "https://gavinrossiter.dev/app",
+            "status": "active - work in progress"
+        }
+    ],
+    "technical": {
+        "languages": [
+            "Java",
+            "Python",
+            "TypeScript",
+            "JavaScript",
+            "Rust",
+            "Dart",
+            "Bash",
+            "HTML",
+            "CSS"
+        ],
+        "frameworks": [
+            "React"
+        ],
+        "libraries": [
+            "Numpy",
+            "Scipy"
+        ],
+        "tools": [
+            "VS Code",
+            "Eclipse",
+            "Unix",
+            "Jenkins",
+            "Git"
+        ]
+    },
+    "interests": [
+        "Artificial Intelliegence",
+        "Machine Learning",
+        "Human Machine Interfaces",
+        "Entrepreneurship",
+        "Automation",
+        "Rockets"
+    ]
 }

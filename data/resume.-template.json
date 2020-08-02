@@ -1,0 +1,44 @@
+{
+    "name": "",
+    "website": "",
+    "github": "",
+    "linkedin": "",
+    "location": "",
+    "motivation": "",
+    "education": [
+        {
+            "institution": "",
+            "course": "",
+            "majors": [],
+            "minors": [],
+            "start": "",
+            "end": ""
+        }
+    ],
+    "work": [
+        {
+            "role": "",
+            "company": "",
+            "domain": "",
+            "location": "",
+            "start": "",
+            "end": ""
+        }
+    ],
+    "projects": [
+        {
+            "name": "",
+            "org": "",
+            "description": "",
+            "link": "",
+            "status": ""
+        }
+    ],
+    "technical": {
+        "languages": [],
+        "frameworks": [],
+        "libraries": [],
+        "tools": []
+    },
+    "interests": []
+}
