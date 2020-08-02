@@ -143,8 +143,8 @@ function App() {
         let [width, height] = [mainRef?.current?.clientWidth ?? 1, mainRef?.current?.clientHeight ?? 1]
         var [x, y] = g.xy
         for (const panel of panels.values()) {
-          var [t, r, b, l] = insetsToBounds(panel.insets)
-          var [t, r, b, l] = [t * height, r * width, b * height, l * width]
+          var [t0, r0, b0, l0] = insetsToBounds(panel.insets)
+          var [t, r, b, l] = [t0 * height, r0 * width, b0 * height, l0 * width]
           let edges = ""
           if (pointInBounds([x, y], [t, r, t + panelEdgeSize, l])) { edges = edges.concat("t") }
           if (pointInBounds([x, y], [t, r, b, r - panelEdgeSize])) { edges = edges.concat("r") }
@@ -210,19 +210,12 @@ function App() {
   }, {
     // initial: 
   })
-  // linear-gradient(to bottom, ${selectedEdges.get(p.id)?.includes("t") ? edgeHighlight : "#00000000"}, 20px, #00000000 30px),
-  // linear-gradient(to left, ${selectedEdges.get(p.id)?.includes("r") ? edgeHighlight : "#00000000"}, 20px, #00000000 30px),
-  // linear-gradient(to top, ${selectedEdges.get(p.id)?.includes("b") ? edgeHighlight : "#00000000"}, 20px, #00000000 30px),
-  // linear-gradient(to right, ${selectedEdges.get(p.id)?.includes("l") ? edgeHighlight : "#00000000"}, 20px, #00000000 30px),
-  // linear-gradient(${selectedPanels.has(p.id) ? "" : "#00000000,#00000000"})
 
   return (
     <div id="app" style={{ width: windowWidth, height: windowHeight }} >
       <div id="main" {...bind()} ref={mainRef}>
         {[...panels.values()].map(p => {
           var [top, right, bottom, left] = p.insets.map(percent)
-          const highlight = `${style("--panel-highlight-color")},${style("--panel-highlight-color")}`
-          const edgeHighlight = `#e5e5fd10`
           return (
             <Spring key={p.id}
               to={{
@@ -292,10 +285,6 @@ function insetsToBounds([t, r, b, l]: vec4) {
 
 function pointInBounds([x, y]: vec2, [t, r, b, l]: vec4): boolean {
   return t < y && y < b && l < x && x < r
-}
-
-function style(variable: string): string {
-  return getComputedStyle(document.documentElement).getPropertyValue(variable);
 }
 
 function gestureTarget(gesture: FullGestureState<any>) {

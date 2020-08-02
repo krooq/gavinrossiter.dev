@@ -175,5 +175,10 @@
 
 // function coalesce<T, U>(t: T | null | undefined, fn: (t: T) => U) { return t != null ? fn(t) : null }
 
+
+// function style(variable: string): string {
+//     return getComputedStyle(document.documentElement).getPropertyValue(variable);
+//   }
+
 // required to please the create-react-app gods
 export { }
