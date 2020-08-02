@@ -12,6 +12,15 @@
 //     return { transform: `translate(${tx}px,${ty}px) scale(${sx},${sy}) rotateX(0deg)` }
 // }
 
+// Rect
+// type Rect = { x: number, y: number, width: number, height: number }
+
+// Insets
+// type Insets = { top: number, right: number, bottom: number, left: number }
+
+// Transform
+// type Transform = { translate: vec2, scale: vec2 }
+
 
 // const [{ splitTranslate }, setSplitTranslate] = useSpring(() => ({ splitTranslate: [0, 0] }))
 // const [{ splitScale }, setSplitScale] = useSpring(() => ({ splitScale: [1, 1] }))
