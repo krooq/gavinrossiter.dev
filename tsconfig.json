@@ -18,9 +18,10 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
-    "strictNullChecks": true,
+    "strictNullChecks": true
   },
   "include": [
-    "src"
+    "src",
+    "notes/notepad.tsx"
   ]
 }

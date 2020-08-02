@@ -12,6 +12,32 @@
 //     return { transform: `translate(${tx}px,${ty}px) scale(${sx},${sy}) rotateX(0deg)` }
 // }
 
+
+// // Checks if a circle intersects an axis aliged rectangle and returns a string with the edges that intersect
+// function circleIntersectsRectEdges([cx, cy, cr]: vec3, [l, t, w, h]: vec4): string {
+//     let edges = ""
+//     const dt = Math.abs(cy - t)
+//     const dr = Math.abs(cx - (l + w))
+//     const db = Math.abs(cy - (t + h))
+//     const dl = Math.abs(cx - l)
+//     if (circleIntersectsRect([cx, cy, cr], [l, t, w, h])) {
+//         if (dt < cr) { edges = edges.concat("t") }
+//         if (dr < cr) { edges = edges.concat("r") }
+//         if (db < cr) { edges = edges.concat("b") }
+//         if (dl < cr) { edges = edges.concat("l") }
+//     }
+//     return edges
+// }
+
+// // Maps object values using the provide mapping function
+// function mapValues<V, U>(obj: { [s: string]: V }, fn: (v: V) => U) {
+//     return Object.fromEntries(
+//       Object.entries(obj).map(
+//         ([k, v], i) => [k, fn(v)]
+//       )
+//     )
+//   }
+
 // Rect
 // type Rect = { x: number, y: number, width: number, height: number }
 
@@ -108,4 +134,46 @@
 //     return [element.offsetTop, element.offsetLeft, element.offsetWidth, element.offsetHeight]
 //   }
 
+// // Checks if a circle collides with a rect
+// function circleIntersectsRect([cx, cy, cr]: vec3, [x, y, w, h]: vec4): boolean {
+//   const dx = cx - Math.max(x, Math.min(cx, x + w));
+//   const dy = cy - Math.max(y, Math.min(cy, y + h));
+//   return (dx * dx + dy * dy) < (cr * cr)
+// }
+
+
+
+// function transform(insets: Insets, containerSize: vec2): Transform {
+//   let [cx, cy] = containerSize
+//   let { top: t, right: r, bottom: b, left: l } = insets;
+//   let [w, h] = [1 - r - l, 1 - t - b]
+//   console.log(cx)
+//   return {
+//     translate: [Math.floor((l + w / 2) * cx), Math.floor((t + h / 2) * cy)],
+//     scale: [Math.floor(w * cx), Math.floor(h * cy)]
+//   }
+// }
+
+// function styleOfTransform(transform: Transform): string {
+//   let [tx, ty, sx, sy] = [...transform.translate, ...transform.scale]
+//   return `translate(${tx}px,${ty}px) scale(${sx},${sy}) rotateX(0deg)`
+// }
+
+
+// function useStyle<T extends Element>(): [CSSStyleDeclaration | null, React.RefObject<T>] {
+//   const ref = useRef<T>(null);
+//   const [style, setStyle] = useState<CSSStyleDeclaration | null>(null);
+//   useLayoutEffect(() => {
+//     // I don't think it can be null at this point, but better safe than sorry
+//     if (ref.current != null) {
+//       setStyle(window.getComputedStyle(ref.current));
+//     }
+//   }, []);
+//   return [style, ref]
+// }
+
+
+// function coalesce<T, U>(t: T | null | undefined, fn: (t: T) => U) { return t != null ? fn(t) : null }
+
+// required to please the create-react-app gods
 export { }

@@ -1,11 +1,11 @@
 :root {
-  --main-background-color: #0f0f0f;
-  --panel-background-color: #1e1e1e;
-  --panel-highlight-color: #4f4f4f;
-  --toolbar-background-color: #0f0f0f;
+  --main-background-color: #1e1e1e;
+  --panel-background-color: #282829;
+  --panel-highlight-color: #313136;
+  --toolbar-background-color: #333333;
   --toolbar-button-background-color: #1e1e1e;
   --toolbar-button-active-background-color: #4f4f4f;
-  --toolbar-button-disabled-background-color: #161616;
+  --toolbar-button-disabled-background-color: #1e1e1e;
   --toolbar-button-disabled-text-color: #4f4f4f;
   overflow-x: hidden;
 }
@@ -21,13 +21,6 @@
   background-color: var(--panel-background-color);
 }
 
-/* #split-indicator{
-  position: absolute;
-  z-index: 100;
-  width: 1px;
-  height: 1px;
-  background-color: white;
-} */
 #main {
   position: relative;
   flex: 1 1 auto;
@@ -35,8 +28,8 @@
 
 #toolbar {
   flex: 0 1 auto;
-  margin:8px;
-  margin-bottom:16px;
+  padding:8px;
+  padding-bottom:8px;
   text-align: center;
   background-color: var(--toolbar-background-color);
 }
