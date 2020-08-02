@@ -1,68 +1,52 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Gavin Rossiter
 
-## Available Scripts
+|               |                                                                              |
+|---------------|------------------------------------------------------------------------------|
+| **Website:**  | [gavinrossiter.dev](https://gavinrossiter.dev)                               |
+| **Github:**   | [github.com/krooq](https://github.com/krooq)                                 |
+| **LinkedIn:** | [linkedin.com/in/gavin-rossiter](https://www.linkedin.com/in/gavin-rossiter) |
+| **Location:** | Melbourne Region, Victoria, Australia                                        |
 
-In the project directory, you can run:
+### Motivation
+- Right now, I spend my spare time working on improving the interface between human and machine
+- It is my goal to help humanity build a safe and symbiotic relationship with a future artificial general intelligence
+- So that ultimately humanity can enjoy the freedoms of a post scarcity economy awarded by such technologies
+- I also like to keep the lights on, so at my day job I help make the skies safer by building the next generation of air traffic management systems
 
-### `npm start`
+## Education
+#### Bachelor of Computer Science
+- Swinburne University
+- Software Development Major
+- 2015 – 2017
+- [GPA 2.857](https://www.swinburneonline.edu.au/future-students/graduation-beyond/grade-point-average)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#### Bachelor of Science
+- La Trobe University
+- Mathematics Major
+- 2012 – 2015
+- [WAM 81.95](https://www.latrobe.edu.au/mylatrobe/calculating-your-weighted-average-mark-wam/)
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Technical Experience
+#### Software Engineer
+- Thales
+- Airspace Mobility Solutions
+- Melbourne, Australia
+- 2018 - Present
 
-### `npm test`
+#### Software Engineer Intern
+- Thales
+- Airspace Mobility Solutions Innovation Lab
+- Melbourne, Australia
+- 2016 - 2017  
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Languages
+Java, Python, Rust, Dart, Bash, JavaScript, TypeScript, HTML, CSS
 
-### `npm run build`
+## Projects
+[layout app](https://gavinrossiter.dev/layout_app.html)
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+<div/>
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+**LinkedIn:** [linkedin.com/in/gavin-rossiter](https://www.linkedin.com/in/gavin-rossiter)

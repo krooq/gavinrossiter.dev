@@ -3,11 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Home from './Home';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter>
+    <AppRouter />
+  </BrowserRouter>,
   document.getElementById('root')
 );
 
@@ -15,3 +17,14 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+
+function AppRouter() {
+  return (
+    <main>
+      <Switch>
+        <Route path="/" component={Home} exact />
+        <Route path="/app" component={App} />
+      </Switch>
+    </main>
+  )
+}
