@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import './Home.css';
 
 function Home() {
+    const [theme, setTheme] = useState("🌑");
+
+    let homeClass = "home";
+    homeClass += (theme === "🌕" ? " light" : " dark")
     return (
-        <div className="home">
+        <div className={homeClass}>
             <div className="content">
                 <div>
+                    <button className="theme-selector" onClick={() => setTheme(theme === "🌑" ? "🌕" : "🌑")}><span role="img" aria-label="theme">{theme}</span></button>
                     <h1 id="gavin-rossiter">Gavin Rossiter</h1>
                     <table >
                         <thead>
