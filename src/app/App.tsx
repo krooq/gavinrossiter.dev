@@ -1,12 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, CSSProperties } from 'react';
 import './App.css';
 import { v4 as uuidv4 } from 'uuid';
 import { useGesture } from 'react-use-gesture'
 import { animated, Spring } from 'react-spring';
 import { FullGestureState } from 'react-use-gesture/dist/types';
 import useWindowDimensions from './useWindowDimensions';
-import { enableAllPlugins, produce } from 'immer'
+import { enableAllPlugins, produce, produceWithPatches, Patch } from 'immer'
 import _ from 'lodash'
+import { clamp } from './util';
+import { useVersionControl } from './useVersionControl';
 enableAllPlugins()
 
 // Vectors
@@ -25,7 +27,7 @@ type Panel = {
 type State = {
   panels: Map<string, Panel>
 }
-// Metadata - State that is not recorded in an Eon
+// readonlyMetadata - State that is not recorded in an Eon
 type Metadata = {
   selectedPanels: Set<string>,
   selectedEdges: Map<string, string>,
@@ -33,84 +35,31 @@ type Metadata = {
 }
 
 
-//TODO: Replace with immer patches
-function useUndoRedo<T>(initialState: T, maxHistory = 50): [T[], T, T[], () => void, (update: (present: T) => void) => void, () => void] {
-  type Eon = { past: T[], present: T, future: T[] }
-  const [eon, setEon] = useState<Eon>({ past: [], present: initialState, future: [] })
-
-  function undo() {
-    setEon(produce(eon, draft => {
-      const { past, present } = draft
-      let next = past.pop()
-      if (next != null) {
-        draft.past = past
-        draft.present = next
-        draft.future.push(present)
-      }
-    }))
-  }
-
-  function set(update: (present: T) => void) {
-    setEon(produce(eon, draft => {
-      const { past, present } = draft
-      past.push(present)
-      draft.past = _.takeRight(past, maxHistory)
-      draft.present = produce(present, update)
-      draft.future = []
-    }))
-  }
-
-  function redo() {
-    setEon(produce(eon, draft => {
-      const { present, future } = draft
-      let next = future.pop()
-      if (next != null) {
-        draft.past.push(present)
-        draft.present = next
-        draft.future = future
-      }
-    }))
-  }
-  return [eon.past, eon.present, eon.future, undo, set, redo]
-}
-
 // App
 function App() {
   const [windowWidth, windowHeight] = useWindowDimensions();
   const initialPanel: Panel = { id: uuidv4(), insets: [0, 0, 0, 0] }
-  const initialSnapshot = {
+  const initialState = {
     panels: new Map<string, Panel>().set(initialPanel.id, initialPanel)
   }
 
-  // const savedState = loadState();
+
   const maxPanels = 512
   const panelEdgeSize = 40
   const [minPanelWidth, minPanelHeight] = [60, 60]
-  const [metadata, setMetadata] = useState<Metadata>({ selectedPanels: new Set(), selectedEdges: new Map(), resizingPanel: "" })
-  const [past, present, future, undo, set, redo] = useUndoRedo<State>(initialSnapshot)
-  const { selectedPanels, selectedEdges, resizingPanel } = Object.freeze(metadata)
-  const { panels } = Object.freeze(present)
+  const [readonlyMetadata, setMetadata] = useState<Metadata>({ selectedPanels: new Set(), selectedEdges: new Map(), resizingPanel: "" })
+  const vcs = useVersionControl<State>(initialState)
+  const { selectedPanels, selectedEdges, resizingPanel } = Object.freeze(readonlyMetadata)
+  const { panels } = vcs.state
   const mainRef = useRef<HTMLDivElement>(null);
 
-  // saveState(history, initialState, future)
-  // function saveState(history: Stack<State>, state: State, future: Stack<State>) {
-  //   localStorage.setItem("auto-saved-state", JSON.stringify(state.toJS()))
-  // }
-
-  // function loadState() {
-  //   return {
-  //     history: null,
-  //     state: coalesce(localStorage.getItem("auto-saved-state"), json => fromJS(JSON.parse(json)) as State),
-  //     future: null
-  //   }
-  // }
 
   function interact(action: (data: Metadata) => void) {
-    setMetadata(produce(metadata, action))
+    setMetadata(produce(readonlyMetadata, action))
   }
 
   function deleteSelectedPanels() {
-    set(state => interact(metadata => {
+    vcs.commit(state => interact(metadata => {
       for (const panel of metadata.selectedPanels) {
         state.panels.delete(panel)
       }
@@ -122,7 +71,7 @@ function App() {
   }
 
   function splitSelectedPanels(axis: Axis) {
-    set(state => interact(metadata => {
+    vcs.commit(state => interact(metadata => {
       const selectedPanels = [...state.panels.values()].filter(p => metadata.selectedPanels.has(p.id))
       const splitPanels = selectedPanels.flatMap(p => splitPanel(p, axis))
       for (const panel of metadata.selectedPanels) { state.panels.delete(panel) }
@@ -138,8 +87,8 @@ function App() {
   const bind = useGesture({
     onMove: g => {
       let resizingEdges = selectedEdges.get(resizingPanel) ?? ""
-      interact(mut => {
-        mut.selectedEdges.clear()
+      interact(metadata => {
+        metadata.selectedEdges.clear()
         let [width, height] = [mainRef?.current?.clientWidth ?? 1, mainRef?.current?.clientHeight ?? 1]
         var [x, y] = g.xy
         for (const panel of panels.values()) {
@@ -151,25 +100,25 @@ function App() {
           if (pointInBounds([x, y], [b - panelEdgeSize, r, b, l])) { edges = edges.concat("b") }
           if (pointInBounds([x, y], [t, l + panelEdgeSize, b, l])) { edges = edges.concat("l") }
           if (edges.length > 0) {
-            mut.selectedEdges.set(panel.id, edges)
+            metadata.selectedEdges.set(panel.id, edges)
           } else {
-            mut.selectedEdges.delete(panel.id)
+            metadata.selectedEdges.delete(panel.id)
           }
         }
-        mut.selectedEdges.set(mut.resizingPanel, resizingEdges)
-        document.body.style.cursor = resizeCursor(mut.selectedEdges.values());
+        metadata.selectedEdges.set(metadata.resizingPanel, resizingEdges)
+        document.body.style.cursor = resizeCursor(metadata.selectedEdges.values());
       })
 
     },
     onDragStart: g => {
-      interact(mut => {
+      interact(metadata => {
         const panel = panels.get(gestureTarget(g)?.id ?? '')
-        mut.resizingPanel = gestureTarget(g)?.id
+        metadata.resizingPanel = gestureTarget(g)?.id
         if (panel != null) {
-          if (mut.selectedPanels.has(panel.id) && !mut.selectedEdges.has(panel.id)) {
-            mut.selectedPanels = new Set([])
+          if (metadata.selectedPanels.has(panel.id) && !metadata.selectedEdges.has(panel.id)) {
+            metadata.selectedPanels = new Set([])
           } else {
-            mut.selectedPanels = new Set([panel.id])
+            metadata.selectedPanels = new Set([panel.id])
           }
         }
       })
@@ -178,8 +127,8 @@ function App() {
       let [width, height] = [mainRef?.current?.clientWidth ?? 1, mainRef?.current?.clientHeight ?? 1]
       var [x, y] = g.xy
       var memo = g.memo
-      set(mut => {
-        const panel = mut.panels.get(resizingPanel ?? '')
+      vcs.mutate(state => {
+        const panel = state.panels.get(resizingPanel ?? '')
         if (panel != null) {
           const edges = selectedEdges.get(panel.id)
           const [t0, r0, b0, l0] = panel.insets
@@ -205,7 +154,10 @@ function App() {
       return memo
     },
     onDragEnd: g => {
-      interact(mut => { mut.selectedEdges.delete(resizingPanel); mut.resizingPanel = ""; })
+      interact(metadata => { metadata.selectedEdges.delete(resizingPanel); metadata.resizingPanel = ""; })
+      if (!g.tap) {
+        vcs.commit(state => { })
+      }
     }
   }, {
     // initial: 
@@ -225,17 +177,14 @@ function App() {
                 linear-gradient(to left, ${selectedEdges.get(p.id)?.includes("r") ? "#ffffff20" : "#00000000"}, 20px, #00000000 30px),
                 linear-gradient(to top, ${selectedEdges.get(p.id)?.includes("b") ? "#ffffff20" : "#00000000"}, 20px, #00000000 30px),
                 linear-gradient(to right, ${selectedEdges.get(p.id)?.includes("l") ? "#ffffff20" : "#00000000"}, 20px, #00000000 30px)
-                  `,
+                ` as CSSProperties,
               }}>
-              {({ backgroundImage, }) =>
+              {({ backgroundImage }) =>
                 <animated.div
                   key={p.id}
                   id={p.id}
                   className='panel'
-                  style={{
-                    backgroundImage,
-                    top, right, bottom, left,
-                  }}
+                  style={{ backgroundImage, top, right, bottom, left }}
                 />}
             </Spring>
           )
@@ -246,16 +195,14 @@ function App() {
         <button onClick={e => splitSelectedPanels("vertical")} disabled={tooManyPanels() || noSelectedPanels()}>Split Vertically</button>
         <button onClick={e => splitSelectedPanels("horizontal")} disabled={tooManyPanels() || noSelectedPanels()}>Split Horizontally</button>
         <button onClick={e => deleteSelectedPanels()} disabled={noSelectedPanels()}>Delete</button>
-        <button onClick={e => undo()} disabled={past.length === 0}>Undo</button>
-        <button onClick={e => redo()} disabled={future.length === 0}>Redo</button>
+        <button onClick={e => vcs.undo()} disabled={(vcs.index == (vcs.history.length - 1))}>Undo</button>
+        <button onClick={e => vcs.redo()} disabled={vcs.index === 0}>Redo</button>
       </div>
-    </div>
+    </div >
   )
 }
 
-function clamp(actual: number, [lower, upper] = [0, 1]): number {
-  return Math.max(lower, Math.min(upper, actual))
-}
+
 
 function resizeCursor(edges: IterableIterator<string>): string {
   for (var e of edges) {

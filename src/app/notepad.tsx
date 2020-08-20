@@ -180,5 +180,18 @@
 //     return getComputedStyle(document.documentElement).getPropertyValue(variable);
 //   }
 
+// saveState(history, initialState, future)
+// function saveState(history: Stack<State>, state: State, future: Stack<State>) {
+//   localStorage.setItem("auto-saved-state", JSON.stringify(state.toJS()))
+// }
+
+// function loadState() {
+//   return {
+//     history: null,
+//     state: coalesce(localStorage.getItem("auto-saved-state"), json => fromJS(JSON.parse(json)) as State),
+//     future: null
+//   }
+// }
+// const savedState = loadState();
 // required to please the create-react-app gods
 export { }
