@@ -7,42 +7,47 @@
     "motivation": "It is my goal to help humanity build a safe and symbiotic relationship with a future artificial general intelligence.\nSo that ultimately humanity can enjoy the freedoms of a post scarcity economy awarded by such technologies.\nI also like to keep the lights on, so at my day job I help make the skies safer by building the next generation of air traffic management systems.",
     "education": [
         {
-            "institution": "Swinburne University",
-            "course": "Bachelor of Computer Science",
-            "majors": [
+            "title": "Bachelor of Computer Science",
+            "organization": "Swinburne University",
+            "domains": [
                 "Software Development"
             ],
-            "minors": [],
-            "start": "mid 2015",
-            "end": "late 2017"
+            "location": "Melbourne, Australia",
+            "start": "2015",
+            "end": "2017"
         },
         {
-            "institution": "La Trobe University",
-            "course": "Bachelor of Science",
-            "majors": "Mathematics",
-            "minors": [
+            "title": "Bachelor of Science",
+            "organization": "La Trobe University",
+            "domains": [
+                "Mathematics",
                 "Physics"
             ],
-            "start": "early 2012",
-            "end": "early 2015"
+            "location": "Melbourne, Australia",
+            "start": "2012",
+            "end": "2015"
         }
     ],
     "work": [
         {
-            "role": "Software Engineer",
-            "company": "Thales",
-            "domain": "Air Traffic Management",
+            "title": "Software Engineer",
+            "organization": "Thales",
+            "domains": [
+                "Air Traffic Management"
+            ],
             "location": "Melbourne, Australia",
-            "start": "early 2018",
+            "start": "2018",
             "end": "Present"
         },
         {
-            "role": "Software Engineer Intern",
-            "company": "Thales",
-            "domain": "Air Traffic Management",
+            "title": "Software Engineer Intern",
+            "organization": "Thales",
+            "domains": [
+                "Air Traffic Management"
+            ],
             "location": "Melbourne, Australia",
-            "start": "mid 2016",
-            "end": "mid 2017"
+            "start": "2016",
+            "end": "2017"
         }
     ],
     "projects": [

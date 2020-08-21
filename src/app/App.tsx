@@ -5,8 +5,7 @@ import { useGesture } from 'react-use-gesture'
 import { animated, Spring } from 'react-spring';
 import { FullGestureState } from 'react-use-gesture/dist/types';
 import useWindowDimensions from './useWindowDimensions';
-import { enableAllPlugins, produce, produceWithPatches, Patch } from 'immer'
-import _ from 'lodash'
+import { enableAllPlugins, produce } from 'immer'
 import { clamp } from './util';
 import { useVersionControl } from './useVersionControl';
 enableAllPlugins()
@@ -195,7 +194,7 @@ function App() {
         <button onClick={e => splitSelectedPanels("vertical")} disabled={tooManyPanels() || noSelectedPanels()}>Split Vertically</button>
         <button onClick={e => splitSelectedPanels("horizontal")} disabled={tooManyPanels() || noSelectedPanels()}>Split Horizontally</button>
         <button onClick={e => deleteSelectedPanels()} disabled={noSelectedPanels()}>Delete</button>
-        <button onClick={e => vcs.undo()} disabled={(vcs.index == (vcs.history.length - 1))}>Undo</button>
+        <button onClick={e => vcs.undo()} disabled={(vcs.index === (vcs.history.length - 1))}>Undo</button>
         <button onClick={e => vcs.redo()} disabled={vcs.index === 0}>Redo</button>
       </div>
     </div >
