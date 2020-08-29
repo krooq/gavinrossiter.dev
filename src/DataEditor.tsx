@@ -2,13 +2,9 @@ import React from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline, TextField, Paper, Fab, Box } from "@material-ui/core";
+import { Grid, ThemeProvider, CssBaseline, TextField, Paper, Fab } from "@material-ui/core";
 import "fontsource-bungee";
 import resumeData from './home/data/resume.json';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import LinkedInIcon from '@material-ui/icons/LinkedIn';
-import WebIcon from '@material-ui/icons/Web';
-import MyLocationIcon from '@material-ui/icons/MyLocation';
 import AddIcon from '@material-ui/icons/Add';
 
 const theme = createMuiTheme({
@@ -68,10 +64,6 @@ const useStyles = makeStyles((theme) => ({
 
 function DataEditor() {
     const classes = useStyles();
-    const content = {
-        prelude: "I'm working\nto solve todays\nbiggest problem",
-        title: "Human\nAI\nsymbiosis",
-    }
     return (
         <React.Fragment>
             <ThemeProvider theme={theme} >
@@ -84,7 +76,6 @@ function DataEditor() {
 
 
 function Editor(props: any) {
-    const classes = props.classes;
     const data = props.data;
     return (
         <Container>
