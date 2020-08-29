@@ -3,11 +3,10 @@
 Hey I'm Gav.
 
 TLDR for recruiters;
-"In my next role I want to build an AI system in an agile *get it done* team."
+"In my next role I want to build an AI system in a team focussed on lean delivery."
 
-I'm a software engineer with a strong mathematics background and a keen interest in AI and machine learning. I have an entrepreneurial spirit and passion for creating value.
-
-At work I'm a systems software engineer working in air traffic management. In this role I've worked in a large software team, liased with stakeholders from across the seas and built a java CSCI from scratch.
-So lots of experience in the engineering product lifecycle.
-
-At home you will find me working on my personal projects, learning all that I can about AI or updating my website https: //gavinrossiter.dev 
+At work I'm a systems software engineer working in air traffic management.
+I'm part of a team of 30, responsible for delivering the controller facing applications.
+At home you will find me working on some personal projects, learning all that I can about AI or updating my website gavinrossiter.dev.
+I have an entrepreneurial spirit and passion for creating value for society.
+On the technical side I have a strong mathematics background and a keen interest in AI and machine learning.

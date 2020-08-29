@@ -2,7 +2,7 @@ import React from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline } from "@material-ui/core";
+import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline, Box } from "@material-ui/core";
 import "fontsource-bungee";
 import resumeData from './data/resume.json';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -103,9 +103,21 @@ function Resume(props: any) {
             <Grid container spacing={4}>
                 <Grid item xs={12}>
                     <Name classes={classes} data={data} />
+                    <Card >
+                        <CardContent>
+                            <Contact data={data} />
+                        </CardContent>
+                    </Card>
                 </Grid>
-                <Grid item xs={12}>
-                    <Contact data={data} />
+                <Grid item md={12}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h4" component="h2" gutterBottom>About Me</Typography>
+                            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.about}</Typography>
+                            <br />
+                            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.goals}</Typography>
+                        </CardContent>
+                    </Card>
                 </Grid>
                 <Grid item md={4}>
                     <Work data={data} />
@@ -114,8 +126,12 @@ function Resume(props: any) {
                     <Education data={data} />
                 </Grid>
                 <Grid item md={4}>
-                    <Typography variant="h3" gutterBottom>Programming Languages</Typography>
-                    {data.technical.languages.map((d: string) => <Chip color='secondary' className={classes.chip} key={d} label={d} />)}
+                    <Card>
+                        <CardContent>
+                            <Typography variant="h4" component="h2" gutterBottom>Programming Languages</Typography>
+                            {data.technical.languages.map((d: string) => <Chip color='secondary' className={classes.chip} key={d} label={d} />)}
+                        </CardContent>
+                    </Card>
                 </Grid>
             </Grid>
         </Container>
@@ -127,9 +143,9 @@ type ExperienceData = { start: string, end: string, title: string, domains: Arra
 function CardList(props: any) {
     const title: string = props.title;
     const content: Array<ExperienceData> = props.content;
-    return (
-        <React.Fragment>
-            <Typography variant="h3" gutterBottom>Work</Typography>
+    return (<Card >
+        <CardContent>
+            <Typography variant="h4" component="h2" gutterBottom>{title}</Typography>
             <Grid container spacing={4}>
                 {content.map((data: any) =>
                     <Grid xs={12} item>
@@ -137,22 +153,25 @@ function CardList(props: any) {
                     </Grid>
                 )}
             </Grid>
-        </React.Fragment>
+        </CardContent>
+    </Card>
     );
 }
 
 function ExperienceCard(props: any) {
     const data: ExperienceData = props.data
     return (
-        <Card variant="outlined">
-            <CardContent>
-                <Typography variant="subtitle2" gutterBottom>{data.start} - {data.end}</Typography>
-                <Typography variant="h5" component="h1">{data.title}</Typography>
-                <Typography variant="subtitle1" component="p">{data.domains.join(", ")}</Typography>
-                <Typography variant="body2" component="p">{data.organization}</Typography>
-                <Typography variant="body2" component="p">{data.location}</Typography>
-            </CardContent>
-        </Card>
+        <Box boxShadow={1}>
+            <Card >
+                <CardContent>
+                    <Typography variant="subtitle2" gutterBottom>{data.start} - {data.end}</Typography>
+                    <Typography variant="h6" component="h1">{data.title}</Typography>
+                    <Typography variant="subtitle1" component="p">{data.domains.join(", ")}</Typography>
+                    <Typography variant="body2" component="p">{data.organization}</Typography>
+                    <Typography variant="body2" component="p">{data.location}</Typography>
+                </CardContent>
+            </Card>
+        </Box>
     )
 }
 
@@ -163,13 +182,13 @@ function ListItemLink(props: ListItemProps<'a', { button?: true }>) {
 function Name(props: any) {
     const data = props.data
     const classes = props.classes
-    return <Typography variant="h2" className={classes.title}>{data.name}</Typography>;
+    return <Typography variant="h2" className={classes.title} gutterBottom>{data.name}</Typography>;
 }
 
 function Contact(props: any) {
     const data = props.data
     return (
-        <List>
+        <List dense>
             <ListItemLink href={data.website}>
                 <ListItemIcon><WebIcon /></ListItemIcon>
                 <ListItemText primary={data.website} />

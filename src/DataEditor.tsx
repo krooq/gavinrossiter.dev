@@ -2,13 +2,14 @@ import React from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline, TextField, Paper } from "@material-ui/core";
+import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline, TextField, Paper, Fab, Box } from "@material-ui/core";
 import "fontsource-bungee";
 import resumeData from './home/data/resume.json';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import WebIcon from '@material-ui/icons/Web';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
+import AddIcon from '@material-ui/icons/Add';
 
 const theme = createMuiTheme({
     palette: {
@@ -87,7 +88,7 @@ function Editor(props: any) {
     const data = props.data;
     return (
         <Container>
-            <Grid xs={12} container>
+            <Grid container>
                 <ObjectData obj={data} />
             </Grid>
         </Container>
@@ -95,33 +96,37 @@ function Editor(props: any) {
 }
 
 function ObjectData(props: any): JSX.Element {
-    const path = props.path || ""
+    const label = props.label || ""
     const obj = props.obj
     const elements: JSX.Element[] = []
+    const depth = props.depth || 0
 
     if (Array.isArray(obj)) {
         const listElements = []
+        if (obj.length > 0) { listElements.push(<Typography variant="overline">{label}</Typography>) }
         for (const i in obj) {
-            listElements.push(<ObjectData obj={obj[i]} path={`${path}.${i}`} />)
+            listElements.push(<ObjectData obj={obj[i]} depth={depth + 1} />)
         }
-        elements.push(<Grid container spacing={1} >{listElements}</Grid>)
+        listElements.push(<Grid container justify="center"><Grid item>
+            <Fab variant="extended" color="primary" aria-label="add"><AddIcon />{label}</Fab>
+        </Grid></Grid>)
+        elements.push(<Paper elevation={depth} style={{ padding: '16px' }}><Grid container spacing={1}>{listElements}</Grid></Paper>)
+
     }
     else if (typeof obj === 'string') {
-        elements.push(
-            <TextField label={path} value={obj} multiline />
-        )
+        elements.push(<TextField label={label} value={obj} multiline fullWidth />)
     }
     else if (typeof obj === 'object') {
         const objElements = []
+        objElements.push(<Typography variant="overline">{label}</Typography>)
         for (const k in obj) {
             if (!obj.hasOwnProperty(k))
                 continue;
-            const attrPath = path.length != 0 ? `${path}.${k}` : k
-            objElements.push(<ObjectData obj={obj[k]} path={attrPath} />)
+            objElements.push(<ObjectData obj={obj[k]} label={k} />)
         }
-        elements.push(<Grid container spacing={1} >{objElements}</Grid>)
+        elements.push(<Paper elevation={depth} style={{ padding: '16px' }}><Grid container spacing={1} >{objElements}</Grid></Paper>)
     }
-    return <Grid item>{elements}</Grid>
+    return <Grid xs={12} item>{elements}</Grid>
 }
 
 export default DataEditor;
