@@ -2,7 +2,7 @@ import React from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline } from "@material-ui/core";
+import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline, TextField, Paper } from "@material-ui/core";
 import "fontsource-bungee";
 import resumeData from './home/data/resume.json';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -87,9 +87,9 @@ function Editor(props: any) {
     const data = props.data;
     return (
         <Container>
-            {/* <Grid container spacing={4}> */}
-            <ObjectData obj={data} />
-            {/* </Grid> */}
+            <Grid xs={12} container>
+                <ObjectData obj={data} />
+            </Grid>
         </Container>
     )
 }
@@ -99,29 +99,29 @@ function ObjectData(props: any): JSX.Element {
     const obj = props.obj
     const elements: JSX.Element[] = []
 
-    console.log(obj + " | " + (Array.isArray(obj) && "array") + " | " + typeof obj)
     if (Array.isArray(obj)) {
-        for (const v of obj) {
-            elements.push(<ObjectData obj={v} path={`${path}`} />)
+        const listElements = []
+        for (const i in obj) {
+            listElements.push(<ObjectData obj={obj[i]} path={`${path}.${i}`} />)
         }
+        elements.push(<Grid container spacing={1} >{listElements}</Grid>)
     }
     else if (typeof obj === 'string') {
         elements.push(
-            <Card>
-                <Typography variant="h6" component="h1">{`${path}`}</Typography>
-                <Typography variant="body1">{`${obj}`}</Typography>
-            </Card>
+            <TextField label={path} value={obj} multiline />
         )
     }
     else if (typeof obj === 'object') {
+        const objElements = []
         for (const k in obj) {
             if (!obj.hasOwnProperty(k))
                 continue;
             const attrPath = path.length != 0 ? `${path}.${k}` : k
-            elements.push(<ObjectData obj={obj[k]} path={attrPath} />)
+            objElements.push(<ObjectData obj={obj[k]} path={attrPath} />)
         }
+        elements.push(<Grid container spacing={1} >{objElements}</Grid>)
     }
-    return <React.Fragment>{elements}</React.Fragment>
+    return <Grid item>{elements}</Grid>
 }
 
 export default DataEditor;
