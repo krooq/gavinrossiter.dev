@@ -61,8 +61,8 @@
     ],
     "technical": {
         "languages": [
-            "Java",
             "Python",
+            "Java",
             "TypeScript",
             "JavaScript",
             "Rust",

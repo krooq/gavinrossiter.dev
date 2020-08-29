@@ -75,77 +75,82 @@ function Home() {
         <React.Fragment>
             <ThemeProvider theme={theme} >
                 <CssBaseline />
-                <Container className={classes.landing}>
-                    <Grid container justify="center" alignItems="center" className={classes.landingContent}>
-                        <Grid item>
-                            <Typography variant="h1" className={classes.prelude}>{content.prelude}</Typography>
-                            <Typography variant="h1" style={{ whiteSpace: 'pre-wrap' }}>{content.title}</Typography>
-                        </Grid>
-                    </Grid>
-                </Container>
-                <Container>
-                    <Resume />
-                </Container>
+                <Landing classes={classes} data={content} />
+                <Resume classes={classes} data={resumeData} />
             </ThemeProvider>
         </React.Fragment >
     )
 }
-function Resume() {
-    const classes = useStyles();
-    const content = resumeData;
+
+function Landing(props: any) {
+    const classes = props.classes
+    const data = props.data
+    return <Container className={classes.landing}>
+        <Grid container justify="center" alignItems="center" className={classes.landingContent}>
+            <Grid item>
+                <Typography variant="h1" className={classes.prelude}>{data.prelude}</Typography>
+                <Typography variant="h1" style={{ whiteSpace: 'pre-wrap' }}>{data.title}</Typography>
+            </Grid>
+        </Grid>
+    </Container>;
+}
+
+function Resume(props: any) {
+    const classes = props.classes;
+    const data = props.data;
     return (
-        <React.Fragment>
+        <Container>
             <Grid container spacing={4}>
                 <Grid item xs={12}>
-                    <Typography variant="h2" className={classes.title}>{content.name}</Typography>
+                    <Name classes={classes} data={data} />
                 </Grid>
                 <Grid item xs={12}>
-                    <List component="nav" >
-                        <ListItemLink href={content.website}>
-                            <ListItemIcon><WebIcon /></ListItemIcon>
-                            <ListItemText primary={content.website} />
-                        </ListItemLink>
-                        <ListItemLink href={content.github}>
-                            <ListItemIcon><GitHubIcon /></ListItemIcon>
-                            <ListItemText primary={content.github} />
-                        </ListItemLink>
-                        <ListItemLink href={content.linkedin}>
-                            <ListItemIcon><LinkedInIcon /></ListItemIcon>
-                            <ListItemText primary={content.linkedin} />
-                        </ListItemLink>
-                        <ListItemLink href="https://www.google.com/maps/place/Melbourne+VIC">
-                            <ListItemIcon><MyLocationIcon /></ListItemIcon>
-                            <ListItemText primary={content.location} />
-                        </ListItemLink>
-                    </List>
+                    <Contact data={data} />
                 </Grid>
                 <Grid item md={4}>
-                    <Typography variant="h3" gutterBottom>Work</Typography>
-                    <Grid container spacing={4}>{content.work.map((data: any) => <Grid xs={12} item><ExperienceCard data={data} /></Grid>)}</Grid>
+                    <Work data={data} />
                 </Grid>
                 <Grid item md={4}>
-                    <Typography variant="h3" gutterBottom>Education</Typography>
-                    <Grid container spacing={4}>{content.education.map((data: any) => <Grid xs={12} item><ExperienceCard data={data} /></Grid>)}</Grid>
+                    <Education data={data} />
                 </Grid>
                 <Grid item md={4}>
                     <Typography variant="h3" gutterBottom>Programming Languages</Typography>
-                    {content.technical.languages.map((data: string) => <Chip color='secondary' className={classes.chip} key={data} label={data} />)}
+                    {data.technical.languages.map((d: string) => <Chip color='secondary' className={classes.chip} key={d} label={d} />)}
                 </Grid>
             </Grid>
-        </React.Fragment>
+        </Container>
     )
 }
-type Experience = { start: string, end: string, title: string, domains: Array<string>, organization: string, location: string }
+
+type ExperienceData = { start: string, end: string, title: string, domains: Array<string>, organization: string, location: string }
+
+function CardList(props: any) {
+    const title: string = props.title;
+    const content: Array<ExperienceData> = props.content;
+    return (
+        <React.Fragment>
+            <Typography variant="h3" gutterBottom>Work</Typography>
+            <Grid container spacing={4}>
+                {content.map((data: any) =>
+                    <Grid xs={12} item>
+                        <ExperienceCard data={data} />
+                    </Grid>
+                )}
+            </Grid>
+        </React.Fragment>
+    );
+}
+
 function ExperienceCard(props: any) {
-    const e: Experience = props.data
+    const data: ExperienceData = props.data
     return (
         <Card variant="outlined">
             <CardContent>
-                <Typography variant="subtitle2" gutterBottom>{e.start} - {e.end}</Typography>
-                <Typography variant="h5" component="h1">{e.title}</Typography>
-                <Typography variant="subtitle1" component="p">{e.domains.join(", ")}</Typography>
-                <Typography variant="body2" component="p">{e.organization}</Typography>
-                <Typography variant="body2" component="p">{e.location}</Typography>
+                <Typography variant="subtitle2" gutterBottom>{data.start} - {data.end}</Typography>
+                <Typography variant="h5" component="h1">{data.title}</Typography>
+                <Typography variant="subtitle1" component="p">{data.domains.join(", ")}</Typography>
+                <Typography variant="body2" component="p">{data.organization}</Typography>
+                <Typography variant="body2" component="p">{data.location}</Typography>
             </CardContent>
         </Card>
     )
@@ -153,6 +158,45 @@ function ExperienceCard(props: any) {
 
 function ListItemLink(props: ListItemProps<'a', { button?: true }>) {
     return <ListItem button component="a" {...props} />;
+}
+
+function Name(props: any) {
+    const data = props.data
+    const classes = props.classes
+    return <Typography variant="h2" className={classes.title}>{data.name}</Typography>;
+}
+
+function Contact(props: any) {
+    const data = props.data
+    return (
+        <List>
+            <ListItemLink href={data.website}>
+                <ListItemIcon><WebIcon /></ListItemIcon>
+                <ListItemText primary={data.website} />
+            </ListItemLink>
+            <ListItemLink href={data.github}>
+                <ListItemIcon><GitHubIcon /></ListItemIcon>
+                <ListItemText primary={data.github} />
+            </ListItemLink>
+            <ListItemLink href={data.linkedin}>
+                <ListItemIcon><LinkedInIcon /></ListItemIcon>
+                <ListItemText primary={data.linkedin} />
+            </ListItemLink>
+            <ListItemLink href="https://www.google.com/maps/place/Melbourne+VIC">
+                <ListItemIcon><MyLocationIcon /></ListItemIcon>
+                <ListItemText primary={data.location} />
+            </ListItemLink>
+        </List>
+    )
+}
+
+function Work(props: any) {
+    return <CardList title="Work" content={props.data.work} />
+}
+
+
+function Education(props: any) {
+    return <CardList title="Education" content={props.data.education} />
 }
 
 export default Home;
