@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './app/App';
+import DataEditor from './DataEditor'
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Home from './home/Home';
@@ -24,6 +25,7 @@ function AppRouter() {
       <Switch>
         <Route path="/" component={Home} exact />
         <Route path="/app" component={App} />
+        <Route path="/data" component={DataEditor} />
       </Switch>
     </main>
   )

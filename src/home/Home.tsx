@@ -1,5 +1,4 @@
 import React from "react";
-import './Home.css';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
@@ -60,7 +59,8 @@ const useStyles = makeStyles((theme) => ({
         height: '100%'
     },
     chip: {
-        margin: theme.spacing(0.5)
+        margin: theme.spacing(0.5),
+        fontWeight: 'bold'
     }
 }))
 
