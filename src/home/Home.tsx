@@ -2,7 +2,7 @@ import React from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline, Box } from "@material-ui/core";
+import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline, Box, Button } from "@material-ui/core";
 import "fontsource-bungee";
 import resumeData from './data/resume.json';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -100,9 +100,14 @@ function Resume(props: any) {
     const data = props.data;
     return (
         <Container>
+            <Grid container item xs={12} justify="flex-end" alignItems="center">
+                <Button href="https://gavinrossiter.dev/resume">printable version</Button>
+            </Grid>
             <Grid container spacing={4}>
-                <Grid item xs={12}>
+                <Grid item container xs={12} justify="center">
                     <Name classes={classes} data={data} />
+                </Grid>
+                <Grid item xs={12} >
                     <Card >
                         <CardContent>
                             <Contact data={data} />
