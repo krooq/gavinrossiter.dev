@@ -54,11 +54,40 @@
     ],
     "projects": [
         {
-            "name": "Layout App",
-            "org": null,
-            "description": "React powered WYSIWYG layout editor designed for simple web apps",
-            "link": "https://gavinrossiter.dev/app",
-            "status": "active - work in progress"
+            "name": "Layout web app",
+            "organization": null,
+            "description": "Just a toy project to learn React and get back into web programming.",
+            "link": "https://gavinrossiter.dev/app"
+        },
+        {
+            "name": "Arty",
+            "organization": null,
+            "description": "Command line based browser and artifact downloader for jenkins built with Rust",
+            "link": "https://github.com/krooq/arty"
+        },
+        {
+            "name": "Spiritlevel",
+            "organization": null,
+            "description": "Small drink value calculator app built with Flutter",
+            "link": "https://play.google.com/store/apps/details?id=com.krooq.spiritlevel"
+        },
+        {
+            "name": "Jetpack - Attack of the Space Worms",
+            "organization": "Swinburne University & Gridstone",
+            "description": "Mobile game developed for final year industry partner project",
+            "link": "https://play.google.com/store/apps/details?id=com.krooq.spiritlevel"
+        },
+        {
+            "name": "Virus characterization via serial x-ray diffraction: A computational feasibility study",
+            "organization": "La Trobe University",
+            "description": "Computational simulation of virus characterization via x-ray diffraction using MATLAB.",
+            "link": "https://drive.google.com/file/d/12Te7b4e79MOLEwnGCaHeTRGg3-_cZYbe/view?usp=sharing"
+        },
+        {
+            "name": "Piecewise linear periodic maps of the plane with integer coefficients",
+            "organization": "La Trobe University",
+            "description": "Investigation into the behaviour of a particular piecewise periodic linear map and its the relation to the crystallographic restriction theorem",
+            "link": "https://arxiv.org/abs/1407.3364"
         }
     ],
     "technical": {
