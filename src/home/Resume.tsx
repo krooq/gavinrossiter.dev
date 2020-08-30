@@ -2,7 +2,7 @@ import React from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, CssBaseline, Hidden } from "@material-ui/core";
+import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, CssBaseline, Hidden, Link, Box } from "@material-ui/core";
 import "fontsource-bungee";
 import resumeData from './data/resume.json';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -24,7 +24,10 @@ const theme = createMuiTheme({
 });
 
 const useStyles = makeStyles((theme) => ({
-    name: {}
+    name: {},
+    timeline: {
+        padding: 0
+    }
 }))
 
 
@@ -45,8 +48,9 @@ function Resume() {
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.about}</Typography>
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.goals}</Typography>
                     <br />
-                    <ExperienceTimeline title="Work" data={data.work} />
-                    <ExperienceTimeline title="Education" data={data.education} />
+                    <ExperienceTimeline className={classes.timeline} title="Work" data={data.work} />
+                    <ExperienceTimeline className={classes.timeline} title="Education" data={data.education} />
+                    <ProjectTimeline className={classes.timeline} title="Projects" data={data.projects} />
                     <br />
                     <Typography variant="h6" gutterBottom>Programming Languages</Typography>
                     <Typography variant="body1">{data.technical.languages.join(", ")}</Typography>
@@ -65,7 +69,7 @@ function ExperienceTimeline(props: any) {
     return (
         <React.Fragment>
             <Typography variant="h6" component="h2">{title}</Typography>
-            <Timeline>{data.map((d: any) => <ExperienceTimelineItem data={d} />)}</Timeline>
+            <Timeline {...props}>{data.map((d: any) => <ExperienceTimelineItem data={d} />)}</Timeline>
         </React.Fragment >
     )
 }
@@ -86,6 +90,33 @@ function ExperienceTimelineItem(props: any) {
     )
 }
 
+function ProjectTimeline(props: any) {
+    const title: string = props.title;
+    const data = props.data;
+    return (
+        <React.Fragment>
+            <Typography variant="h6" component="h2">{title}</Typography>
+            <Timeline {...props}>{data.map((d: any) => <ProjectTimelineItem data={d} />)}</Timeline>
+        </React.Fragment >
+    )
+}
+
+function ProjectTimelineItem(props: any) {
+    const data = props.data
+    return (
+        <TimelineItem>
+            <TimelineContent style={{ flex: "none", width: "8rem" }}>
+                <Typography variant="subtitle2" align="right">{data.end}</Typography>
+            </TimelineContent>
+            <TimelineOppositeContent style={{ flexGrow: 1 }}>
+                <Typography variant="body1" component="h1" align="left">{data.title}</Typography>
+                <Typography variant="body2" component="p" align="left">{data.description}</Typography>
+                {data.organiztion != null && <Typography variant="body2" component="p" align="left">{data.organization}</Typography>}
+                <Box textAlign="left"><Link variant="body2" href={data.link}>{data.link}</Link></Box>
+            </TimelineOppositeContent>
+        </TimelineItem >
+    )
+}
 function ListItemLink(props: ListItemProps<'a', { button?: true }>) {
     return <ListItem button component="a" {...props} />;
 }

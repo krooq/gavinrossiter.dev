@@ -54,40 +54,52 @@
     ],
     "projects": [
         {
-            "name": "Layout web app",
+            "title": "Layout web app",
             "organization": null,
-            "description": "Just a toy project to learn React and get back into web programming.",
-            "link": "https://gavinrossiter.dev/app"
+            "description": "In addition to this web app, I made a toy app to learn React and get back into web programming.",
+            "link": "https://gavinrossiter.dev/app",
+            "start": "2020",
+            "end": "2020"
         },
         {
-            "name": "Arty",
+            "title": "Arty",
             "organization": null,
             "description": "Command line based browser and artifact downloader for jenkins built with Rust",
-            "link": "https://github.com/krooq/arty"
+            "link": "https://github.com/krooq/arty",
+            "start": "2020",
+            "end": "2020"
         },
         {
-            "name": "Spiritlevel",
+            "title": "Spiritlevel",
             "organization": null,
             "description": "Small drink value calculator app built with Flutter",
-            "link": "https://play.google.com/store/apps/details?id=com.krooq.spiritlevel"
+            "link": "https://play.google.com/store/apps/details?id=com.krooq.spiritlevel",
+            "start": "2020",
+            "end": "2020"
         },
         {
-            "name": "Jetpack - Attack of the Space Worms",
+            "title": "Jetpack - Attack of the Space Worms",
             "organization": "Swinburne University & Gridstone",
             "description": "Mobile game developed for final year industry partner project",
-            "link": "https://play.google.com/store/apps/details?id=com.krooq.spiritlevel"
+            "link": "https://play.google.com/store/apps/details?id=com.xfastgames.jetpack",
+            "start": "2017",
+            "end": "2017"
         },
         {
-            "name": "Virus characterization via serial x-ray diffraction: A computational feasibility study",
+            "title": "Virus characterization via serial x-ray diffraction: A computational feasibility study",
             "organization": "La Trobe University",
             "description": "Computational simulation of virus characterization via x-ray diffraction using MATLAB.",
-            "link": "https://drive.google.com/file/d/12Te7b4e79MOLEwnGCaHeTRGg3-_cZYbe/view?usp=sharing"
+            "link": "https://drive.google.com/file/d/12Te7b4e79MOLEwnGCaHeTRGg3-_cZYbe/view?usp=sharing",
+            "start": "2015",
+            "end": "2015"
         },
         {
-            "name": "Piecewise linear periodic maps of the plane with integer coefficients",
+            "title": "Piecewise linear periodic maps of the plane with integer coefficients",
             "organization": "La Trobe University",
-            "description": "Investigation into the behaviour of a particular piecewise periodic linear map and its the relation to the crystallographic restriction theorem",
-            "link": "https://arxiv.org/abs/1407.3364"
+            "description": "Investigation into the behaviour of a particular piecewise periodic linear map and its relation to the crystallographic restriction theorem",
+            "link": "https://arxiv.org/abs/1407.3364",
+            "start": "2014",
+            "end": "2014"
         }
     ],
     "technical": {
@@ -121,6 +133,7 @@
         "Artificial Intelliegence",
         "Machine Learning",
         "Human Machine Interfaces",
+        "Brain Computer Interfaces",
         "Entrepreneurship",
         "Automation",
         "Rockets"

@@ -2,7 +2,7 @@ import React from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline, Box, Button } from "@material-ui/core";
+import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline, Box, Button, Link } from "@material-ui/core";
 import "fontsource-bungee";
 import resumeData from './data/resume.json';
 import GitHubIcon from '@material-ui/icons/GitHub';
@@ -124,13 +124,16 @@ function Resume(props: any) {
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item md={4}>
+                <Grid item md={6}>
                     <Work data={data} />
                 </Grid>
-                <Grid item md={4}>
+                <Grid item md={6}>
                     <Education data={data} />
                 </Grid>
-                <Grid item md={4}>
+                <Grid item md={6}>
+                    <ProjectCardList title="Projects" content={props.data.projects} />
+                </Grid>
+                <Grid item md={6}>
                     <Card>
                         <CardContent>
                             <Typography variant="h4" component="h2" gutterBottom>Programming Languages</Typography>
@@ -145,7 +148,7 @@ function Resume(props: any) {
 
 type ExperienceData = { start: string, end: string, title: string, domains: Array<string>, organization: string, location: string }
 
-function CardList(props: any) {
+function ExperienceCardList(props: any) {
     const title: string = props.title;
     const content: Array<ExperienceData> = props.content;
     return (<Card >
@@ -177,6 +180,40 @@ function ExperienceCard(props: any) {
                 </CardContent>
             </Card>
         </Box>
+    )
+}
+function ProjectCardList(props: any) {
+    const title: string = props.title;
+    const content = props.content;
+    return (<Card >
+        <CardContent>
+            <Typography variant="h4" component="h2" gutterBottom>{title}</Typography>
+            <Grid container spacing={4}>
+                {content.map((data: any) =>
+                    <Grid xs={12} item>
+                        <ProjectCard data={data} />
+                    </Grid>
+                )}
+            </Grid>
+        </CardContent>
+    </Card>
+    );
+}
+
+function ProjectCard(props: any) {
+    const data = props.data
+    return (
+        <Box boxShadow={1}>
+            <Card >
+                <CardContent>
+                    <Typography variant="subtitle2" gutterBottom>{data.end}</Typography>
+                    <Typography variant="h6" component="h1">{data.title}</Typography>
+                    {data.organization != null && <Typography variant="subtitle1" component="p">{data.organization}</Typography>}
+                    <Typography variant="body1" component="p">{data.description}</Typography>
+                    <Link variant="body1" color="inherit" href={data.link}>{data.link}</Link>
+                </CardContent>
+            </Card>
+        </Box >
     )
 }
 
@@ -215,12 +252,12 @@ function Contact(props: any) {
 }
 
 function Work(props: any) {
-    return <CardList title="Work" content={props.data.work} />
+    return <ExperienceCardList title="Work" content={props.data.work} />
 }
 
 
 function Education(props: any) {
-    return <CardList title="Education" content={props.data.education} />
+    return <ExperienceCardList title="Education" content={props.data.education} />
 }
 
 export default Home;
