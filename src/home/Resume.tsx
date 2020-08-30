@@ -64,7 +64,7 @@ function ExperienceTimeline(props: any) {
     const data: Array<ExperienceData> = props.data;
     return (
         <React.Fragment>
-            <Typography variant="h6" component="h2" gutterBottom>{title}</Typography>
+            <Typography variant="h6" component="h2">{title}</Typography>
             <Timeline>{data.map((d: any) => <ExperienceTimelineItem data={d} />)}</Timeline>
         </React.Fragment >
     )
