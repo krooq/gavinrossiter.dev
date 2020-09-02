@@ -8,6 +8,7 @@ import resumeData from './data/resume.json';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import WebIcon from '@material-ui/icons/Web';
+import PhoneIcon from '@material-ui/icons/Phone';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
 
 const theme = createMuiTheme({
@@ -229,6 +230,10 @@ function Contact(props: any) {
     const data = props.data
     return (
         <List dense>
+            <ListItem>
+                <ListItemIcon><PhoneIcon /></ListItemIcon>
+                <ListItemText primary={data.phone} />
+            </ListItem>
             <ListItemLink href={data.website}>
                 <ListItemIcon><WebIcon /></ListItemIcon>
                 <ListItemText primary={data.website} />
