@@ -46,7 +46,6 @@ function Resume() {
                     </Grid>
                     <Typography variant="h6" gutterBottom>About Me</Typography>
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.about}</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.goals}</Typography>
                     <br />
                     <ExperienceTimeline className={classes.timeline} title="Work" data={data.work} />
                     <ExperienceTimeline className={classes.timeline} title="Education" data={data.education} />

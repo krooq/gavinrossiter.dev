@@ -119,8 +119,6 @@ function Resume(props: any) {
                         <CardContent>
                             <Typography variant="h4" component="h2" gutterBottom>About Me</Typography>
                             <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.about}</Typography>
-                            <br />
-                            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.goals}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
