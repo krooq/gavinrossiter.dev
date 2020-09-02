@@ -54,9 +54,17 @@
     ],
     "projects": [
         {
+            "title": "Website",
+            "organization": null,
+            "description": "I designed and built my website with React, TypeScript and Material-UI.",
+            "link": "https://gavinrossiter.dev",
+            "start": "2020",
+            "end": "2020"
+        },
+        {
             "title": "Layout web app",
             "organization": null,
-            "description": "In addition to this web app, I made a toy app to learn React and get back into web programming.",
+            "description": "In addition to my main landing page, I made a toy app to learn React and get back into web programming.",
             "link": "https://gavinrossiter.dev/app",
             "start": "2020",
             "end": "2020"
