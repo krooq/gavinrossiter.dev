@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
     name: {},
     timeline: {
         padding: 0
+    },
+    projects: {
+        pageBreakBefore: 'always'
     }
 }))
 
@@ -50,7 +53,7 @@ function Resume() {
                     <br />
                     <ExperienceTimeline className={classes.timeline} title="Work" data={data.work} />
                     <ExperienceTimeline className={classes.timeline} title="Education" data={data.education} />
-                    <ProjectTimeline className={classes.timeline} title="Projects" data={data.projects} />
+                    <ProjectTimeline className={`{classes.timeline} {classes.projects}`} title="Projects" data={data.projects} />
                     <br />
                     <Typography variant="h6" gutterBottom>Programming Languages</Typography>
                     <Typography variant="body1">{data.technical.languages.join(", ")}</Typography>
