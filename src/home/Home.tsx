@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, Chip, Card, CardContent, CssBaseline, Box, Button, Link } from "@material-ui/core";
 import "fontsource-bungee";
-import resumeData from './data/resume.json';
+import resumeData from '../data/resume.json';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import WebIcon from '@material-ui/icons/Web';
@@ -39,6 +39,7 @@ theme.typography.h1 = {
     },
     fontFamily: "Bungee"
 };
+
 const useStyles = makeStyles((theme) => ({
     landing: {
         background: 'url(./images/nasa.jpg) #00000080 no-repeat center center',
@@ -102,7 +103,7 @@ function Resume(props: any) {
     return (
         <Container>
             <Grid container item xs={12} justify="flex-end" alignItems="center">
-                <Button href="https://gavinrossiter.dev/resume">printable version</Button>
+                <Button href="/cv">printable version</Button>
             </Grid>
             <Grid container spacing={4}>
                 <Grid item container xs={12} justify="center">
@@ -119,7 +120,7 @@ function Resume(props: any) {
                     <Card>
                         <CardContent>
                             <Typography variant="h4" component="h2" gutterBottom>About Me</Typography>
-                            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.about}</Typography>
+                            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.about.join(" ")}</Typography>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -136,7 +137,7 @@ function Resume(props: any) {
                     <Card>
                         <CardContent>
                             <Typography variant="h4" component="h2" gutterBottom>Programming Languages</Typography>
-                            {data.technical.languages.map((d: string) => <Chip color='secondary' className={classes.chip} key={d} label={d} />)}
+                            {data.technical.languages.primary.map((d: string) => <Chip color='secondary' className={classes.chip} key={d} label={d} />)}
                         </CardContent>
                     </Card>
                 </Grid>

@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import { Grid, ThemeProvider, CssBaseline, TextField, Paper, Fab } from "@material-ui/core";
 import "fontsource-bungee";
-import resumeData from './home/data/resume.json';
+import resumeData from '../data/resume.json';
 import AddIcon from '@material-ui/icons/Add';
 
 const theme = createMuiTheme({

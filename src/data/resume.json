@@ -1,0 +1,224 @@
+{
+    "name": "Gavin Rossiter",
+    "phone": "+61 429586649",
+    "website": "https://gavinrossiter.dev",
+    "github": "https://github.com/krooq",
+    "linkedin": "https://linkedin.com/in/gavin-rossiter",
+    "location": "Melbourne, Australia",
+    "goals": [
+        "It is my goal to help humanity build a safe and symbiotic relationship with AI.",
+        "I believe the human-AI symbiosis problem to be the greatest challenge we will face in this century."
+    ],
+    "about": [
+        "Hi I'm Gav,",
+        "\nI have spent most of my career as a systems software engineer working in air traffic management.",
+        "I'm part of a team of 30, responsible for delivering the controller facing applications for a next gen air traffic system.",
+        "At home I spend almost every waking hour either studying deep learning & artificial intelligence or working on personal projects such as this website.",
+        "\nI'm particularly interested in AI and the relationship humans form with it.",
+        "Artificial intelligence is significantly disrupting the way we live our lives and do business.",
+        "How we address the challenges AI raises now and over the next 20 years, will have a massive impact on society.",
+        "It is my ultimate goal to help humanity build a safe and symbiotic relationship with artificial intelligence,",
+        "so that we may enjoy the benefits and avoid the disasters.",
+        "\nIn my next role I want to take a leap into the field of AI/ML.",
+        "I have strong software and mathematics skills and an ardent passion for the field.",
+        "I also have an entrepreneurial spirit and passion for creating value for society.",
+        "\nIf you are looking for someone with these traits to fill a role in the AI/ML field please reach out."
+    ],
+    "motivation": [
+        "It is my goal to help humanity build a safe and symbiotic relationship with a future artificial general intelligence.",
+        "So that ultimately humanity can enjoy the freedoms of a post scarcity economy awarded by such technologies.",
+        "I also like to keep the lights on, so at my day job I help make the skies safer by building the next generation of air traffic management systems."
+    ],
+    "education": [
+        {
+            "title": "Bachelor of Computer Science",
+            "organization": "Swinburne University",
+            "domains": [
+                "Software Development"
+            ],
+            "location": "Melbourne, Australia",
+            "start": "2015",
+            "end": "2017"
+        },
+        {
+            "title": "Bachelor of Science",
+            "organization": "La Trobe University",
+            "domains": [
+                "Mathematics",
+                "Physics"
+            ],
+            "location": "Melbourne, Australia",
+            "start": "2012",
+            "end": "2015"
+        }
+    ],
+    "work": [
+        {
+            "title": "Software Engineer",
+            "organization": "Thales",
+            "domains": [
+                "Air Traffic Management"
+            ],
+            "location": "Melbourne, Australia",
+            "start": "2018",
+            "end": "Present"
+        },
+        {
+            "title": "Software Engineer Intern",
+            "organization": "Thales",
+            "domains": [
+                "Air Traffic Management"
+            ],
+            "location": "Melbourne, Australia",
+            "start": "2016",
+            "end": "2017"
+        }
+    ],
+    "projects": [
+        {
+            "title": "Website",
+            "organization": null,
+            "description": "I designed and built my website with React, TypeScript and Material-UI.",
+            "link": "https://gavinrossiter.dev",
+            "start": "2020",
+            "end": "2020"
+        },
+        {
+            "title": "Layout web app",
+            "organization": null,
+            "description": "In addition to my main landing page, I made a toy app to learn React and get back into web programming.",
+            "link": "https://gavinrossiter.dev/app",
+            "start": "2020",
+            "end": "2020"
+        },
+        {
+            "title": "Arty",
+            "organization": null,
+            "description": "Command line based browser and artifact downloader for jenkins built with Rust",
+            "link": "https://github.com/krooq/arty",
+            "start": "2020",
+            "end": "2020"
+        },
+        {
+            "title": "Spiritlevel",
+            "organization": null,
+            "description": "Small drink value calculator app built with Flutter",
+            "link": "https://play.google.com/store/apps/details?id=com.krooq.spiritlevel",
+            "start": "2020",
+            "end": "2020"
+        },
+        {
+            "title": "Jetpack - Attack of the Space Worms",
+            "organization": "Swinburne University & Gridstone",
+            "description": "Mobile game developed for final year industry partner project",
+            "link": "https://play.google.com/store/apps/details?id=com.xfastgames.jetpack",
+            "start": "2017",
+            "end": "2017"
+        },
+        {
+            "title": "Virus characterization via serial x-ray diffraction: A computational feasibility study",
+            "organization": "La Trobe University",
+            "description": "Computational simulation of virus characterization via x-ray diffraction using MATLAB.",
+            "link": "https://drive.google.com/file/d/12Te7b4e79MOLEwnGCaHeTRGg3-_cZYbe/view?usp=sharing",
+            "start": "2015",
+            "end": "2015"
+        },
+        {
+            "title": "Piecewise linear periodic maps of the plane with integer coefficients",
+            "organization": "La Trobe University",
+            "description": "Investigation into the behaviour of a particular piecewise periodic linear map and its relation to the crystallographic restriction theorem",
+            "link": "https://arxiv.org/abs/1407.3364",
+            "start": "2014",
+            "end": "2014"
+        }
+    ],
+    "technical": {
+        "summary": [
+            "I consider myself a polyglot developer with experience in a broad range languages.",
+            "I find it easy to pick up a less familar language and can be productive with it quite quickly.",
+            "I can code in Java in my sleep, this is my daily driver at work.",
+            "Python and TypeScript are my favorite languages for personal projects, they are just so practical and have great libraries.",
+            "I feel quite comfortable writing shell scripts Bash and in general I feel that I have good knowledge of the Unix ecosystem.",
+            "Recently I learnt some Rust, it was my first serious go (outside of uni) at really low level systems programming and it taught me a lot.",
+            "I know some C/C++ and have written some small C programs at work for low level tasks e.g. interacting with OS processes and windowing systems.",
+            "I'm a decent web programmer, most of the work I have done in web is aligned more towards single page realtime applications."
+        ],
+        "strengths":[
+            "Strong mathematics skills.",
+            "Strong programming skills.",
+            "Solid understanding of the balance between pragmatism and quality in software.",
+            "Experience in complex, realtime, mission and safety critical systems.",
+            "Passionate about software and AI, always working on projects outside of work to improve my skills.", 
+            "Broad set of software skills, from low level bit twiddling to high level scripts, can do basically anything.",
+            "Drive to change the world for the better."
+        ],
+        "weaknesses":[
+            "I try my best to know what I do not know.",
+            "I'm know that I'm lacking experience in serverless, containerization, modern back end web tech and embedded systems.",
+            "e.g. Docker, Kubernetes, Microservices, AWS, GCP, Azure, Big Data platforms.",
+            "I have a cursory understanding of all of these, and have either done at least one tutorial or read the docs.",
+            "I just haven't had the chance to work with them on more than a personal level."
+        ],
+        "languages": {
+            "primary":[
+                "Python",
+                "Java",
+                "TypeScript",
+                "JavaScript",
+                "Dart",
+                "Bash",
+                "HTML",
+                "CSS",
+                "Rust"
+            ],
+            "secondary":[
+                "C",
+                "C++",
+                "C#",
+                "Scala"
+            ],
+            "tertiary":[
+                "Lisp",
+                "Haskell",
+                "MATLAB",
+                "PowerShell"
+            ]
+        },
+        "paradigms": [
+            "Reactive programming",
+            "Event driven architecture",
+            "Immutability",
+            "Functional programming",
+            "Data driven programming",
+            "Object oriented programming",
+            "Composition over Inheritance",
+            "Code generation",
+            "Dataflow modelling",
+            "Front end development",
+            "Integrated systems programming"
+        ],
+        "ecosystem": [
+            "React",
+            "NumPy",
+            "SciPy",
+            "PyTorch"
+        ],
+        "tools": [
+            "VS Code",
+            "Eclipse",
+            "Unix",
+            "Jenkins",
+            "Git",
+            "Atlassian suite"
+        ]
+    },
+    "interests": [
+        "Artificial Intelliegence",
+        "Machine Learning",
+        "Human Machine Interfaces",
+        "Brain Computer Interfaces",
+        "Entrepreneurship",
+        "Robotics",
+        "Rocketry"
+    ]
+}

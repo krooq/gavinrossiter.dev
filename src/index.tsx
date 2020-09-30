@@ -2,11 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './app/App';
-import DataEditor from './DataEditor'
+import DataEditor from './editor/DataEditor'
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Home from './home/Home';
-import Resume from './home/Resume';
+import Cv from './cv/Cv';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -27,7 +27,8 @@ function AppRouter() {
         <Route path="/" component={Home} exact />
         <Route path="/app" component={App} />
         <Route path="/data" component={DataEditor} />
-        <Route path="/resume" component={Resume} />
+        <Route path="/resume" component={Cv} />
+        <Route path="/cv" component={Cv} />
       </Switch>
     </main>
   )
