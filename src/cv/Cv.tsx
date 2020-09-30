@@ -2,7 +2,7 @@ import React from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, ListItemProps, CssBaseline, Hidden, Link, Box } from "@material-ui/core";
+import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, CssBaseline, Hidden, Link, Box } from "@material-ui/core";
 import resumeData from '../data/resume.json';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
