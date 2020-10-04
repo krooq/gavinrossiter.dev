@@ -2,18 +2,15 @@ import React from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { Grid, ThemeProvider, List, ListItem, ListItemIcon, ListItemText, CssBaseline, Hidden, Link, Box } from "@material-ui/core";
+import { Grid, ThemeProvider, CssBaseline, Hidden, Link, Box } from "@material-ui/core";
 import resumeData from '../data/resume.json';
-import GitHubIcon from '@material-ui/icons/GitHub';
-import LinkedInIcon from '@material-ui/icons/LinkedIn';
-import WebIcon from '@material-ui/icons/Web';
-import PhoneIcon from '@material-ui/icons/Phone';
-import MyLocationIcon from '@material-ui/icons/MyLocation';
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import '../index.css'
+import { Contact } from "../common/Components"
+import { textBlock } from "../common/Util"
 
 const theme = createMuiTheme({
     palette: {
@@ -50,18 +47,18 @@ const useStyles = makeStyles((theme) => ({
     projects: {
         pageBreakBefore: 'always'
     },
-    contact:{
+    contact: {
         "* .MuiListItem-dense":{
             padding: 0,
         },
     }
 }))
 
-
 function Resume() { 
     const classes = useStyles();
     const data = resumeData;
-    const props = {...classes, data}
+    const avatar = false
+    const props = { classes, data, avatar }
     return (
         <React.Fragment>
             <ThemeProvider theme={theme} >
@@ -69,12 +66,12 @@ function Resume() {
                 <Container>
                     <Grid container alignItems="center">
                         <Grid item sm={6}><Typography variant="h2" className={classes.name}>{data.name}</Typography></Grid>
-                        <Hidden smUp><Grid item container sm={6} ><Contact {...props}/></Grid></Hidden>
-                        <Hidden xsDown><Grid item container sm={6} justify="flex-end"><Contact data={data} /></Grid></Hidden>
+                        <Hidden smUp><Grid item container sm={6} ><Contact {...props} /></Grid></Hidden>
+                        <Hidden xsDown><Grid item container sm={6} justify="flex-end"><Contact {...props} /></Grid></Hidden>
                     </Grid>
                     <Typography variant="h6" gutterBottom>About Me</Typography>
                     <hr />
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.about.join(" ")}</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.about)}</Typography>
                     <br />
                     <br />
                     <ExperienceTimeline {...props} title="Work" data={data.work} />
@@ -84,13 +81,13 @@ function Resume() {
                     <Typography variant="h6" gutterBottom>Technical</Typography>
                     <hr />
                     <Typography variant="overline" gutterBottom>Summary</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.summary.join("\n")}</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.summary, "\n")}</Typography>
                     <br />
                     <Typography variant="overline" gutterBottom>Strengths</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.strengths.join("\n")}</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.strengths, "\n")}</Typography>
                     <br />
                     <Typography variant="overline" gutterBottom>Weaknesses</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.weaknesses.join("\n")}</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.weaknesses, "\n")}</Typography>
                     <br />
                     <Typography variant="overline" gutterBottom>Primary languages</Typography>
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.languages.primary.join("\n")}</Typography>
@@ -125,7 +122,7 @@ function ExperienceTimeline(props: any) {
         <React.Fragment>
             <Typography variant="h6" component="h2">{title}</Typography>
             <hr />
-            <Timeline className={props.timeline}>{data.map((d: any) => <ExperienceTimelineItem data={d} />)}</Timeline>
+            <Timeline className={props.classes.timeline}>{data.map((d: any) => <ExperienceTimelineItem data={d} />)}</Timeline>
         </React.Fragment >
     )
 }
@@ -153,7 +150,7 @@ function ProjectTimeline(props: any) {
         <React.Fragment>
             <Typography variant="h6" component="h2">{title}</Typography>
             <hr />
-            <Timeline className={props.timeline}>{data.map((d: any) => <ProjectTimelineItem data={d} />)}</Timeline>
+            <Timeline className={props.classes.timeline}>{data.map((d: any) => <ProjectTimelineItem data={d} />)}</Timeline>
         </React.Fragment >
     )
 }
@@ -175,31 +172,4 @@ function ProjectTimelineItem(props: any) {
     )
 }
 
-function Contact(props: any) {
-    const data = props.data
-    return <React.Fragment>
-        <List dense style={{ flexGrow: 0 }} className={props.contact} >
-            <ListItem>
-                <ListItemIcon ><PhoneIcon  fontSize="small"/></ListItemIcon>
-                <ListItemText primary={data.phone} />
-            </ListItem>
-            <ListItem button href={data.website}>
-                <ListItemIcon><WebIcon  fontSize="small"/></ListItemIcon>
-                <ListItemText primary={data.website} />
-            </ListItem>
-            <ListItem button href={data.github}>
-                <ListItemIcon><GitHubIcon  fontSize="small"/></ListItemIcon>
-                <ListItemText primary={data.github} />
-            </ListItem>
-            <ListItem button href={data.linkedin}>
-                <ListItemIcon><LinkedInIcon  fontSize="small"/></ListItemIcon>
-                <ListItemText primary={data.linkedin} />
-            </ListItem>
-            <ListItem button href="https://www.google.com/maps/place/Melbourne+VIC">
-                <ListItemIcon><MyLocationIcon  fontSize="small"/></ListItemIcon>
-                <ListItemText primary={data.location} />
-            </ListItem>
-        </List>
-    </React.Fragment>
-}
 export default Resume;

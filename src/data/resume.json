@@ -1,33 +1,35 @@
 {
     "name": "Gavin Rossiter",
-    "phone": "+61 429586649",
+    "avatar":"./images/linkedin-avatar.jpg",
+    "phone": "+61 0429586649",
     "website": "https://gavinrossiter.dev",
     "github": "https://github.com/krooq",
     "linkedin": "https://linkedin.com/in/gavin-rossiter",
-    "location": "Melbourne, Australia",
-    "goals": [
-        "It is my goal to help humanity build a safe and symbiotic relationship with AI.",
-        "I believe the human-AI symbiosis problem to be the greatest challenge we will face in this century."
-    ],
+    "location": {
+        "city": "Melbourne",
+        "country": "Australia",
+        "maps": "https://www.google.com/maps/place/Melbourne+VIC"
+    },
     "about": [
-        "Hi I'm Gav,",
-        "\nI have spent most of my career as a systems software engineer working in air traffic management.",
-        "I'm part of a team of 30, responsible for delivering the controller facing applications for a next gen air traffic system.",
-        "At home I spend almost every waking hour either studying deep learning & artificial intelligence or working on personal projects such as this website.",
-        "\nI'm particularly interested in AI and the relationship humans form with it.",
-        "Artificial intelligence is significantly disrupting the way we live our lives and do business.",
-        "How we address the challenges AI raises now and over the next 20 years, will have a massive impact on society.",
-        "It is my ultimate goal to help humanity build a safe and symbiotic relationship with artificial intelligence,",
-        "so that we may enjoy the benefits and avoid the disasters.",
-        "\nIn my next role I want to take a leap into the field of AI/ML.",
-        "I have strong software and mathematics skills and an ardent passion for the field.",
-        "I also have an entrepreneurial spirit and passion for creating value for society.",
-        "\nIf you are looking for someone with these traits to fill a role in the AI/ML field please reach out."
-    ],
-    "motivation": [
-        "It is my goal to help humanity build a safe and symbiotic relationship with a future artificial general intelligence.",
-        "So that ultimately humanity can enjoy the freedoms of a post scarcity economy awarded by such technologies.",
-        "I also like to keep the lights on, so at my day job I help make the skies safer by building the next generation of air traffic management systems."
+        [
+            "Hi I'm Gav,"
+        ],
+        [
+            "I have spent most of my career as a systems software engineer working in air traffic management.",
+            "I'm part of a team of 30, responsible for delivering the controller facing applications for a next gen air traffic system.",
+            "\nAt home I spend almost every waking hour either studying deep learning & artificial intelligence or working on personal projects such as this website."
+        ],
+        [
+            "I'm particularly interested in artificial intelligence and the relationship humans form with it.",
+            "AI is already significantly disrupting the way we live our lives and do business.",
+            "How we address this disruption both technically and socially will have a massive impact on our society.",
+            "For this reason, it is my goal to help humanity build a safe and symbiotic relationship with AI."
+        ],
+        [
+            "In my next role I want to leverage my software and math skills and passion for AI to solve problems in an AI oriented domain.",
+            "The perfect role for me will focus on creating value for society through either the development of a great AI product/service or reaserch into improved AI algorithms/systems.",
+            "\nIf you are looking for someone with these traits to fill a role in AI please check out my CV linked above and reach out."
+        ]
     ],
     "education": [
         {
@@ -134,33 +136,39 @@
     ],
     "technical": {
         "summary": [
-            "I consider myself a polyglot developer with experience in a broad range languages.",
-            "I find it easy to pick up a less familar language and can be productive with it quite quickly.",
-            "I can code in Java in my sleep, this is my daily driver at work.",
-            "Python and TypeScript are my favorite languages for personal projects, they are just so practical and have great libraries.",
-            "I feel quite comfortable writing shell scripts Bash and in general I feel that I have good knowledge of the Unix ecosystem.",
-            "Recently I learnt some Rust, it was my first serious go (outside of uni) at really low level systems programming and it taught me a lot.",
-            "I know some C/C++ and have written some small C programs at work for low level tasks e.g. interacting with OS processes and windowing systems.",
-            "I'm a decent web programmer, most of the work I have done in web is aligned more towards single page realtime applications."
+            [
+                "I consider myself a polyglot developer with experience in a broad range languages.",
+                "I find it easy to pick up a less familar language and can be productive with it quite quickly.",
+                "I can code in Java in my sleep, this is my daily driver at work.",
+                "Python and TypeScript are my favorite languages for personal projects, they are just so practical and have great libraries.",
+                "I feel quite comfortable writing Bash shell scripts and in general I feel that I have good knowledge of the Unix ecosystem.",
+                "Recently I learnt some Rust, it was my first serious go (outside of uni) at really low level systems programming and it taught me a lot.",
+                "I know some C/C++ and have written some small C programs at work for low level tasks e.g. interacting with OS processes and windowing systems.",
+                "I'm a decent web programmer, most of the work I have done in web is aligned more towards single page realtime applications."
+            ]
         ],
-        "strengths":[
-            "Strong mathematics skills.",
-            "Strong programming skills.",
-            "Solid understanding of the balance between pragmatism and quality in software.",
-            "Experience in complex, realtime, mission and safety critical systems.",
-            "Passionate about software and AI, always working on projects outside of work to improve my skills.", 
-            "Broad set of software skills, from low level bit twiddling to high level scripts, can do basically anything.",
-            "Drive to change the world for the better."
+        "strengths": [
+            [
+                "Strong mathematics skills.",
+                "Strong programming skills.",
+                "Solid understanding of the balance between pragmatism and quality in software.",
+                "Experience in complex, realtime, mission and safety critical systems.",
+                "Passionate about software and AI, always working on projects outside of work to improve my skills.",
+                "Broad set of software skills, from low level bit twiddling to high level scripts, can do basically anything.",
+                "Drive to change the world for the better."
+            ]
         ],
-        "weaknesses":[
-            "I try my best to know what I do not know.",
-            "I'm know that I'm lacking experience in serverless, containerization, modern back end web tech and embedded systems.",
-            "e.g. Docker, Kubernetes, Microservices, AWS, GCP, Azure, Big Data platforms.",
-            "I have a cursory understanding of all of these, and have either done at least one tutorial or read the docs.",
-            "I just haven't had the chance to work with them on more than a personal level."
+        "weaknesses": [
+            [
+                "I try my best to know what I do not know.",
+                "I'm know that I'm lacking experience in serverless, containerization, modern back end web tech and embedded systems.",
+                "e.g. Docker, Kubernetes, Microservices, AWS, GCP, Azure, Big Data platforms.",
+                "I have a cursory understanding of all of these, and have either done at least one tutorial or read the docs.",
+                "I just haven't had the chance to work with them on more than a personal level."
+            ]
         ],
         "languages": {
-            "primary":[
+            "primary": [
                 "Python",
                 "Java",
                 "TypeScript",
@@ -171,13 +179,13 @@
                 "CSS",
                 "Rust"
             ],
-            "secondary":[
+            "secondary": [
                 "C",
                 "C++",
                 "C#",
                 "Scala"
             ],
-            "tertiary":[
+            "tertiary": [
                 "Lisp",
                 "Haskell",
                 "MATLAB",
