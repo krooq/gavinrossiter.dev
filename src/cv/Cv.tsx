@@ -33,7 +33,6 @@ const theme = createMuiTheme({
 });
 
 const useStyles = makeStyles((theme) => ({
-    name: {},
     timeline: {
         padding: 0,
         "& .MuiTimelineContent-root, & .MuiTimelineOppositeContent-root" :{
@@ -43,19 +42,11 @@ const useStyles = makeStyles((theme) => ({
         "& .MuiTimelineItem-root":{
             minHeight: "0px",
         },
-    },
-    projects: {
-        pageBreakBefore: 'always'
-    },
-    contact: {
-        "* .MuiListItem-dense":{
-            padding: 0,
-        },
     }
 }))
 
 function Resume() { 
-    const classes = useStyles();
+    const classes = useStyles()
     const data = resumeData;
     const avatar = false
     const props = { classes, data, avatar }
@@ -65,7 +56,7 @@ function Resume() {
                 <CssBaseline />
                 <Container>
                     <Grid container alignItems="center">
-                        <Grid item sm={6}><Typography variant="h2" className={classes.name}>{data.name}</Typography></Grid>
+                        <Grid item sm={6}><Typography variant="h2">{data.name}</Typography></Grid>
                         <Hidden smUp><Grid item container sm={6} ><Contact {...props} /></Grid></Hidden>
                         <Hidden xsDown><Grid item container sm={6} justify="flex-end"><Contact {...props} /></Grid></Hidden>
                     </Grid>

@@ -9,17 +9,12 @@ import { textBlock } from '../common/Util';
 
 const useStyles = makeStyles((theme) => ({
     nav: {
-        // backgroundColor: "red"
         padding:'8px',
         margin:'16px',
-        // textAlign:'center'
     },
     contact: {
         padding:'8px',
         margin:'16px',
-        // backgroundColor: "blue",
-        // height: "400px",
-        // not sure if using this .MuiAvatar-root is a hack
         '& .MuiAvatar-root': {
             height: theme.spacing(20),
             width: theme.spacing(20),
@@ -30,10 +25,7 @@ const useStyles = makeStyles((theme) => ({
             paddingRight:'16px'
         }
     },
-    cv: {
-        // backgroundColor: "yellow",
-        // height: "100vh",
-    }
+    cv: {}
 }))
 
 function Home() {
