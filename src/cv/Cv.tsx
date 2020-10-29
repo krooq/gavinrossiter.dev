@@ -89,8 +89,12 @@ function Resume() {
                     <Typography variant="overline" gutterBottom>Weaknesses</Typography>
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.weaknesses, "\n")}</Typography> */}
                     <br />
-                    <Typography variant="overline">Languages</Typography>
-                    <TableContainer>
+                    <Typography variant="overline">Primary languages</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.languages.primary.join("\n")}</Typography>
+                    <br />
+                    <Typography variant="overline">Secondary languages</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.languages.secondary.join("\n")}</Typography>
+                    {/* <TableContainer>
                         <Table className={classes.table}>
                             <TableHead>
                                 <TableRow>
@@ -111,7 +115,7 @@ function Resume() {
                                     </TableRow>)
                                     )
                                 )}
-                            {/* {rows.map((row) => (
+                            {rows.map((row) => (
                                 <TableRow key={row.name}>
                                 <TableCell component="th" scope="row">
                                     {row.name}
@@ -121,10 +125,10 @@ function Resume() {
                                 <TableCell align="right">{row.carbs}</TableCell>
                                 <TableCell align="right">{row.protein}</TableCell>
                                 </TableRow>
-                            ))} */}
+                            ))}
                             </TableBody>
                         </Table>
-                    </TableContainer>
+                    </TableContainer> */}
                     <br />
                     <Typography variant="overline" gutterBottom>Paradigms</Typography>
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.paradigms.join("\n")}</Typography>
