@@ -2,7 +2,7 @@ import React from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { Grid, ThemeProvider, CssBaseline, Hidden, Link, Box } from "@material-ui/core";
+import { Grid, ThemeProvider, CssBaseline, Hidden, Link, Box, GridListTile, GridList, TableContainer, TableRow, TableBody, TableCell, TableHead, Table } from "@material-ui/core";
 import resumeData from '../data/resume.json';
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
@@ -42,6 +42,15 @@ const useStyles = makeStyles((theme) => ({
         "& .MuiTimelineItem-root":{
             minHeight: "0px",
         },
+    },
+    table:{
+        '& .MuiTableCell-head':{
+            padding:0
+        },
+        '& .MuiTableCell-body':{
+            padding:0,
+            border:0
+        }
     }
 }))
 
@@ -76,18 +85,46 @@ function Resume() {
                     <br />
                     <Typography variant="overline" gutterBottom>Strengths</Typography>
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.strengths, "\n")}</Typography>
-                    <br />
+                    {/* <br />
                     <Typography variant="overline" gutterBottom>Weaknesses</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.weaknesses, "\n")}</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.weaknesses, "\n")}</Typography> */}
                     <br />
-                    <Typography variant="overline" gutterBottom>Primary languages</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.languages.primary.join("\n")}</Typography>
-                    <br />
-                    <Typography variant="overline" gutterBottom>Secondary languages</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.languages.secondary.join("\n")}</Typography>
-                    <br />
-                    <Typography variant="overline" gutterBottom>Tertiary languages</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.languages.tertiary.join("\n")}</Typography>
+                    <Typography variant="overline">Languages</Typography>
+                    <TableContainer>
+                        <Table className={classes.table}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Language</TableCell>
+                                    <TableCell align="right">Advanced</TableCell>
+                                    <TableCell align="right">Intermediate</TableCell>
+                                    <TableCell align="right">Out of date</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {Object.entries(data.technical.languages).map(p => 
+                                    p[1].map(l=>
+                                    (<TableRow>
+                                        <TableCell component="th" scope="row">{l}</TableCell>
+                                        <TableCell align="right">{p[0] === "primary" ? "*" : ""}</TableCell>
+                                        <TableCell align="right">{p[0] === "secondary"? "*" : ""}</TableCell>
+                                        <TableCell align="right">{p[0] === "tertiary"? "*" : ""}</TableCell>
+                                    </TableRow>)
+                                    )
+                                )}
+                            {/* {rows.map((row) => (
+                                <TableRow key={row.name}>
+                                <TableCell component="th" scope="row">
+                                    {row.name}
+                                </TableCell>
+                                <TableCell align="right">{row.calories}</TableCell>
+                                <TableCell align="right">{row.fat}</TableCell>
+                                <TableCell align="right">{row.carbs}</TableCell>
+                                <TableCell align="right">{row.protein}</TableCell>
+                                </TableRow>
+                            ))} */}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                     <br />
                     <Typography variant="overline" gutterBottom>Paradigms</Typography>
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.paradigms.join("\n")}</Typography>
