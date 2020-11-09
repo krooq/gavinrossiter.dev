@@ -18,7 +18,9 @@
     "@types/seamless-immutable": "^7.1.13",
     "@types/styled-components": "^5.1.1",
     "@types/uuid": "^8.0.0",
+    "colormap": "^2.3.1",
     "css": "^3.0.0",
+    "expat-wasm": "^2.0.1",
     "fontsource-alfa-slab-one": "^3.0.5",
     "fontsource-bebas-neue": "^3.0.5",
     "fontsource-bungee": "^3.0.5",
@@ -35,6 +37,7 @@
     "react-use-gesture": "^7.0.15",
     "seamless-immutable": "^7.1.4",
     "styled-components": "^5.1.1",
+    "treemap-squarify": "^1.0.1",
     "typescript": "^3.9.7",
     "uuid": "^8.2.0"
   },

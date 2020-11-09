@@ -4,10 +4,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { useGesture } from 'react-use-gesture'
 import { animated, Spring } from 'react-spring';
 import { FullGestureState } from 'react-use-gesture/dist/types';
-import useWindowDimensions from './useWindowDimensions';
+import useWindowDimensions from '../common/WindowDimensions';
 import { enableAllPlugins, produce } from 'immer'
-import { clamp } from './util';
-import { useVersionControl } from './useVersionControl';
+import { clamp } from '../common/Util';
+import { useVersionControl } from '../common/VersionControl';
 enableAllPlugins()
 
 // Vectors

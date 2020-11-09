@@ -193,5 +193,23 @@
 //   }
 // }
 // const savedState = loadState();
+
+// function Canvas(): JSX.Element {
+    //     const canvasRef = useRef<HTMLCanvasElement>(null)
+    
+    //     const draw = (ctx: CanvasRenderingContext2D) => {
+        //         ctx.fillStyle = "#FF0000"
+        //         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+        //     }
+        //     useEffect(() => {
+            //         const canvas = canvasRef.current 
+            //         const ctx = canvasRef.current?.getContext("2d")
+            //         ctx && draw(ctx)
+            //     },[draw])
+            
+            //     return <canvas ref={canvasRef} id="background"/>
+            // }
+
+
 // required to please the create-react-app gods
 export { }
