@@ -1,8 +1,7 @@
-import { exception } from 'console';
 import parseFile from './tiny_uploader'
-import { TreeNode, Tree } from './Tree'
+import { Node, Tree } from './Tree'
 // expat-wasm is the sax parser in use but anything can work
-const XmlParser = require('expat-wasm');
+const XmlParser = require('expat-wasm')
 const TAG_START = 'startElement'
 const TAG_BODY = 'characterData'
 const TAG_END = 'endElement'
@@ -10,39 +9,33 @@ const TAG_END = 'endElement'
 /**
  * Parsed element of an XML tree.
  */
-export type XmlNodeData = {
+export type XmlNode = {
   name: string
   attributes: object,
-  data: string | null
+  data: string
 }
 
-export const parseXml = async (file: File, onParseComplete: (tree: Tree<XmlNodeData>) => any) => {
+export const parseXml = async (file: File, onParseComplete: (tree: Tree, xmlNodes: Map<string, XmlNode>) => any) => {
   console.log(`parsing ${file.name}...`)
   let parser = await XmlParser.create()
 
-  let tree: Tree<XmlNodeData>
-  let current: TreeNode<XmlNodeData>
+  const xmlNodes = new Map<string, XmlNode>()
+  const tree = Tree()
+  let current: Node
 
   parser.on(TAG_START, (name: string, attributes: object) => {
-    // set root node
-    if (!tree) {
-      tree = Tree<XmlNodeData>({ name: name, attributes: {}, data: null })
-      current = tree.root
-      return
-    }
     // add child node
-    if (current.name !== name) {
-      const child: XmlNodeData = { name: name, attributes: attributes, data: null }
-      current = tree.addChild(current, child)
-      return
-    }
-    // add sibling node
-    const sibling = { parent: current.parent, children: [], name: name, attributes: attributes, data: "" }
-    tree.addSibling(current, sibling)
+    current = tree.addChild(current || tree.root)
+    xmlNodes.set(current.id, { name: name, attributes: attributes, data: "" })
   })
 
   parser.on(TAG_BODY, (data: string) => {
-    current.data = current.data + data
+    const node = xmlNodes.get(current.id)
+    if (node) {
+      node.data += data
+    } else {
+      console.log("Invalid node encountered in parsing!", current)
+    }
   })
 
   parser.on(TAG_END, (name: string) => {
@@ -50,14 +43,14 @@ export const parseXml = async (file: File, onParseComplete: (tree: Tree<XmlNodeD
     if (parent) {
       current = parent
     } else {
-      throw exception(`Invalid node encountered in parsing! node: ${current}`)
+      console.log("Invalid node encountered in parsing!", current)
     }
   })
 
   const parseChunk = (xmlChunk: any) => { parser.parse(xmlChunk, 0) }
   const parseComplete = (xmlFile: any) => {
     console.log("parsing complete!")
-    onParseComplete(tree)
+    onParseComplete(tree, xmlNodes)
     parser.destroy()
   }
   parseFile(file, { 'chunk_read_callback': parseChunk, 'success': parseComplete })
@@ -76,3 +69,5 @@ export const parseXml = async (file: File, onParseComplete: (tree: Tree<XmlNodeD
 //   }
 //   console.log(`${indent}</${node.name}>`)
 // }
+
+export default {}
