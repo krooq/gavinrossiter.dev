@@ -47,12 +47,11 @@ function TreeMap(props: {
   tree: Tree,
   root: Node,
   treeMapNodes: Map<string, TreeMapNode>,
-  maxWidth: number,
-  maxHeight: number,
   width: number,
   height: number,
   onClick: (node: string) => void,
   onDoubleClick: (node: string) => void
+  onMouseOver: (node: string) => void
 }) {
   return <Fragment>
     {props.root.children.length > 0 &&
@@ -68,14 +67,13 @@ function TreeMapSection(props: {
   tree: Tree,
   root: Node,
   treeMapNodes: Map<string, TreeMapNode>,
-  maxWidth: number,
-  maxHeight: number,
   width: number,
   height: number,
   dx: number,
   dy: number,
   onClick: (node: string) => void,
-  onDoubleClick: (node: string) => void
+  onDoubleClick: (node: string) => void,
+  onMouseOver: (node: string) => void
 }) {
   // console.log(props.root)
   // console.log(props.tree.children(props.root).map(n => n && props.treeMapNodes.get(n.id)))
@@ -105,7 +103,8 @@ function TreeMapSection(props: {
             stroke="black"
             pointerEvents="visibleFill"
             onClick={e => props.onClick(data.id)}
-          // onDoubleClick={e => props.onDoubleClick(data)}
+            onDoubleClick={e => props.onDoubleClick(data.id)}
+            onMouseOver={e => props.onMouseOver(data.id)}
           />
           {/* <text x={x + props.dx + 4} y={y + props.dy + 12} fill="white" fontSize="10px">{nodeToString(treeMapNode)}</text> */}
           {/* <text x={x + props.dx + 4} y={y + props.dy + 12 + 16} fill="white" fontSize="10px">{data.xmlNode.data}</text> */}
@@ -121,13 +120,12 @@ function TreeMapSection(props: {
             tree={props.tree}
             root={node}
             treeMapNodes={props.treeMapNodes}
-            maxWidth={props.maxWidth}
-            maxHeight={props.maxHeight}
             width={width - 10}
             height={height - 30}
             dx={x + props.dx + 5}
             dy={y + props.dy + 20}
             onClick={props.onClick}
+            onMouseOver={props.onMouseOver}
             onDoubleClick={props.onDoubleClick} />
         }
       </Fragment >
@@ -147,6 +145,8 @@ function App() {
     if (tree && treeMapNodes)
       openNodes(tree, treeMapNodes, id, setTreeMapNodes);
   }
+  const onMouseOver = (id: string) => {
+  }
 
   return <div>
     <div style={{ height: "50px" }}>
@@ -164,16 +164,20 @@ function App() {
         })}>Parse</button>
       </div>
     </div>
-    {tree && treeMapNodes && <TreeMap
-      tree={tree}
-      root={tree.sentinel}
-      treeMapNodes={treeMapNodes}
-      maxWidth={windowWidth}
-      maxHeight={windowHeight - 54}
-      width={windowWidth}
-      height={windowHeight - 54}
-      onClick={onClick}
-      onDoubleClick={onDoubleClick} />}
+    {
+      tree && treeMapNodes &&
+      <TreeMap
+        tree={tree}
+        root={tree.sentinel}
+        treeMapNodes={treeMapNodes}
+        width={windowWidth}
+        height={windowHeight - 54}
+        onClick={onClick}
+        onDoubleClick={onDoubleClick}
+        onMouseOver={onMouseOver}
+      />
+
+    }
   </div>
 }
 
