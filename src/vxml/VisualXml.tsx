@@ -107,22 +107,30 @@ function TreeMapSection(props: {
             onClick={e => props.onClick(data.id)}
           // onDoubleClick={e => props.onDoubleClick(data)}
           />
-          <text x={x + props.dx + 4} y={y + props.dy + 12} fill="white" fontSize="10px">{nodeToString(treeMapNode)}</text>
-          {/* <text x={x + props.dx + 4} y={y + props.dy + 12 + 16} fill="white" fontSize="10px">{data.node.data}</text> */}
+          {/* <text x={x + props.dx + 4} y={y + props.dy + 12} fill="white" fontSize="10px">{nodeToString(treeMapNode)}</text> */}
+          {/* <text x={x + props.dx + 4} y={y + props.dy + 12 + 16} fill="white" fontSize="10px">{data.xmlNode.data}</text> */}
+          <foreignObject pointerEvents="none" x={x + props.dx + 4} y={y + props.dy} width={width} height={height}>
+            <p style={{ fontSize: "10px", color: "white", margin: "0" }}>{nodeToString(treeMapNode)}</p>
+          </foreignObject>
+          <foreignObject pointerEvents="none" x={x + props.dx + 4} y={y + props.dy + 16} width={width} height={height}>
+            <p style={{ fontSize: "10px", color: "white", margin: "0" }}>{data.xmlNode.data}</p>
+          </foreignObject>
         </g >
-        {treeMapNode.opened && <TreeMapSection
-          tree={props.tree}
-          root={node}
-          treeMapNodes={props.treeMapNodes}
-          maxWidth={props.maxWidth}
-          maxHeight={props.maxHeight}
-          width={width - 10}
-          height={height - 30}
-          dx={x + props.dx + 5}
-          dy={y + props.dy + 25}
-          onClick={props.onClick}
-          onDoubleClick={props.onDoubleClick} />}
-      </Fragment>
+        {
+          treeMapNode.opened && <TreeMapSection
+            tree={props.tree}
+            root={node}
+            treeMapNodes={props.treeMapNodes}
+            maxWidth={props.maxWidth}
+            maxHeight={props.maxHeight}
+            width={width - 10}
+            height={height - 30}
+            dx={x + props.dx + 5}
+            dy={y + props.dy + 20}
+            onClick={props.onClick}
+            onDoubleClick={props.onDoubleClick} />
+        }
+      </Fragment >
     }
     )
 }
