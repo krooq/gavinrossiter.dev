@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react';
 import useWindowDimensions from '../common/WindowDimensions';
 import { v4 as uuidv4 } from 'uuid';
 import { parseXml, XmlNode } from './XmlParser';
+import { iff, sole, notEmpty } from '../common/Util';
 import { Tree, Node, recurse } from './Tree';
 // non typescript imports
 const { getTreemap } = require('treemap-squarify');
@@ -20,11 +21,11 @@ type TreeMapRect = {
   y: number,
   width: number,
   height: number,
-  data: Node
+  data: TreeMapNode
 }
 
 function TreeMapNode(node: Node, xmlNode: XmlNode): TreeMapNode {
-  return { id: node.id, xmlNode: xmlNode, value: node.children.length + 1, opened: false, collapsed: true }
+  return { id: node.id, xmlNode: xmlNode, value: node.children.length, opened: false, collapsed: false }
 }
 
 // function buildTreeMapNode(node: TreeNode<TreeMapNodeData<XmlNode>>, opened: boolean = false, collapsed = false): TreeMapNode {
@@ -46,6 +47,8 @@ function TreeMap(props: {
   tree: Tree,
   root: Node,
   treeMapNodes: Map<string, TreeMapNode>,
+  maxWidth: number,
+  maxHeight: number,
   width: number,
   height: number,
   onClick: (node: string) => void,
@@ -65,6 +68,8 @@ function TreeMapSection(props: {
   tree: Tree,
   root: Node,
   treeMapNodes: Map<string, TreeMapNode>,
+  maxWidth: number,
+  maxHeight: number,
   width: number,
   height: number,
   dx: number,
@@ -72,6 +77,7 @@ function TreeMapSection(props: {
   onClick: (node: string) => void,
   onDoubleClick: (node: string) => void
 }) {
+  // console.log(props.root)
   // console.log(props.tree.children(props.root).map(n => n && props.treeMapNodes.get(n.id)))
   let colors: string[] = colormap({
     colormap: 'temperature',
@@ -79,12 +85,21 @@ function TreeMapSection(props: {
     format: 'hex',
     alpha: 0.75
   })
+  const children = props.tree.children(props.root)
+    .map(n => props.treeMapNodes.get(n.id))
+    // only render nodes with a value greater than 0
+    .filter(c => c && c?.value > 0)
 
-  return getTreemap({ data: props.tree.children(props.root).map(n => n && props.treeMapNodes.get(n.id)), width: props.width, height: props.height })
+  return getTreemap({
+    data: children,
+    width: props.width,
+    height: props.height
+  })
     .map(({ x, y, width, height, data }: TreeMapRect, i: number) => {
-      console.log({ x, y, width, height, data })
+      // console.log({ x, y, width, height, data })
+      const node = props.tree.nodes.get(data.id)
       const treeMapNode = props.treeMapNodes.get(data.id)
-      return treeMapNode && <Fragment key={data.id}>
+      return node && treeMapNode && <Fragment key={data.id}>
         <g fill={colors[i]}>
           <rect x={x + props.dx} y={y + props.dy} width={width} height={height}
             stroke="black"
@@ -97,8 +112,10 @@ function TreeMapSection(props: {
         </g >
         {treeMapNode.opened && <TreeMapSection
           tree={props.tree}
-          root={data}
+          root={node}
           treeMapNodes={props.treeMapNodes}
+          maxWidth={props.maxWidth}
+          maxHeight={props.maxHeight}
           width={width - 10}
           height={height - 30}
           dx={x + props.dx + 5}
@@ -117,50 +134,12 @@ function App() {
   const [tree, setTree] = useState<Tree>()
 
   const onDoubleClick = (id: string) => {
-    // if (tree && data.children.length > 0) {
-    //   const openNode = (node: TreeMapNode) => {
-    //     if (node.id === data.id) {
-    //       node.opened = !node.opened
-    //       return node
-    //     }
-    //     return null
-    //   }
-    //   const closeChildren = (node: TreeMapNode) => {
-    //     node.opened = false
-    //     return null
-    //   }
-    // recurse(rootTreeMapNode, openNode)
-    // // closes all children, sorta like collapse all
-    // // remove this to remember what children were open
-    // data.children.forEach(child => recurse(child, closeChildren))
-    // setRootTreeMapNode({ ...rootTreeMapNode })
-    // }
   }
   const onClick = (id: string) => {
-    // console.log(n)
-    // console.log(tree?.children)
-    // console.log(tree?.children(n))
-    if (tree && treeMapNodes) {
-      const node = tree.nodes.get(id)
-      if (node && tree.children(node).length > 0) {
-        const collapseNodes = (tn: TreeMapNode) => {
-          if (tn.id !== id) {
-            tn.collapsed = true
-          }
-          return null
-        }
-        const resetAll = (node: TreeMapNode) => {
-          node.collapsed = false
-          return false
-        }
-      }
-      tree.nodes.entries().map(k => treeMapNodes.get(k)).forEach(n => n.collapsed = false)
-      // recurse(rootTreeMapNode, resetAll)
-      // recurse(rootTreeMapNode, collapseNodes)
-      // setRootTreeMapNode({ ...rootTreeMapNode })
-      // }
-    }
+    if (tree && treeMapNodes)
+      openNodes(tree, treeMapNodes, id, setTreeMapNodes);
   }
+
   return <div>
     <div style={{ height: "50px" }}>
       <div style={{ padding: "8px" }}>
@@ -179,8 +158,10 @@ function App() {
     </div>
     {tree && treeMapNodes && <TreeMap
       tree={tree}
-      root={tree.root}
+      root={tree.sentinel}
       treeMapNodes={treeMapNodes}
+      maxWidth={windowWidth}
+      maxHeight={windowHeight - 54}
       width={windowWidth}
       height={windowHeight - 54}
       onClick={onClick}
@@ -189,19 +170,37 @@ function App() {
 }
 
 
-// /**
-//  * Recurse depth first through a recursive element.
-//  * Starting at some node and descending through its children applying a function at each node.
-//  * If the function returns a truthy value, the recursion short circuits and last result of the function is returned.
-//  * @param node to start recursion from
-//  * @param f function applied to each child, returns truthy value if the recursion should short circuit
-//  */
-// function recurse<N extends { children: N[] }, U>(node: N, f: (node: N) => U): U {
-//   let result: U = f(node)
-//   if (!result) {
-//     node.children.forEach(child => { result = recurse(child, f) })
-//   }
-//   return result
-// }
-
 export default App
+
+
+function openNodes(tree: Tree, treeMapNodes: Map<string, TreeMapNode>, id: string, setTreeMapNodes: React.Dispatch<React.SetStateAction<Map<string, TreeMapNode> | undefined>>) {
+  if (tree.children(id).length > 0) {
+    console.log(id);
+    for (let [k, _] of tree.nodes) {
+      // toggle open the node that was clicked
+      if (k === id) {
+        sole(treeMapNodes.get(k)).forEach(n => {
+          n.opened = !n.opened || !n.collapsed
+          n.collapsed = false
+          n.value = tree.node(k).children.length
+        });
+        // toggle closed the children of the node that was clicked, not essential
+        for (const child of tree.children(k)) {
+          tree.recurse(child, n => sole(treeMapNodes.get(n.id)).forEach(n => {
+            n.opened = false
+            n.collapsed = false
+            n.value = tree.node(k).children.length
+          }));
+        }
+        for (const sibling of tree.siblings(k)) {
+          sole(treeMapNodes.get(sibling.id)).forEach(s => {
+            s.collapsed = true
+            s.value = 0
+          });
+        }
+      }
+    }
+    setTreeMapNodes(new Map(treeMapNodes));
+  }
+}
+

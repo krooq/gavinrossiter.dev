@@ -1,8 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-
-function notEmpty<T>(value: T | null | undefined): value is T {
-    return value !== null && value !== undefined;
-}
+import { head, notEmpty } from '../common/Util'
 
 export type Node = {
     id: string,
@@ -10,13 +7,17 @@ export type Node = {
     children: string[],
 }
 export type Tree = {
-    sentinel: string
+    sentinel: Node
     root: Node
     nodes: Map<string, Node>
-    parent: (node: Node) => Node | undefined
-    children: (node: Node) => (Node | undefined)[]
-    addChild: (node: Node) => Node
-    addSibling: (node: Node) => Node | undefined
+    node: (node: Node | string) => Node
+    id: (node: Node | string) => string
+    parent: (node: Node | string) => Node
+    children: (node: Node | string) => Node[]
+    siblings: (node: Node | string) => Node[]
+    addChild: (node: Node | string) => Node
+    addSibling: (node: Node | string) => Node
+    recurse: (node: Node | string, f: (node: Node) => void) => void
 }
 export function Node(parent: Node): Node {
     const id = uuidv4()
@@ -25,23 +26,28 @@ export function Node(parent: Node): Node {
 }
 
 export function Tree(): Tree {
-    const sentinel = uuidv4()
-    const root = { id: uuidv4(), parent: sentinel, children: [] }
+    const sentinel = { id: uuidv4(), parent: uuidv4(), children: Array<string>() }
     const nodes = new Map<string, Node>()
-    const parent = (n: Node) => n.parent ? nodes.get(n.parent) : undefined
-    const children = (n: Node) => n.children.map(id => nodes.get(id))
-    const addChild = (n: Node) => {
-        const childNode = Node(n)
-        n.children.push(childNode.id)
+    const node = (n: Node | string) => head([nodes.get(typeof n === 'string' ? n : n.id)].filter(notEmpty), () => Error('Node not found in tree!'))
+    const id = (n: Node | string) => node(n).id
+    const parent = (n: Node | string) => node(node(n).parent)
+    const children = (n: Node | string) => node(n).children.map(c => node(c))
+    const siblings = (n: Node | string) => children(parent(n)).filter(s => id(s) !== id(n))
+    const addChild = (n: Node | string) => {
+        const parentNode = node(n)
+        const childNode = Node(parentNode)
+        parentNode.children.push(childNode.id)
         nodes.set(childNode.id, childNode)
         return childNode
     }
-    const addSibling = (node: Node) => {
-        const parentNode: Node | undefined = parent(node)
-        return parentNode ? addChild(parentNode) : undefined
+    const addSibling = (n: Node | string) => addChild(parent(n))
+    const recurse = (n: Node | string, f: (n: Node) => void) => {
+        f(node(n))
+        children(n).forEach(c => recurse(c, f))
     }
-    nodes.set(root.id, root)
-    return { sentinel, root, nodes, parent, children, addChild, addSibling }
+    nodes.set(sentinel.id, sentinel)
+    const root = addChild(sentinel)
+    return { sentinel, root, nodes, node, id, parent, children, siblings, addChild, addSibling, recurse }
 }
 
 /**
@@ -50,14 +56,15 @@ export function Tree(): Tree {
 * @param node to start recursion from
 * @param f function applied to each child, returns truthy value if the recursion should short circuit
 */
-export function recurse<U>(tree: Tree, node: Node, onEnter: (node: Node) => U, onExit: (node: Node) => void): U {
+export function recurse<U>(tree: Tree, node: Node, onEnter: (node: Node) => U, onExit: ((node: Node) => void) | null = null): U {
     let result: U = onEnter(node)
     if (!result) {
         tree.children(node).forEach(child => {
             result = child ? recurse(tree, child, onEnter, onExit) : result
         })
     }
-    onExit(node)
+    if (onExit)
+        onExit(node)
     return result
 }
 

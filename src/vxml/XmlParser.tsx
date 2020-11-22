@@ -20,31 +20,35 @@ export const parseXml = async (file: File, onParseComplete: (tree: Tree, xmlNode
   let parser = await XmlParser.create()
 
   const xmlNodes = new Map<string, XmlNode>()
-  const tree = Tree()
+  let tree: Tree
   let current: Node
 
   parser.on(TAG_START, (name: string, attributes: object) => {
-    // add child node
-    current = tree.addChild(current || tree.root)
+    if (!tree) {
+      tree = Tree()
+      current = tree.root
+    } else
+      current = tree.addChild(current)
+
     xmlNodes.set(current.id, { name: name, attributes: attributes, data: "" })
   })
 
   parser.on(TAG_BODY, (data: string) => {
     const node = xmlNodes.get(current.id)
-    if (node) {
+    if (node)
       node.data += data
-    } else {
+    else
       console.log("Invalid node encountered in parsing!", current)
-    }
   })
 
   parser.on(TAG_END, (name: string) => {
+    if (current === tree.root)
+      return
     const parent = tree.parent(current)
-    if (parent) {
+    if (parent)
       current = parent
-    } else {
+    else
       console.log("Invalid node encountered in parsing!", current)
-    }
   })
 
   const parseChunk = (xmlChunk: any) => { parser.parse(xmlChunk, 0) }
