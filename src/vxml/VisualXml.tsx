@@ -4,9 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { parseXml, XmlNode } from './XmlParser';
 import { sole } from '../common/Util';
 import { Tree, Node } from './Tree';
-
-// import { useGesture } from 'react-use-gesture'
-// import { FullGestureState, GestureState, Handler, ReactEventHandlers, UserHandlersPartial } from 'react-use-gesture/dist/types';
+import { ReactEventHandlers } from 'react-use-gesture/dist/types';
+import { useGesture } from 'react-use-gesture';
+import { GestureSharp } from '@material-ui/icons';
 
 // non typescript imports
 const { getTreemap } = require('treemap-squarify');
@@ -40,17 +40,17 @@ function TreeMapNode(node: Node, xmlNode: XmlNode): TreeMapNode {
   return { id, xmlNode, value, opened, collapsed, highlighted, toString }
 }
 
-function TreeMap(props: {
+type TreeMapProps = {
   tree: Tree,
   root: Node,
   treeMapNodes: Map<string, TreeMapNode>,
   width: number,
   height: number,
-  onClick: (node: string) => void,
-  onDoubleClick: (node: string) => void,
-  onMouseEnter: (node: string) => void,
-  onMouseLeave: (node: string) => void
-}) {
+  gestures: (id: string) => ReactEventHandlers
+}
+type TreeMapSectionProps = TreeMapProps & { dx: number, dy: number }
+
+function TreeMap(props: TreeMapProps) {
   return <Fragment>
     {props.root.children.length > 0 &&
       <svg xmlns="http://www.w3.org/2000/svg" width={props.width} height={props.height}>
@@ -61,19 +61,7 @@ function TreeMap(props: {
   </Fragment>
 }
 
-function TreeMapSection(props: {
-  tree: Tree,
-  root: Node,
-  treeMapNodes: Map<string, TreeMapNode>,
-  width: number,
-  height: number,
-  dx: number,
-  dy: number,
-  onClick: (node: string) => void,
-  onDoubleClick: (node: string) => void,
-  onMouseEnter: (node: string) => void,
-  onMouseLeave: (node: string) => void
-}) {
+function TreeMapSection(props: TreeMapSectionProps) {
   // console.log(props.root)
   // console.log(props.tree.children(props.root).map(n => n && props.treeMapNodes.get(n.id)))
   let colors: string[] = colormap({
@@ -84,7 +72,7 @@ function TreeMapSection(props: {
   })
   const children = props.tree.children(props.root)
     .map(n => props.treeMapNodes.get(n.id))
-    // only render nodes with a value greater than 0
+    // only render nodes with a value greater than 0, otherwise getTreemap algorithm will throw an error
     .filter(c => c && c?.value > 0)
 
   return getTreemap({
@@ -97,14 +85,11 @@ function TreeMapSection(props: {
       const node = props.tree.nodes.get(data.id)
       const treeMapNode = props.treeMapNodes.get(data.id)
       return node && treeMapNode && <Fragment key={data.id}>
-        <g fill={data.highlighted ? Color(colors[i]).lighten(0.5).hex() : colors[i]}>
+        <g fill={data.highlighted ? Color(colors[i]).lighten(0.5).hex() : colors[i]} >
           <rect x={x + props.dx} y={y + props.dy} width={width} height={height}
             stroke="black"
             pointerEvents="visibleFill"
-            onClick={e => props.onClick(data.id)}
-            onDoubleClick={e => props.onDoubleClick(data.id)}
-            onMouseEnter={e => props.onMouseEnter(data.id)}
-            onMouseLeave={e => props.onMouseLeave(data.id)}
+            {...props.gestures(data.id)}
           />
           {/* <text x={x + props.dx + 4} y={y + props.dy + 12} fill="white" fontSize="10px">{nodeToString(treeMapNode)}</text> */}
           {/* <text x={x + props.dx + 4} y={y + props.dy + 12 + 16} fill="white" fontSize="10px">{data.xmlNode.data}</text> */}
@@ -124,10 +109,7 @@ function TreeMapSection(props: {
             height={height - 30}
             dx={x + props.dx + 5}
             dy={y + props.dy + 20}
-            onClick={props.onClick}
-            onDoubleClick={props.onDoubleClick}
-            onMouseEnter={props.onMouseEnter}
-            onMouseLeave={props.onMouseLeave} />
+            gestures={props.gestures} />
         }
       </Fragment >
     }
@@ -139,14 +121,15 @@ function App() {
   const [upload, setUpload] = useState<File>()
   const [treeMapNodes, setTreeMapNodes] = useState<Map<string, TreeMapNode>>()
   const [tree, setTree] = useState<Tree>()
-  // const gestures: (id: string) => ReactEventHandlers = useGesture({
-  //   onDragStart: state => {
-  //     if (tree && treeMapNodes) {
-  //       const args: { id: string } = state.args
-  //       openNodes(tree, treeMapNodes, args.id, setTreeMapNodes);
-  //     }
-  //   }
-  // })
+  const gestures: (id: string) => ReactEventHandlers = useGesture({
+    onDragStart: state => {
+      if (tree && treeMapNodes) {
+        console.log(state.args)
+        const [id]: [string] = state.args
+        openNodes(tree, treeMapNodes, id, setTreeMapNodes);
+      }
+    }
+  })
 
   const onDoubleClick = (id: string) => {
   }
@@ -208,10 +191,7 @@ function App() {
         treeMapNodes={treeMapNodes}
         width={windowWidth}
         height={windowHeight - 54}
-        onClick={onClick}
-        onDoubleClick={onDoubleClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+        gestures={gestures}
       />
 
     }
