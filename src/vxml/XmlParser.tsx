@@ -15,7 +15,7 @@ export type XmlNode = {
   data: string
 }
 
-export const parseXml = async (file: File, onParseComplete: (tree: Tree, xmlNodes: Map<string, XmlNode>) => any) => {
+export async function parseXml(file: File): Promise<[Tree, Map<string, XmlNode>]> {
   console.log(`parsing ${file.name}...`)
   let parser = await XmlParser.create()
 
@@ -36,7 +36,7 @@ export const parseXml = async (file: File, onParseComplete: (tree: Tree, xmlNode
   parser.on(TAG_BODY, (data: string) => {
     const node = xmlNodes.get(current.id)
     if (node)
-      node.data += data
+      node.data += data.trim()
     else
       console.log("Invalid node encountered in parsing!", current)
   })
@@ -50,14 +50,17 @@ export const parseXml = async (file: File, onParseComplete: (tree: Tree, xmlNode
     else
       console.log("Invalid node encountered in parsing!", current)
   })
-
   const parseChunk = (xmlChunk: any) => { parser.parse(xmlChunk, 0) }
-  const parseComplete = (xmlFile: any) => {
-    console.log("parsing complete!")
-    onParseComplete(tree, xmlNodes)
-    parser.destroy()
-  }
-  parseFile(file, { 'chunk_read_callback': parseChunk, 'success': parseComplete })
+
+  return new Promise<[Tree, Map<string, XmlNode>]>((resolve, reject) => {
+    parseFile(file, {
+      'chunk_read_callback': parseChunk, 'success': (xmlFile: any) => {
+        console.log("parsing complete!")
+        parser.destroy()
+        resolve([tree, xmlNodes])
+      }
+    })
+  })
 }
 
 // node printing utility, useful for checking the parse result
@@ -74,4 +77,3 @@ export const parseXml = async (file: File, onParseComplete: (tree: Tree, xmlNode
 //   console.log(`${indent}</${node.name}>`)
 // }
 
-export default {}

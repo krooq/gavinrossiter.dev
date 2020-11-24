@@ -4,17 +4,23 @@ import { v4 as uuidv4 } from 'uuid';
 import { parseXml, XmlNode } from './XmlParser';
 import { iff, sole, notEmpty } from '../common/Util';
 import { Tree, Node, recurse } from './Tree';
+
+import { useGesture } from 'react-use-gesture'
+import { FullGestureState, GestureState, Handler, ReactEventHandlers, UserHandlersPartial } from 'react-use-gesture/dist/types';
+
 // non typescript imports
 const { getTreemap } = require('treemap-squarify');
 const colormap = require('colormap')
-
+const Color = require('color')
 
 type TreeMapNode = {
   id: string
   xmlNode: XmlNode
   value: number,
   opened: boolean,
-  collapsed: boolean
+  collapsed: boolean,
+  highlighted: boolean
+  toString: () => string
 }
 type TreeMapRect = {
   x: number,
@@ -25,22 +31,13 @@ type TreeMapRect = {
 }
 
 function TreeMapNode(node: Node, xmlNode: XmlNode): TreeMapNode {
-  return { id: node.id, xmlNode: xmlNode, value: node.children.length, opened: false, collapsed: false }
-}
-
-// function buildTreeMapNode(node: TreeNode<TreeMapNodeData<XmlNode>>, opened: boolean = false, collapsed = false): TreeMapNode {
-//   return {
-//     children: node.children.map(n => buildTreeMapNode({ ...n })),
-//     id: uuidv4(),
-//     value: node.children.length + 1,
-//     node: node,
-//     opened: opened,
-//     collapsed: collapsed
-//   }
-// }
-
-function nodeToString(node: TreeMapNode): string {
-  return `<${node.xmlNode.name}${Object.entries(node.xmlNode.attributes).map(o => ` ${o[0]}="${o[1]}"`).join()}>`
+  const id = node.id
+  const value = node.children.length
+  const opened = false
+  const collapsed = false
+  const highlighted = false
+  const toString = () => `<${xmlNode.name}${Object.entries(xmlNode.attributes).map(o => ` ${o[0]}="${o[1]}"`).join()}>`
+  return { id, xmlNode, value, opened, collapsed, highlighted, toString }
 }
 
 function TreeMap(props: {
@@ -50,8 +47,9 @@ function TreeMap(props: {
   width: number,
   height: number,
   onClick: (node: string) => void,
-  onDoubleClick: (node: string) => void
-  onMouseOver: (node: string) => void
+  onDoubleClick: (node: string) => void,
+  onMouseEnter: (node: string) => void,
+  onMouseLeave: (node: string) => void
 }) {
   return <Fragment>
     {props.root.children.length > 0 &&
@@ -73,7 +71,8 @@ function TreeMapSection(props: {
   dy: number,
   onClick: (node: string) => void,
   onDoubleClick: (node: string) => void,
-  onMouseOver: (node: string) => void
+  onMouseEnter: (node: string) => void,
+  onMouseLeave: (node: string) => void
 }) {
   // console.log(props.root)
   // console.log(props.tree.children(props.root).map(n => n && props.treeMapNodes.get(n.id)))
@@ -98,18 +97,19 @@ function TreeMapSection(props: {
       const node = props.tree.nodes.get(data.id)
       const treeMapNode = props.treeMapNodes.get(data.id)
       return node && treeMapNode && <Fragment key={data.id}>
-        <g fill={colors[i]}>
+        <g fill={data.highlighted ? Color(colors[i]).lighten(0.5).hex() : colors[i]}>
           <rect x={x + props.dx} y={y + props.dy} width={width} height={height}
             stroke="black"
             pointerEvents="visibleFill"
             onClick={e => props.onClick(data.id)}
             onDoubleClick={e => props.onDoubleClick(data.id)}
-            onMouseOver={e => props.onMouseOver(data.id)}
+            onMouseEnter={e => props.onMouseEnter(data.id)}
+            onMouseLeave={e => props.onMouseLeave(data.id)}
           />
           {/* <text x={x + props.dx + 4} y={y + props.dy + 12} fill="white" fontSize="10px">{nodeToString(treeMapNode)}</text> */}
           {/* <text x={x + props.dx + 4} y={y + props.dy + 12 + 16} fill="white" fontSize="10px">{data.xmlNode.data}</text> */}
           <foreignObject pointerEvents="none" x={x + props.dx + 4} y={y + props.dy} width={width} height={height}>
-            <p style={{ fontSize: "10px", color: "white", margin: "0" }}>{nodeToString(treeMapNode)}</p>
+            <p style={{ fontSize: "10px", color: "white", margin: "0" }}>{treeMapNode.toString()}</p>
           </foreignObject>
           <foreignObject pointerEvents="none" x={x + props.dx + 4} y={y + props.dy + 16} width={width} height={height}>
             <p style={{ fontSize: "10px", color: "white", margin: "0" }}>{data.xmlNode.data}</p>
@@ -125,8 +125,9 @@ function TreeMapSection(props: {
             dx={x + props.dx + 5}
             dy={y + props.dy + 20}
             onClick={props.onClick}
-            onMouseOver={props.onMouseOver}
-            onDoubleClick={props.onDoubleClick} />
+            onDoubleClick={props.onDoubleClick}
+            onMouseEnter={props.onMouseEnter}
+            onMouseLeave={props.onMouseLeave} />
         }
       </Fragment >
     }
@@ -138,30 +139,65 @@ function App() {
   const [upload, setUpload] = useState<File>()
   const [treeMapNodes, setTreeMapNodes] = useState<Map<string, TreeMapNode>>()
   const [tree, setTree] = useState<Tree>()
+  const gestures: (id: string) => ReactEventHandlers = useGesture({
+    onDragStart: state => {
+      if (tree && treeMapNodes) {
+        const args: { id: string } = state.args
+        openNodes(tree, treeMapNodes, args.id, setTreeMapNodes);
+      }
+    }
+  })
 
   const onDoubleClick = (id: string) => {
   }
   const onClick = (id: string) => {
-    if (tree && treeMapNodes)
+    if (tree && treeMapNodes) {
       openNodes(tree, treeMapNodes, id, setTreeMapNodes);
+    }
   }
-  const onMouseOver = (id: string) => {
+  const onMouseEnter = (id: string) => {
+    if (tree && treeMapNodes) {
+      for (let [k, _] of tree.nodes) {
+        if (k === id) {
+          sole(treeMapNodes.get(id)).filter(n => n.value > 0).forEach(n => {
+            console.log(n)
+            n.highlighted = true
+          })
+        } else {
+          sole(treeMapNodes.get(k)).forEach(n => n.highlighted = false)
+        }
+      }
+      setTreeMapNodes(new Map(treeMapNodes))
+    }
+  }
+  const onMouseLeave = (id: string) => {
+    if (tree && treeMapNodes) {
+      for (let [k, _] of tree.nodes) {
+        if (k === id) {
+          // sole(treeMapNodes.get(id)).forEach(n => n.highlighted = false)
+        }
+      }
+      setTreeMapNodes(new Map(treeMapNodes))
+    }
   }
 
   return <div>
     <div style={{ height: "50px" }}>
       <div style={{ padding: "8px" }}>
         <input type="file" onChange={(e) => setUpload(e?.target?.files?.[0])} />
-        <button onClick={(e) => upload && parseXml(upload, (xmlTree, xmlNodes) => {
-          setTree(xmlTree)
-          // console.log(xmlNodes)
-          const treeMapNodesDraft = new Map<string, TreeMapNode>()
-          for (const [id, node] of xmlTree.nodes) {
-            const xmlNode = xmlNodes.get(id)
-            xmlNode && treeMapNodesDraft.set(id, TreeMapNode(node, xmlNode))
-          }
-          setTreeMapNodes(treeMapNodesDraft)
-        })}>Parse</button>
+        <button onClick={(e) => {
+          upload && parseXml(upload).then(([xmlTree, xmlNodes]) => {
+            setTree(xmlTree)
+            // console.log(xmlNodes)
+            const treeMapNodesDraft = new Map<string, TreeMapNode>()
+            for (const [id, node] of xmlTree.nodes) {
+              const xmlNode = xmlNodes.get(id)
+              xmlNode && treeMapNodesDraft.set(id, TreeMapNode(node, xmlNode))
+            }
+            setTreeMapNodes(treeMapNodesDraft)
+          })
+        }
+        }>Parse</button>
       </div>
     </div>
     {
@@ -174,7 +210,8 @@ function App() {
         height={windowHeight - 54}
         onClick={onClick}
         onDoubleClick={onDoubleClick}
-        onMouseOver={onMouseOver}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       />
 
     }
