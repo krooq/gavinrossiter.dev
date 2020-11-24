@@ -35,3 +35,33 @@ test('parse tree', async () => {
         { name: "ar_2", attributes: {}, data: "" }
     ]);
 });
+
+// XML vs JSON
+{/* 
+<root>
+    <a x="" y="">
+        <b z="">
+            <c></c>
+            <d></d>
+        </b>
+    </a>
+</root>
+
+{
+    _name: "root"
+    _children: [
+        {
+            _name: "a", x: "", y: "",
+            _children: [
+                {
+                    _name: "b", z: "",
+                    _children: [
+                        { _name: "c", _children: [] },
+                        { _name: "d", _children: [] },
+                    ]
+                }
+            ]
+        }
+    ]
+} 
+*/}

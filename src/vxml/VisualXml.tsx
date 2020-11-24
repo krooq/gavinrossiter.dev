@@ -2,11 +2,11 @@ import React, { Fragment, useState } from 'react';
 import useWindowDimensions from '../common/WindowDimensions';
 import { v4 as uuidv4 } from 'uuid';
 import { parseXml, XmlNode } from './XmlParser';
-import { iff, sole, notEmpty } from '../common/Util';
-import { Tree, Node, recurse } from './Tree';
+import { sole } from '../common/Util';
+import { Tree, Node } from './Tree';
 
-import { useGesture } from 'react-use-gesture'
-import { FullGestureState, GestureState, Handler, ReactEventHandlers, UserHandlersPartial } from 'react-use-gesture/dist/types';
+// import { useGesture } from 'react-use-gesture'
+// import { FullGestureState, GestureState, Handler, ReactEventHandlers, UserHandlersPartial } from 'react-use-gesture/dist/types';
 
 // non typescript imports
 const { getTreemap } = require('treemap-squarify');
@@ -139,14 +139,14 @@ function App() {
   const [upload, setUpload] = useState<File>()
   const [treeMapNodes, setTreeMapNodes] = useState<Map<string, TreeMapNode>>()
   const [tree, setTree] = useState<Tree>()
-  const gestures: (id: string) => ReactEventHandlers = useGesture({
-    onDragStart: state => {
-      if (tree && treeMapNodes) {
-        const args: { id: string } = state.args
-        openNodes(tree, treeMapNodes, args.id, setTreeMapNodes);
-      }
-    }
-  })
+  // const gestures: (id: string) => ReactEventHandlers = useGesture({
+  //   onDragStart: state => {
+  //     if (tree && treeMapNodes) {
+  //       const args: { id: string } = state.args
+  //       openNodes(tree, treeMapNodes, args.id, setTreeMapNodes);
+  //     }
+  //   }
+  // })
 
   const onDoubleClick = (id: string) => {
   }
@@ -156,29 +156,29 @@ function App() {
     }
   }
   const onMouseEnter = (id: string) => {
-    if (tree && treeMapNodes) {
-      for (let [k, _] of tree.nodes) {
-        if (k === id) {
-          sole(treeMapNodes.get(id)).filter(n => n.value > 0).forEach(n => {
-            console.log(n)
-            n.highlighted = true
-          })
-        } else {
-          sole(treeMapNodes.get(k)).forEach(n => n.highlighted = false)
-        }
-      }
-      setTreeMapNodes(new Map(treeMapNodes))
-    }
+    // if (tree && treeMapNodes) {
+    //   for (let [k, _] of tree.nodes) {
+    //     if (k === id) {
+    //       sole(treeMapNodes.get(id)).filter(n => n.value > 0).forEach(n => {
+    //         console.log(n)
+    //         n.highlighted = true
+    //       })
+    //     } else {
+    //       sole(treeMapNodes.get(k)).forEach(n => n.highlighted = false)
+    //     }
+    //   }
+    //   setTreeMapNodes(new Map(treeMapNodes))
+    // }
   }
   const onMouseLeave = (id: string) => {
-    if (tree && treeMapNodes) {
-      for (let [k, _] of tree.nodes) {
-        if (k === id) {
-          // sole(treeMapNodes.get(id)).forEach(n => n.highlighted = false)
-        }
-      }
-      setTreeMapNodes(new Map(treeMapNodes))
-    }
+    // if (tree && treeMapNodes) {
+    //   for (let [k, _] of tree.nodes) {
+    //     if (k === id) {
+    //       // sole(treeMapNodes.get(id)).forEach(n => n.highlighted = false)
+    //     }
+    //   }
+    //   setTreeMapNodes(new Map(treeMapNodes))
+    // }
   }
 
   return <div>
@@ -225,7 +225,7 @@ export default App
 function openNodes(tree: Tree, treeMapNodes: Map<string, TreeMapNode>, id: string, setTreeMapNodes: React.Dispatch<React.SetStateAction<Map<string, TreeMapNode> | undefined>>) {
   if (tree.children(id).length > 0) {
     console.log(id);
-    for (let [k, _] of tree.nodes) {
+    for (let [k] of tree.nodes) {
       // toggle open the node that was clicked
       if (k === id) {
         sole(treeMapNodes.get(k)).forEach(n => {

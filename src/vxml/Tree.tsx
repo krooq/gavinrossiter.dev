@@ -68,33 +68,4 @@ export function recurse<U>(tree: Tree, node: Node, onEnter: (node: Node) => U, o
     return result
 }
 
-// XML vs JSON
-{/* 
-<root>
-    <a x="" y="">
-        <b z="">
-            <c></c>
-            <d></d>
-        </b>
-    </a>
-</root>
-
-{
-    _name: "root"
-    _children: [
-        {
-            _name: "a", x: "", y: "",
-            _children: [
-                {
-                    _name: "b", z: "",
-                    _children: [
-                        { _name: "c", _children: [] },
-                        { _name: "d", _children: [] },
-                    ]
-                }
-            ]
-        }
-    ]
-} 
-*/}
 export default {}
