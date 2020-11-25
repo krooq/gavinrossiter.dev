@@ -1,4 +1,4 @@
-import React, { Fragment, memo, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import useWindowDimensions from '../common/WindowDimensions';
 import { v4 as uuidv4 } from 'uuid';
 import { parseXml, XmlNode } from './XmlParser';
@@ -58,8 +58,6 @@ function TreeMap(props: TreeMapProps) {
 }
 
 function TreeMapSection(props: TreeMapSectionProps) {
-  // console.log(props.root)
-  // console.log(props.tree.children(props.root).map(n => n && props.treeMapNodes.get(n.id)))
   let colors: string[] = colormap({
     colormap: 'temperature',
     nshades: Math.max(props.root.children.length, 10),
@@ -129,15 +127,13 @@ function App() {
 
   const gestures: (id: string) => ReactEventHandlers = useGesture({
     onDragStart: state => {
-      if (!state.ctrlKey) {
-        if (tree && treeMapNodes) {
-          const [id]: [string] = state.args
-          const [on, cn, tmn] = openNodes(tree, treeMapNodes, openedNodes, collapsedNodes, id)
-          setTreeMapNodes(tmn)
-          setOpenedNodes(on)
-          setCollapsedNodes(cn)
-          setTempFocusLocation(state.xy)
-        }
+      if (tree && treeMapNodes) {
+        const [id]: [string] = state.args
+        const [on, cn, tmn] = openNodes(tree, treeMapNodes, openedNodes, collapsedNodes, id, state.ctrlKey)
+        setTreeMapNodes(tmn)
+        setOpenedNodes(on)
+        setCollapsedNodes(cn)
+        setTempFocusLocation(state.xy)
       }
 
     },
@@ -186,32 +182,15 @@ function App() {
     }
   </div>
 }
-
-
 export default App
-
-
-// function highlightNode(tree: Tree, treeMapNodes: Map<string, TreeMapNode>, id: string): Map<string, TreeMapNode> {
-//   const treeMapNodesDraft = new Map(treeMapNodes)
-//   for (const [k] of tree.nodes) {
-//     if (k === id) {
-//       sole(treeMapNodes.get(id)).filter(n => n.value > 0).forEach(n => {
-//         console.log(n);
-//         n.highlighted = true;
-//       });
-//     } else {
-//       sole(treeMapNodes.get(k)).forEach(n => n.highlighted = false);
-//     }
-//   }
-//   return treeMapNodesDraft;
-// }
 
 function openNodes(
   tree: Tree,
   treeMapNodes: Map<string, TreeMapNode>,
   openedNodes: string[],
   collapsedNodes: string[],
-  id: string
+  id: string,
+  collapseSiblings: boolean
 ): [string[], string[], Map<string, TreeMapNode>] {
   const treeMapNodesDraft = new Map(treeMapNodes)
   let openedNodesDraft = [...openedNodes]
@@ -229,18 +208,22 @@ function openNodes(
     });
     // toggle closed the children of the node that was clicked, not essential
     for (const child of tree.children(id)) {
+      // eslint-disable-next-line
       tree.recurse(child, n => sole(treeMapNodesDraft.get(n.id)).forEach(n => {
         openedNodesDraft = openedNodesDraft.filter(x => x !== n.id)
         collapsedNodesDraft = collapsedNodesDraft.filter(x => x !== n.id)
         n.value = tree.node(id).children.length
       }));
     }
-    // collapse the siblings of the node that was clicked
-    for (const sibling of tree.siblings(id)) {
-      sole(treeMapNodesDraft.get(sibling.id)).forEach(s => {
-        collapsedNodesDraft.push(s.id)
-        s.value = 0
-      });
+    if (collapseSiblings) {
+      // collapse the siblings of the node that was clicked
+      for (const sibling of tree.siblings(id)) {
+        // eslint-disable-next-line
+        sole(treeMapNodesDraft.get(sibling.id)).forEach(s => {
+          collapsedNodesDraft.push(s.id)
+          s.value = 0
+        });
+      }
     }
   }
   return [openedNodesDraft, collapsedNodesDraft, treeMapNodesDraft]
