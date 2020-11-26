@@ -204,7 +204,7 @@ function openNodes(
         openedNodesDraft.push(n.id)
       }
       collapsedNodesDraft = collapsedNodesDraft.filter(x => x !== n.id)
-      n.value = tree.node(id).children.length
+      n.value = nodeSize(tree, tree.node(n.id))
     });
     // toggle closed the children of the node that was clicked, not essential
     for (const child of tree.children(id)) {
@@ -212,7 +212,8 @@ function openNodes(
       tree.recurse(child, n => sole(treeMapNodesDraft.get(n.id)).forEach(n => {
         openedNodesDraft = openedNodesDraft.filter(x => x !== n.id)
         collapsedNodesDraft = collapsedNodesDraft.filter(x => x !== n.id)
-        n.value = tree.node(id).children.length
+
+        n.value = nodeSize(tree, tree.node(n.id))
       }));
     }
     if (collapseSiblings) {
@@ -229,3 +230,7 @@ function openNodes(
   return [openedNodesDraft, collapsedNodesDraft, treeMapNodesDraft]
 }
 
+
+function nodeSize(tree: Tree, node: Node): number {
+  return tree.children(node).flatMap(c => nodeSize(tree, c)).reduce((x, y) => x + y, 1)
+}
