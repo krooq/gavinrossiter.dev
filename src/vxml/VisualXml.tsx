@@ -202,8 +202,8 @@ function openNodes(
     sole(treeMapNodesDraft.get(id)).forEach(n => {
       if (!openedNodesDraft.includes(n.id) || !collapsedNodesDraft.includes(n.id)) {
         openedNodesDraft.push(n.id)
+        collapsedNodesDraft = collapsedNodesDraft.filter(x => x !== n.id)
       }
-      collapsedNodesDraft = collapsedNodesDraft.filter(x => x !== n.id)
       n.value = nodeSize(tree, tree.node(n.id))
     });
     // toggle closed the children of the node that was clicked, not essential
@@ -217,19 +217,28 @@ function openNodes(
       }));
     }
     if (collapseSiblings) {
-      // collapse the siblings of the node that was clicked
-      for (const sibling of tree.siblings(id)) {
-        // eslint-disable-next-line
-        sole(treeMapNodesDraft.get(sibling.id)).forEach(s => {
-          collapsedNodesDraft.push(s.id)
-          s.value = 0
-        });
-      }
+      collapseCousins(tree, id, treeMapNodesDraft, collapsedNodesDraft);
     }
   }
   return [openedNodesDraft, collapsedNodesDraft, treeMapNodesDraft]
 }
 
+
+function collapseCousins(tree: Tree, id: string, treeMapNodesDraft: Map<string, TreeMapNode>, collapsedNodesDraft: string[]) {
+  let node: Node = tree.node(id);
+  while (node !== tree.root) {
+    // collapse the siblings of the node that was clicked
+    for (const sibling of tree.siblings(node)) {
+      // eslint-disable-next-line
+      sole(treeMapNodesDraft.get(sibling.id)).forEach(s => {
+        collapsedNodesDraft.push(s.id);
+        s.value = 0;
+      });
+    }
+    // step up to the parent and repeat sibling closure
+    node = tree.parent(node);
+  }
+}
 
 function nodeSize(tree: Tree, node: Node): number {
   return tree.children(node).flatMap(c => nodeSize(tree, c)).reduce((x, y) => x + y, 1)
