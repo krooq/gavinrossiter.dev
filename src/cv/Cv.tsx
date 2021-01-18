@@ -14,18 +14,18 @@ import { textBlock } from "../common/Util"
 
 const theme = createMuiTheme({
     palette: {
-        type: 'light', 
+        type: 'light',
     },
     typography: {
         fontSize: 11,
-        allVariants:{
-            lineHeight:1.4,
+        allVariants: {
+            lineHeight: 1.4,
         },
-        overline:{
+        overline: {
             fontWeight: 'bold',
             textDecoration: 'underline'
         },
-        h6:{
+        h6: {
             fontWeight: 'bold'
         },
         fontFamily: 'Computer Modern Serif'
@@ -35,26 +35,32 @@ const theme = createMuiTheme({
 const useStyles = makeStyles((theme) => ({
     timeline: {
         padding: 0,
-        "& .MuiTimelineContent-root, & .MuiTimelineOppositeContent-root" :{
-            padding:"4px 16px",
-            
+        "& .MuiTimelineContent-root, & .MuiTimelineOppositeContent-root": {
+            padding: "4px 16px",
+
         },
-        "& .MuiTimelineItem-root":{
+        "& .MuiTimelineItem-root": {
             minHeight: "0px",
         },
     },
-    table:{
-        '& .MuiTableCell-head':{
-            padding:0
+    table: {
+        '& .MuiTableCell-head': {
+            padding: 0
         },
-        '& .MuiTableCell-body':{
-            padding:0,
-            border:0
+        '& .MuiTableCell-body': {
+            padding: 0,
+            border: 0
         }
-    }
+    },
+    print: {
+        '@media print': {
+            display: 'block',
+            pageBreakBefore: 'always',
+        },
+    },
 }))
 
-function Resume() { 
+function Resume() {
     const classes = useStyles()
     const data = resumeData;
     const avatar = false
@@ -78,7 +84,7 @@ function Resume() {
                     <ExperienceTimeline {...props} title="Education" data={data.education} />
                     <ProjectTimeline {...props} title="Projects" data={data.projects} />
                     <br />
-                    <Typography variant="h6" gutterBottom>Technical</Typography>
+                    <Typography className={classes.print} variant="h6" gutterBottom >Technical</Typography>
                     <hr />
                     <Typography variant="overline" gutterBottom>Summary</Typography>
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.summary, "\n")}</Typography>
@@ -90,19 +96,19 @@ function Resume() {
                     <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.weaknesses, "\n")}</Typography> */}
                     <br />
                     <Typography variant="overline">Primary languages</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.languages.primary.join("\n")}</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.languages.primary.join("\n")}</Typography>
                     <br />
                     <Typography variant="overline">Secondary languages</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.languages.secondary.join("\n")}</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.languages.secondary.join("\n")}</Typography>
                     <br />
                     <Typography variant="overline" gutterBottom>Paradigms</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.paradigms.join("\n")}</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.paradigms.join("\n")}</Typography>
                     <br />
                     <Typography variant="overline" gutterBottom>Tools</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.tools.join("\n")}</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.tools.join("\n")}</Typography>
                     <br />
                     <Typography variant="overline" gutterBottom>Libraries and Frameworks</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap'}}>{data.technical.ecosystem.join("\n")}</Typography>
+                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.ecosystem.join("\n")}</Typography>
                     <br />
                 </Container>
             </ThemeProvider >
