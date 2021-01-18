@@ -1,6 +1,6 @@
 {
     "name": "Gavin Rossiter",
-    "avatar":"./images/linkedin-avatar.jpg",
+    "avatar": "./images/linkedin-avatar.jpg",
     "phone": "+61 0429586649",
     "website": "https://gavinrossiter.dev",
     "github": "https://github.com/krooq",
@@ -15,20 +15,9 @@
             "Hi I'm Gav,"
         ],
         [
-            "I have spent most of my career as a systems software engineer working in air traffic management.",
-            "I'm part of a team of 30, responsible for delivering the controller facing applications for a next gen air traffic system.",
-            "\nAt home I spend almost every waking hour either studying deep learning & artificial intelligence or working on personal projects such as this website."
-        ],
-        [
-            "I'm particularly interested in artificial intelligence and the relationship humans form with it.",
-            "AI is already significantly disrupting the way we live our lives and do business.",
-            "How we address this disruption both technically and socially will have a massive impact on our society.",
-            "For this reason, it is my goal to help humanity build a safe and symbiotic relationship with AI."
-        ],
-        [
-            "In my next role I want to leverage my software and math skills and passion for AI to solve problems in an AI oriented domain.",
-            "The perfect role for me will focus on creating value for society through either the development of a great AI product/service or reaserch into improved AI algorithms/systems.",
-            "\nIf you are looking for someone with these traits to fill a role in AI please check out my CV linked above and reach out."
+            "I'm a software engineer living in Melbourne Australia.",
+            "I work in the aerospace industry on controller facing applications for a next gen air traffic management system.",
+            "In my spare time I like to work on personal projects aligned to my interests such as this updating this website, developing games, studying AI or learning something new in software."
         ]
     ],
     "education": [
@@ -140,11 +129,12 @@
                 "I consider myself a polyglot developer with experience in a broad range languages.",
                 "I find it easy to pick up a less familar language and can be productive with it quite quickly.",
                 "I can code in Java in my sleep, this is my daily driver at work.",
-                "Python and TypeScript are my favorite languages for personal projects, they are just so practical and have great libraries.",
+                "Python and TypeScript are among my favorite languages for personal projects, they are just so practical and have great libraries.",
                 "I feel quite comfortable writing Bash shell scripts and in general I feel that I have good knowledge of the Unix ecosystem.",
                 "Recently I learnt some Rust, it was my first serious go (outside of uni) at really low level systems programming and it taught me a lot.",
                 "I know some C/C++ and have written some small C programs at work for low level tasks e.g. interacting with OS processes and windowing systems.",
-                "I'm a decent web programmer, most of the work I have done in web is aligned more towards single page realtime applications."
+                "I'm a decent web programmer, most of the work I have done in web is aligned more towards single page realtime applications.",
+                "I'm working on some game development in Unity with C#, games programming is probably the most challenging thing I have done as its a full stack process with really complicated code."
             ]
         ],
         "strengths": [
@@ -152,19 +142,9 @@
                 "Strong mathematics skills.",
                 "Strong programming skills.",
                 "Solid understanding of the balance between pragmatism and quality in software.",
-                "Experience in complex, realtime, mission and safety critical systems.",
+                "Experience in developing complex, realtime, mission and safety critical systems.",
                 "Passionate about software and AI, always working on projects outside of work to improve my skills.",
-                "Broad set of software skills, from low level bit twiddling to high level scripts, can do basically anything.",
-                "Drive to change the world for the better."
-            ]
-        ],
-        "weaknesses": [
-            [
-                "I try my best to know what I do not know.",
-                "I'm know that I'm lacking experience in serverless, containerization, modern back end web tech and embedded systems.",
-                "e.g. Docker, Kubernetes, Microservices, AWS, GCP, Azure, Big Data platforms.",
-                "I have a cursory understanding of all of these, and have either done at least one tutorial or read the docs.",
-                "I just haven't had the chance to work with them on more than a personal level."
+                "Broad set of software skills, from low level bit twiddling to high level scripts, can do basically anything."
             ]
         ],
         "languages": {
@@ -180,9 +160,9 @@
                 "Rust"
             ],
             "secondary": [
+                "C#",
                 "C",
                 "C++",
-                "C#",
                 "Scala"
             ],
             "tertiary": [
@@ -227,6 +207,7 @@
         "Brain Computer Interfaces",
         "Entrepreneurship",
         "Robotics",
-        "Rocketry"
+        "Game Development",
+        "Software"
     ]
 }
