@@ -8,6 +8,7 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Home from './home/Home';
 import Cv from './cv/Cv';
+import Blog from './blog/Blog';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -30,6 +31,7 @@ function AppRouter() {
         <Route path="/data" component={DataEditor} />
         <Route path="/resume" component={Cv} />
         <Route path="/cv" component={Cv} />
+        <Route path="/blog" component={Blog} />
         <Route path="/vxml" component={VisualXml} />
       </Switch>
     </main>

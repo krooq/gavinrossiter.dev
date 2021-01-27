@@ -28,10 +28,13 @@
     "fontsource-old-standard-tt": "^3.0.9",
     "immer": "^8.0.1",
     "immutable": "^4.0.0-rc.12",
+    "konva": "^7.2.2",
     "lodash": "^4.17.19",
+    "markdown-to-jsx": "^7.1.1",
     "marked": "^1.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-konva": "^17.0.1-3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-spring": "^9.0.0-rc.3",
@@ -66,6 +69,7 @@
   "devDependencies": {
     "@types/css": "0.0.31",
     "@types/ramda": "github:types/npm-ramda#dist",
-    "eslint-plugin-react-hooks": "^4.0.8"
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "raw-loader": "^4.0.2"
   }
 }
