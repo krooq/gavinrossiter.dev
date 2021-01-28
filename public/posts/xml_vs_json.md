@@ -12,9 +12,12 @@ This means that JavaScript objects are already in a serialized form, no extra tr
 This means XML can be extended to create domain specific languages via a schema (XSD).
 
 It would be inaccurate to say that JSON is less powerful than XML (or vice versa), without extra tools their representation power is equivalent.
-So lets talk about how they represent data.
-Both utilize a **tree** structure to encode relationships between objects.
-Both contain elements with a recursive structure but their element types differ slightly:
+
+So lets quickly talk about how they represent data.
+
+Both utilize a **tree** structure to encode relationships between objects and
+both contain elements with a recursive structure.
+However they differ in the format of their elements:
 
 <br>**JSON**
 
@@ -22,11 +25,11 @@ Both contain elements with a recursive structure but their element types differ 
 type Element = Map<String, Element | String | Array<Element | String>>
 
 // Basic JSON elements:
-// Map<String, Element>                 {a: {} }
-// Map<String, Array<Element>>          {a: [{},{}]}
-// Map<String, Map<String, String>>     {a: {b: "text", c: "text"}}
-// Map<String, String>                  {a: "text" }
-// Map<String, Array<String>>           {a: ["text", "text"]}
+Map<String, Element>                 // {a: {} }
+Map<String, Array<Element>>          // {a: [{},{}]}
+Map<String, Map<String, String>>     // {a: {b: "text", c: "text"}}
+Map<String, String>                  // {a: "text" }
+Map<String, Array<String>>           // {a: ["text", "text"]}
 ```
 <br>**XML**
 
@@ -34,16 +37,16 @@ type Element = Map<String, Element | String | Array<Element | String>>
 type Element = Map<String, Map<String, String> & (Array<Element> | String)>
 
 // Basic XML elements:
-// Map<String, Element>                 <a><b/></a>
-// Map<String, Array<Element>>          <a><b/><c/></a>
-// Map<String, Map<String, String>>     <a b="text" c="text></a>
-// Map<String, String>                  <a>text</a>
-// Map<String, Array<String>>           // not allowed
+Map<String, Element>                 // <a><b/></a>
+Map<String, Array<Element>>          // <a><b/><c/></a>
+Map<String, Map<String, String>>     // <a b="text" c="text></a>
+Map<String, String>                  // <a>text</a>
+Map<String, Array<String>>           // not allowed
 ```
 
-So no matter how long you stare at this I think it will always be tricky to grok, but I believe the intuition is really simple.  
-If you have some type V that has some identifying attribute of type K then you can group V's by their K's, this is just a map.
-But doing this is a bit redundant since each V already contains the its K.
+No matter how long you stare at these types I think it will always be tricky to grok, but I believe the intuition is really simple.  
+If you have some type **V** that has some identifying attribute of type **K** then you can group **V**s by their **K**s, this is just a map.
+However doing this is a bit redundant since each **V** already contains the its **K**.
 XML forces you to include the name information inside the object, instead of placing it on the parent as a map key as you could in JSON.
 
 ```
@@ -55,7 +58,7 @@ type V = { k: K, ... /* whatever */ }
 // XML is to Array<V>
 ```
 
-But there is of course no reason you cannot do this in JSON.
+But there is of course no reason you cannot do this in JSON, it's just not built in.
 
 
 ## Equivalence

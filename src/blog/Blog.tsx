@@ -12,7 +12,6 @@ import FeaturedPost from './FeaturedPost';
 import Main from './Main';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
-import post1 from './content/blog-post.1.md';
 import { useEffect } from 'react';
 // import post2 from './blog-post.2.md';
 // import post3 from './blog-post.3.md';
@@ -70,7 +69,6 @@ const featuredPosts = [
 ];
 
 const posts: any[] = [
-  post1
   // post2, post3
 ];
 
