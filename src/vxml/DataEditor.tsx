@@ -4,7 +4,6 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import { Grid, ThemeProvider, CssBaseline, TextField, Paper, Fab } from "@material-ui/core";
 import "fontsource-bungee";
-import resumeData from '../data/resume.json';
 import AddIcon from '@material-ui/icons/Add';
 
 const theme = createMuiTheme({
@@ -68,7 +67,7 @@ function DataEditor() {
         <React.Fragment>
             <ThemeProvider theme={theme} >
                 <CssBaseline />
-                <Editor classes={classes} data={resumeData} />
+                <Editor classes={classes} />
             </ThemeProvider>
         </React.Fragment >
     )

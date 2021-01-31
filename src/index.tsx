@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './app/App';
-import DataEditor from './editor/DataEditor'
+// import DataEditor from './vxml/DataEditor'
 import VisualXml from './vxml/VisualXml'
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Home from './home/Home';
-import Cv from './cv/Cv';
+import Resume from './resume/Resume';
 import Blog from './blog/Blog';
 
 ReactDOM.render(
@@ -28,9 +28,8 @@ function AppRouter() {
       <Switch>
         <Route path="/" component={Home} exact />
         <Route path="/app" component={App} />
-        <Route path="/data" component={DataEditor} />
-        <Route path="/resume" component={Cv} />
-        <Route path="/cv" component={Cv} />
+        {/* <Route path="/data" component={DataEditor} /> */}
+        <Route path="/resume" component={Resume} />
         <Route path="/blog" component={Blog} />
         <Route path="/vxml" component={VisualXml} />
       </Switch>

@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
 import { Grid, ThemeProvider, CssBaseline, Hidden, Link, Box } from "@material-ui/core";
-import resumeData from '../data/resume.json';
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineContent from '@material-ui/lab/TimelineContent';
@@ -62,11 +61,19 @@ const useStyles = makeStyles((theme) => ({
 
 function Resume() {
     const classes = useStyles()
-    const data = resumeData;
+    const [data, setData] = React.useState<any>();
     const avatar = false
     const props = { classes, data, avatar }
-    return (
-        <React.Fragment>
+
+    // useEffect with an empty dependency array (`[]`) runs only once
+    useEffect(() => {
+        fetch("resume.json")
+            .then((response) => response.json())
+            .then((json) => setData(json));
+    }, []);
+
+    return data
+        ? <React.Fragment>
             <ThemeProvider theme={theme} >
                 <CssBaseline />
                 <Container>
@@ -113,7 +120,7 @@ function Resume() {
                 </Container>
             </ThemeProvider >
         </React.Fragment >
-    )
+        : <React.Fragment />
 }
 
 type ExperienceData = { start: string, end: string, title: string, domains: Array<string>, organization: string, location: string }

@@ -11,7 +11,7 @@ but it'll be a while before I'm ready for that.
 I spent this past weekend working on the basics for my game project in Unity.
 This work included a character controller, a dummy 3d character with basic locomotion animations and some terrain.
 
-<ReactPlayer controls muted url="https://youtu.be/BQL4IV7XJ5Y" />
+<Video url="https://youtu.be/BQL4IV7XJ5Y" />
 
 The character controller behaves similar to other action adventure games like legend of zelda BOTW.
 You can freelook with the mouse and move relative to the camera with WASD.

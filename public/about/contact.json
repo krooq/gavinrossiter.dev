@@ -1,0 +1,14 @@
+{
+    "name": "Gavin Rossiter",
+    "avatar": "about/avatar.jpg",
+    "phone": "+61 0429586649",
+    "website": "https://gavinrossiter.dev",
+    "github": "https://github.com/krooq",
+    "linkedin": "https://linkedin.com/in/gavin-rossiter",
+    "twitter": "https://twitter.com/GavRossiter",
+    "location": {
+        "city": "Melbourne",
+        "country": "Australia",
+        "maps": "https://www.google.com/maps/place/Melbourne+VIC"
+    }
+}

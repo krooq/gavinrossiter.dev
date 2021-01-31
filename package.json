@@ -72,5 +72,6 @@
     "@types/ramda": "github:types/npm-ramda#dist",
     "eslint-plugin-react-hooks": "^4.0.8",
     "raw-loader": "^4.0.2"
-  }
+  },
+  "proxy": "http://localhost:3000"
 }

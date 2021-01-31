@@ -46,7 +46,7 @@ const options = {
     },
     p: {
       component: Typography,
-      props: { paragraph: true },
+      props: { paragraph: true, variant: "body1" },
     },
     a: { component: Link },
     li: {

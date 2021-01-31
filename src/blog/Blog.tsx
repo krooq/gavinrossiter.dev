@@ -47,38 +47,29 @@ const useStyles = makeStyles((theme) => ({
 //   ],
 // };
 
-export default function Blog() {
+export default function Blog(props: any) {
   const classes = useStyles();
   const [postMarkdown, setPostMarkdown] = React.useState('');
 
   // useEffect with an empty dependency array (`[]`) runs only once
   useEffect(() => {
-    fetch("posts/game_devlog_1.md")
-      .then((response) => response.text())
-      .then((text) => {
-        // Logs a string of Markdown content.
-        // Now you could use e.g. <rexxars/react-markdown> to render it.
-        // console.log(text);
-        setPostMarkdown(text);
-      });
+    fetch("blog/game_devlog_1.md").then((response) => response.text()).then((text) => setPostMarkdown(text));
   }, []);
 
   return (
     <React.Fragment>
       <CssBaseline />
-      <Container maxWidth="lg">
-        <Header title="Gav's Dev Blog" />
-        <main style={{ margin: "16px" }}>
-          <Grid container spacing={5} className={classes.mainGrid}>
-            <Main title="Posts" posts={[postMarkdown]} />
-            {/* <Sidebar
+      <Container >
+        {/* <Header title="Gav's Dev Blog" /> */}
+        <Grid container className={classes.mainGrid}>
+          <Main title="Posts" posts={[postMarkdown]} />
+          {/* <Sidebar
               title={sidebar.title}
               description={sidebar.description}
               archives={sidebar.archives}
               social={sidebar.social}
             /> */}
-          </Grid>
-        </main>
+        </Grid>
       </Container>
       {/* <Footer
         title="Footer"
