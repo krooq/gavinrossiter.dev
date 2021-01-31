@@ -1,14 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
-import { Grid, ThemeProvider, CssBaseline, Hidden, Link, Box } from "@material-ui/core";
+import { makeStyles } from '@material-ui/core/styles';
+import { CssBaseline, Link, Box } from "@material-ui/core";
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import '../index.css'
-import { Contact } from "../common/Components"
 import { textBlock } from "../common/Util"
 
 const useStyles = makeStyles((theme) => ({

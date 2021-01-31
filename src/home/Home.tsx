@@ -1,8 +1,8 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment } from "react";
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, CssBaseline, Box, Link, Divider, Avatar, createMuiTheme, ThemeProvider, List, ListItem } from "@material-ui/core";
+import { Grid, CssBaseline, Box, createMuiTheme, ThemeProvider, List, ListItem, ListItemText } from "@material-ui/core";
 import { LinkItem, Profile } from '../common/Components';
 import { textBlock } from '../common/Util';
 import Blog from "../blog/Blog";
@@ -18,9 +18,6 @@ import skills from 'resources/about/skills.json'
 const theme = createMuiTheme({
     typography: {
         fontSize: 12,
-        allVariants: {
-            // lineHeight: 1.4,
-        },
     }
 })
 
@@ -58,30 +55,11 @@ const useStyles = makeStyles((theme) => ({
 function Home(props: any) {
     const section = props.section
     const classes = useStyles();
-
-    // const [about, setAbout] = React.useState<any>();
-    // const [contact, setContact] = React.useState<any>();
-    // const [experience, setExperience] = React.useState<any>();
-    // const [education, setEducation] = React.useState<any>();
-    // const [projects, setProjects] = React.useState<any>();
-    // const [skills, setSkills] = React.useState<any>();
-
     const renderLinks = false
+
     props = {
         ...props, classes, about, contact: { ...contact, avatar: avatar }, experience, education, projects, skills, renderLinks
     }
-
-    // useEffect with an empty dependency array (`[]`) runs only once
-    // const headers = { 'Content-Type': 'application/json' }
-    // useEffect(() => {
-    //     fetch("about/about.json").then((response) => response.json()).then((json) => setAbout(json));
-    //     fetch("about/contact.json").then((response) => response.json()).then((json) => setContact(json));
-    //     fetch("about/experience.json").then((response) => response.json()).then((json) => setExperience(json));
-    //     fetch("about/education.json").then((response) => response.json()).then((json) => setEducation(json));
-    //     fetch("about/projects.json").then((response) => response.json()).then((json) => setProjects(json));
-    //     fetch("about/skills.json").then((response) => response.json()).then((json) => setSkills(json));
-    //     // fetch("blog/game_devlog_1.md").then((response) => response.text()).then((text) => setPostMarkdown(text));
-    // }, []);
 
     return about && contact
         ?
@@ -98,9 +76,9 @@ function Home(props: any) {
                         {/* Main Content */}
                         <Grid item xs={12} md={10}>
                             <Box className={classes.content}>
-                                <About {...props} />
-                                {section == "resume" && <Resume {...props} />}
-                                {section == "blog" && <Blog {...props} />}
+                                {section !== "blog" && <About {...props} />}
+                                {section === "resume" && <Resume {...props} />}
+                                {section === "blog" && <Blog {...props} />}
                             </Box>
                         </Grid>
                     </Grid>
@@ -111,7 +89,6 @@ function Home(props: any) {
         <Fragment />
 }
 
-
 function Nav(props: any) {
     const { classes } = props
     return classes
@@ -119,8 +96,8 @@ function Nav(props: any) {
         <React.Fragment>
             <Box className={classes.nav}>
                 <List>
-                    <ListItem><LinkItem variant="body1" href="/resume">Resume</LinkItem></ListItem>
-                    <ListItem><LinkItem variant="body1" href="/app">React Demo</LinkItem></ListItem>
+                    <ListItem ><LinkItem href="/resume"><ListItemText primary="Resume" /></LinkItem></ListItem>
+                    <ListItem><LinkItem href="/blog"><ListItemText primary="Blog" /></LinkItem></ListItem>
                 </List>
             </Box>
         </React.Fragment>

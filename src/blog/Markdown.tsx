@@ -1,12 +1,18 @@
 import * as React from 'react';
-import ReactMarkdown from 'markdown-to-jsx';
+import MarkdownToJsx from 'markdown-to-jsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
+import { Box, Grid } from '@material-ui/core';
+import ReactPlayer from 'react-player';
 
 const useStyles = makeStyles((theme) => ({
   listItem: {
     marginTop: theme.spacing(1),
+  },
+  video: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
   },
 }));
 
@@ -17,6 +23,16 @@ function MarkdownListItem(props: any) {
       <Typography component="span" {...props} />
     </li>
   );
+}
+
+
+export function Video(props: any) {
+  const classes = useStyles();
+  return <Box className={classes.video}>
+    <Grid item container justify="center" alignItems="center" >
+      <ReactPlayer controls muted url={props.url} />
+    </Grid >
+  </Box>
 }
 
 const options = {
@@ -52,9 +68,12 @@ const options = {
     li: {
       component: MarkdownListItem,
     },
+    Video: {
+      component: Video
+    },
   },
 };
 
 export default function Markdown(props: any) {
-  return <ReactMarkdown options={options} {...props} />;
+  return <MarkdownToJsx options={options} {...props} />;
 }

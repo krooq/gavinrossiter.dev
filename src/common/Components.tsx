@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Box, ListItem, ListItemIcon, ListItemText, List, Grid, Icon, Button, IconButton, Link, Typography } from "@material-ui/core"
+import { Avatar, Box, ListItem, ListItemIcon, ListItemText, List, Grid, Link } from "@material-ui/core"
 import GitHubIcon from '@material-ui/icons/GitHub';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import WebIcon from '@material-ui/icons/Web';

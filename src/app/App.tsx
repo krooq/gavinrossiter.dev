@@ -35,7 +35,7 @@ type Metadata = {
 
 
 // App
-function App() {
+function App(props: any) {
   const [windowWidth, windowHeight] = useWindowDimensions();
   const initialPanel: Panel = { id: uuidv4(), insets: [0, 0, 0, 0] }
   const initialState = {
