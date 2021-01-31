@@ -11,27 +11,10 @@ import '../index.css'
 import { Contact } from "../common/Components"
 import { textBlock } from "../common/Util"
 
-const theme = createMuiTheme({
-    palette: {
-        type: 'light',
-    },
-    typography: {
-        fontSize: 11,
-        allVariants: {
-            lineHeight: 1.4,
-        },
-        overline: {
-            fontWeight: 'bold',
-            textDecoration: 'underline'
-        },
-        h6: {
-            fontWeight: 'bold'
-        },
-        fontFamily: 'Computer Modern Serif'
-    }
-});
-
 const useStyles = makeStyles((theme) => ({
+    resume: {
+        marginTop: theme.spacing(4)
+    },
     timeline: {
         padding: 0,
         "& .MuiTimelineContent-root, & .MuiTimelineOppositeContent-root": {
@@ -59,66 +42,44 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-function Resume() {
+function Resume(props: any) {
     const classes = useStyles()
-    const [data, setData] = React.useState<any>();
+    const { contact, experience, education, projects, skills } = props
     const avatar = false
-    const props = { classes, data, avatar }
+    props = { ...props, classes, data: contact, avatar }
 
-    // useEffect with an empty dependency array (`[]`) runs only once
-    useEffect(() => {
-        fetch("resume.json")
-            .then((response) => response.json())
-            .then((json) => setData(json));
-    }, []);
-
-    return data
+    return contact && experience && education && projects && skills
         ? <React.Fragment>
-            <ThemeProvider theme={theme} >
-                <CssBaseline />
-                <Container>
-                    <Grid container alignItems="center">
-                        <Grid item sm={6}><Typography variant="h2">{data.name}</Typography></Grid>
-                        <Hidden smUp><Grid item container sm={6} ><Contact {...props} /></Grid></Hidden>
-                        <Hidden xsDown><Grid item container sm={6} justify="flex-end"><Contact {...props} /></Grid></Hidden>
-                    </Grid>
-                    <Typography variant="h6" gutterBottom>About Me</Typography>
-                    <hr />
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.about)}</Typography>
-                    <br />
-                    <br />
-                    <ExperienceTimeline {...props} title="Work" data={data.work} />
-                    <ExperienceTimeline {...props} title="Education" data={data.education} />
-                    <ProjectTimeline {...props} title="Projects" data={data.projects} />
-                    <br />
-                    <Typography className={classes.print} variant="h6" gutterBottom >Technical</Typography>
-                    <hr />
-                    <Typography variant="overline" gutterBottom>Summary</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.summary, "\n")}</Typography>
-                    <br />
-                    <Typography variant="overline" gutterBottom>Strengths</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.strengths, "\n")}</Typography>
-                    {/* <br />
-                    <Typography variant="overline" gutterBottom>Weaknesses</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(data.technical.weaknesses, "\n")}</Typography> */}
-                    <br />
-                    <Typography variant="overline">Primary languages</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.languages.primary.join("\n")}</Typography>
-                    <br />
-                    <Typography variant="overline">Secondary languages</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.languages.secondary.join("\n")}</Typography>
-                    <br />
-                    <Typography variant="overline" gutterBottom>Paradigms</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.paradigms.join("\n")}</Typography>
-                    <br />
-                    <Typography variant="overline" gutterBottom>Tools</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.tools.join("\n")}</Typography>
-                    <br />
-                    <Typography variant="overline" gutterBottom>Libraries and Frameworks</Typography>
-                    <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{data.technical.ecosystem.join("\n")}</Typography>
-                    <br />
-                </Container>
-            </ThemeProvider >
+            <CssBaseline />
+            <Container className={classes.resume}>
+                <ExperienceTimeline {...props} title="Experience" data={experience} />
+                <ExperienceTimeline {...props} title="Education" data={education} />
+                <ProjectTimeline {...props} title="Projects" data={projects} />
+                <br />
+                <Typography className={classes.print} variant="h6" gutterBottom >Skills</Typography>
+                <hr />
+                <Typography variant="overline" gutterBottom>Summary</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(skills.summary, "\n")}</Typography>
+                <br />
+                <Typography variant="overline" gutterBottom>Strengths</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(skills.strengths, "\n")}</Typography>
+                <br />
+                <Typography variant="overline">Primary languages</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.languages.primary.join("\n")}</Typography>
+                <br />
+                <Typography variant="overline">Secondary languages</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.languages.secondary.join("\n")}</Typography>
+                <br />
+                <Typography variant="overline" gutterBottom>Paradigms</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.paradigms.join("\n")}</Typography>
+                <br />
+                <Typography variant="overline" gutterBottom>Tools</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.tools.join("\n")}</Typography>
+                <br />
+                <Typography variant="overline" gutterBottom>Libraries and Frameworks</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.ecosystem.join("\n")}</Typography>
+                <br />
+            </Container>
         </React.Fragment >
         : <React.Fragment />
 }

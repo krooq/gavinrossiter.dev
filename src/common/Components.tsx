@@ -63,7 +63,7 @@ export function Social(props: any) {
     return contact
         ?
         <Box className={classes.social}>
-            <Grid container justify="space-evenly" alignItems="center">
+            <Grid container justify="center" alignItems="center" spacing={2}>
                 <Grid item><LinkItem href={contact.github}><GitHubIcon /></LinkItem></Grid>
                 <Grid item><LinkItem href={contact.linkedin}><LinkedInIcon /></LinkItem></Grid>
                 <Grid item><LinkItem href={contact.twitter}><Twitter /></LinkItem></Grid>

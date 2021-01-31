@@ -1,0 +1,22 @@
+[
+    {
+        "title": "Software Engineer",
+        "organization": "Thales",
+        "domains": [
+            "Air Traffic Management"
+        ],
+        "location": "Melbourne, Australia",
+        "start": "2018",
+        "end": "Present"
+    },
+    {
+        "title": "Software Engineer Intern",
+        "organization": "Thales",
+        "domains": [
+            "Air Traffic Management"
+        ],
+        "location": "Melbourne, Australia",
+        "start": "2016",
+        "end": "2017"
+    }
+]

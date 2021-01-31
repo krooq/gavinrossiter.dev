@@ -1,0 +1,23 @@
+[
+    {
+        "title": "Bachelor of Computer Science",
+        "organization": "Swinburne University",
+        "domains": [
+            "Software Development"
+        ],
+        "location": "Melbourne, Australia",
+        "start": "2015",
+        "end": "2017"
+    },
+    {
+        "title": "Bachelor of Science",
+        "organization": "La Trobe University",
+        "domains": [
+            "Mathematics",
+            "Physics"
+        ],
+        "location": "Melbourne, Australia",
+        "start": "2012",
+        "end": "2015"
+    }
+]

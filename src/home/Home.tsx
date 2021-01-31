@@ -6,10 +6,22 @@ import { Grid, CssBaseline, Box, Link, Divider, Avatar, createMuiTheme, ThemePro
 import { LinkItem, Profile } from '../common/Components';
 import { textBlock } from '../common/Util';
 import Blog from "../blog/Blog";
-
+import Resume from "../resume/Resume";
+import avatar from 'resources/about/avatar.jpg';
+import about from 'resources/about/about.json'
+import contact from 'resources/about/contact.json'
+import experience from 'resources/about/experience.json'
+import education from 'resources/about/education.json'
+import projects from 'resources/about/projects.json'
+import skills from 'resources/about/skills.json'
 
 const theme = createMuiTheme({
-
+    typography: {
+        fontSize: 12,
+        allVariants: {
+            // lineHeight: 1.4,
+        },
+    }
 })
 
 const useStyles = makeStyles((theme) => ({
@@ -43,19 +55,33 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-function Home() {
+function Home(props: any) {
+    const section = props.section
     const classes = useStyles();
-    const [contact, setContact] = React.useState<any>();
-    const [about, setAbout] = React.useState<any>();
+
+    // const [about, setAbout] = React.useState<any>();
+    // const [contact, setContact] = React.useState<any>();
+    // const [experience, setExperience] = React.useState<any>();
+    // const [education, setEducation] = React.useState<any>();
+    // const [projects, setProjects] = React.useState<any>();
+    // const [skills, setSkills] = React.useState<any>();
 
     const renderLinks = false
-    const props = { classes, about, contact, renderLinks }
+    props = {
+        ...props, classes, about, contact: { ...contact, avatar: avatar }, experience, education, projects, skills, renderLinks
+    }
 
     // useEffect with an empty dependency array (`[]`) runs only once
-    useEffect(() => {
-        fetch("about/about.json").then((response) => response.json()).then((json) => setAbout(json));
-        fetch("about/contact.json").then((response) => response.json()).then((json) => setContact(json));
-    }, []);
+    // const headers = { 'Content-Type': 'application/json' }
+    // useEffect(() => {
+    //     fetch("about/about.json").then((response) => response.json()).then((json) => setAbout(json));
+    //     fetch("about/contact.json").then((response) => response.json()).then((json) => setContact(json));
+    //     fetch("about/experience.json").then((response) => response.json()).then((json) => setExperience(json));
+    //     fetch("about/education.json").then((response) => response.json()).then((json) => setEducation(json));
+    //     fetch("about/projects.json").then((response) => response.json()).then((json) => setProjects(json));
+    //     fetch("about/skills.json").then((response) => response.json()).then((json) => setSkills(json));
+    //     // fetch("blog/game_devlog_1.md").then((response) => response.text()).then((text) => setPostMarkdown(text));
+    // }, []);
 
     return about && contact
         ?
@@ -73,7 +99,8 @@ function Home() {
                         <Grid item xs={12} md={10}>
                             <Box className={classes.content}>
                                 <About {...props} />
-                                <Blog {...props} />
+                                {section == "resume" && <Resume {...props} />}
+                                {section == "blog" && <Blog {...props} />}
                             </Box>
                         </Grid>
                     </Grid>
@@ -112,7 +139,9 @@ function About(props: AboutProps) {
         ?
         <Box className={classes.about}>
             <Container>
-                <Typography variant="body2" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(about)}</Typography>
+                <Typography variant="h6" gutterBottom>About Me</Typography>
+                <hr />
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(about)}</Typography>
             </Container>
         </Box>
         :
