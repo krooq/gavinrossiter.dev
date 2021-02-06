@@ -1,19 +1,18 @@
 import React, { Fragment } from "react";
 import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, CssBaseline, Box, createMuiTheme, ThemeProvider, List, ListItem, ListItemText } from "@material-ui/core";
-import { LinkItem, Profile, About } from '../common/Components';
+import { Profile, About, LocalLink } from '../common/Components';
 import Blog from "../blog/Blog";
 import Resume from "../resume/Resume";
 import avatar from 'resources/about/avatar.jpg';
 import about from 'resources/about/about.json'
 import contact from 'resources/about/contact.json'
-import experience from 'resources/about/experience.json'
+import employment from 'resources/about/employment.json'
 import education from 'resources/about/education.json'
 import projects from 'resources/about/projects.json'
 import skills from 'resources/about/skills.json'
-import ResumeDocx from "resume/ResumeDocx";
+import DownloadResumeAsWordButton from "resume/ResumeDocx";
 
 const theme = createMuiTheme({
     typography: {
@@ -58,7 +57,7 @@ function Home(props: any) {
     const renderLinks = false
 
     props = {
-        ...props, classes, about, contact: { ...contact, avatar: avatar }, experience, education, projects, skills, renderLinks
+        ...props, classes, about, contact: { ...contact, avatar: avatar }, employment, education, projects, skills, renderLinks
     }
 
     return about && contact
@@ -96,9 +95,9 @@ function Nav(props: any) {
         <React.Fragment>
             <Box className={classes.nav}>
                 <List>
-                    <ListItem><LinkItem href="/resume"><ListItemText primary="Resume" /></LinkItem></ListItem>
-                    {section == "resume" && <ListItem><ResumeDocx filename="GavinRossiter-Resume.docx"></ResumeDocx></ListItem>}
-                    <ListItem><LinkItem href="/blog"><ListItemText primary="Blog" /></LinkItem></ListItem>
+                    <ListItem><LocalLink href="/resume"><ListItemText primary="Resume" /></LocalLink></ListItem>
+                    {section == "resume" && <ListItem><DownloadResumeAsWordButton {...props} filename="GavinRossiter-Resume.docx" /></ListItem>}
+                    <ListItem><LocalLink href="/blog"><ListItemText primary="Blog" /></LocalLink></ListItem>
                 </List>
             </Box>
         </React.Fragment>

@@ -9,10 +9,32 @@ import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import '../index.css'
 import { textBlock } from "../common/Util"
-import { ResumeDocx, DownloadResumeAsDocx } from "./ResumeDocx"
-import { About } from "common/Components";
+import { DownloadResumeAsWordButton, GenerateAndDownloadResumeAsDocx } from "./ResumeDocx"
+import { About, ExternalLink } from "common/Components";
 
 const useStyles = makeStyles((theme) => ({
+    skills: {
+        paddingLeft: 32
+    },
+    timeline: {
+        padding: 0,
+        "& .MuiTimelineContent-root, & .MuiTimelineOppositeContent-root": {
+            padding: "4px 16px",
+
+        },
+        "& .MuiTimelineItem-root": {
+            minHeight: "0px",
+        },
+    },
+    table: {
+        '& .MuiTableCell-head': {
+            padding: 0
+        },
+        '& .MuiTableCell-body': {
+            padding: 0,
+            border: 0
+        }
+    },
     print: {
         '@media print': {
             display: 'block',
@@ -23,44 +45,36 @@ const useStyles = makeStyles((theme) => ({
 
 function Resume(props: any) {
     const classes = { ...props.classes, ...useStyles() }
-    const { about, contact, experience, education, projects, skills } = props
+    const { about, contact, employment, education, projects, skills } = props
     // DownloadResumeAsDocx({ ...props, filename: "GavinRossiter-Resume.docx" })
-    return contact && experience && education && projects && skills
+    return contact && employment && education && projects && skills
         ? <React.Fragment>
             <About {...props} />
             <br />
-            <ExperienceTimeline {...props} title="Experience" data={experience} />
+            <ExperienceTimeline {...props} title="Employment" data={employment} />
             <ExperienceTimeline {...props} title="Education" data={education} />
-            <ProjectTimeline {...props} title="Projects" data={projects} />
+            <ExperienceTimeline {...props} title="Projects" data={projects} />
             <br />
             <Typography className={classes.print} variant="h6" gutterBottom >Skills</Typography>
             <hr />
-            <Typography variant="overline" gutterBottom>Summary</Typography>
-            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(skills.summary, "\n")}</Typography>
-            <br />
-            <Typography variant="overline" gutterBottom>Strengths</Typography>
-            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(skills.strengths, "\n")}</Typography>
-            <br />
-            <Typography variant="overline">Expert languages</Typography>
-            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.languages.expert.join("\n")}</Typography>
-            <br />
-            <Typography variant="overline">Productive languages</Typography>
-            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.languages.productive.join("\n")}</Typography>
-            <br />
-            <Typography variant="overline" gutterBottom>Paradigms</Typography>
-            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.paradigms.join("\n")}</Typography>
-            <br />
-            <Typography variant="overline" gutterBottom>Tools</Typography>
-            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.tools.join("\n")}</Typography>
-            <br />
-            <Typography variant="overline" gutterBottom>Libraries and Frameworks</Typography>
-            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.ecosystem.join("\n")}</Typography>
-            <br />
+            <Box className={classes.skills}>
+                <Typography variant="body1" style={{ fontWeight: "bold" }}>Languages</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>Expert: {skills.languages.expert.join(", ")}</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>Productive: {skills.languages.productive.join(", ")}</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>Familiar: {skills.languages.familiar.join(", ")}</Typography>
+                <br />
+                <Typography variant="body1" gutterBottom style={{ fontWeight: "bold" }}>Tools</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.tools.join(", ")}</Typography>
+                <br />
+                <Typography variant="body1" gutterBottom style={{ fontWeight: "bold" }}>Frameworks</Typography>
+                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.frameworks.join(", ")}</Typography>
+                <br />
+            </Box>
         </React.Fragment >
         : <React.Fragment />
 }
 
-type ExperienceData = { start: string, end: string, title: string, domains: Array<string>, organization: string, location: string }
+type ExperienceData = { start: string, end: string, title: string, domains: Array<string>, organization: string, location: string, description: string, link: string }
 
 function ExperienceTimeline(props: any) {
     const title: string = props.title;
@@ -78,42 +92,15 @@ function ExperienceTimelineItem(props: any) {
     const data: ExperienceData = props.data
     return (
         <TimelineItem>
-            <TimelineContent style={{ flex: "none", width: "8rem" }}>
-                <Typography variant="subtitle2" align="right">{data.start} - {data.end}</Typography>
+            <TimelineContent style={{ flexGrow: 1, }}>
+                {data?.title && <Typography variant="body1" component="h1" align="left" style={{ fontWeight: "bold" }}>{data.title}</Typography>}
+                {data?.organization && <Typography variant="body2" component="p" align="left">{data.organization}</Typography>}
+                {data?.description && <Typography variant="body2" component="p" align="left">{data.description}</Typography>}
+                {data?.domains && data.domains.length > 0 && <Typography variant="body2" component="p" align="left">{data.domains.join(", ")}</Typography>}
+                {data?.link && <ExternalLink variant="body2" href={data.link}>{data.link}</ExternalLink>}
             </TimelineContent>
-            <TimelineOppositeContent style={{ flexGrow: 1, }}>
-                <Typography variant="body1" component="h1" align="left">{data.title}</Typography>
-                <Typography variant="body2" component="p" align="left">{data.organization}</Typography>
-                <Typography variant="body2" component="p" align="left">{data.domains.join(", ")}</Typography>
-            </TimelineOppositeContent>
-        </TimelineItem >
-    )
-}
-
-function ProjectTimeline(props: any) {
-    const title: string = props.title;
-    const data = props.data;
-    return (
-        <React.Fragment>
-            <Typography variant="h6" component="h2">{title}</Typography>
-            <hr />
-            <Timeline className={props.classes.timeline}>{data.map((d: any) => <ProjectTimelineItem data={d} />)}</Timeline>
-        </React.Fragment >
-    )
-}
-
-function ProjectTimelineItem(props: any) {
-    const data = props.data
-    return (
-        <TimelineItem>
-            <TimelineContent style={{ flex: "none", width: "8rem" }}>
-                <Typography variant="subtitle2" align="right">{data.start} - {data.end}</Typography>
-            </TimelineContent>
-            <TimelineOppositeContent style={{ flexGrow: 1 }}>
-                <Typography variant="body1" component="h1" align="left">{data.title}</Typography>
-                <Typography variant="body2" component="p" align="left">{data.description}</Typography>
-                {data.organiztion != null && <Typography variant="body2" component="p" align="left">{data.organization}</Typography>}
-                <Box textAlign="left"><Link variant="body2" href={data.link}>{data.link}</Link></Box>
+            <TimelineOppositeContent style={{ flex: "none", width: "8rem" }}>
+                <Typography variant="subtitle2" align="right" style={{ fontWeight: "bold" }}>{data.start} - {data.end}</Typography>
             </TimelineOppositeContent>
         </TimelineItem >
     )

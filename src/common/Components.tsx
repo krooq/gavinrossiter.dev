@@ -7,6 +7,7 @@ import PhoneIcon from '@material-ui/icons/Phone';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
 import { Twitter } from "@material-ui/icons";
 import { textBlock } from "./Util";
+import { Link as RouterLink } from "@reach/router";
 
 export function ContactItem(props: any) {
     return (
@@ -38,8 +39,15 @@ export function Contact(props: any) {
 }
 
 
-export function LinkItem(props: any) {
+export function ExternalLink(props: any) {
     return <Link {...props} component="a" color="inherit">{props.children}</Link>
+}
+export function LocalLink(props: any) {
+    return <Link {...props} component="a" color="inherit">
+        <RouterLink to={props.href} style={{ color: 'inherit', textDecoration: 'inherit' }}>
+            {props.children}
+        </RouterLink>
+    </Link>
 }
 
 export function Profile(props: any) {
@@ -52,7 +60,7 @@ export function Profile(props: any) {
         </Grid>
         <Grid container justify="center" alignItems="center">
             <Box className={classes.name}>
-                <LinkItem href="/" variant="h6">{contact.name}</LinkItem>
+                <LocalLink href="/" variant="h6">{contact.name}</LocalLink>
             </Box>
         </Grid>
         <Social {...props} />
@@ -65,9 +73,9 @@ export function Social(props: any) {
         ?
         <Box className={classes.social}>
             <Grid container justify="center" alignItems="center" spacing={2}>
-                <Grid item><LinkItem href={contact.github}><GitHubIcon /></LinkItem></Grid>
-                <Grid item><LinkItem href={contact.linkedin}><LinkedInIcon /></LinkItem></Grid>
-                <Grid item><LinkItem href={contact.twitter}><Twitter /></LinkItem></Grid>
+                <Grid item><ExternalLink href={contact.github}><GitHubIcon /></ExternalLink></Grid>
+                <Grid item><ExternalLink href={contact.linkedin}><LinkedInIcon /></ExternalLink></Grid>
+                <Grid item><ExternalLink href={contact.twitter}><Twitter /></ExternalLink></Grid>
             </Grid >
         </Box >
         :

@@ -60,18 +60,22 @@
         "Front end development",
         "Integrated systems programming"
     ],
-    "ecosystem": [
-        "React",
-        "NumPy",
-        "SciPy",
-        "PyTorch"
-    ],
     "tools": [
-        "VS Code",
+        "Visual Studio Code",
         "Eclipse",
         "Unix",
         "Jenkins",
         "Git",
-        "Atlassian suite"
+        "GitHub",
+        "Jira",
+        "Confluence",
+        "Bitbucket"
+    ],
+    "frameworks": [
+        "React",
+        "NumPy",
+        "SciPy",
+        "PyTorch",
+        "Cucumber"
     ]
 }

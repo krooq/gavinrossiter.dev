@@ -1,16 +1,16 @@
 [
     {
-        "title": "Website",
+        "title": "Personal Website",
         "organization": null,
-        "description": "I designed and built my website with React, TypeScript and Material-UI.",
+        "description": "Personal website built with TypeScript, React and Material-UI",
         "link": "https://gavinrossiter.dev",
         "start": "2020",
         "end": "Today"
     },
     {
-        "title": "Layout web app",
+        "title": "Interactive page designer",
         "organization": null,
-        "description": "In addition to my main landing page, I made a toy app to learn React and get back into web programming.",
+        "description": "Interactive page design app built with TypeScript and React",
         "link": "https://gavinrossiter.dev/app",
         "start": "2020",
         "end": "2020"
@@ -18,7 +18,7 @@
     {
         "title": "Arty",
         "organization": null,
-        "description": "Command line based browser and artifact downloader for jenkins built with Rust",
+        "description": "Command line based browser and artifact downloader for Jenkins built with Rust",
         "link": "https://github.com/krooq/arty",
         "start": "2020",
         "end": "2020"
@@ -26,7 +26,7 @@
     {
         "title": "Spiritlevel",
         "organization": null,
-        "description": "Small drink value calculator app built with Flutter",
+        "description": "Small drink value calculator app built with Dart & Flutter",
         "link": "https://play.google.com/store/apps/details?id=com.krooq.spiritlevel",
         "start": "2020",
         "end": "2020"
@@ -34,7 +34,7 @@
     {
         "title": "Jetpack - Attack of the Space Worms",
         "organization": "Swinburne University & Gridstone",
-        "description": "Mobile game developed for final year industry partner project",
+        "description": "Mobile game developed for final year industry partner project built with C# & Unity",
         "link": "https://play.google.com/store/apps/details?id=com.xfastgames.jetpack",
         "start": "2017",
         "end": "2017"
@@ -42,7 +42,7 @@
     {
         "title": "Virus characterization via serial x-ray diffraction: A computational feasibility study",
         "organization": "La Trobe University",
-        "description": "Computational simulation of virus characterization via x-ray diffraction using MATLAB.",
+        "description": "Computational simulation of virus characterization via x-ray diffraction built with MATLAB.",
         "link": "https://drive.google.com/file/d/12Te7b4e79MOLEwnGCaHeTRGg3-_cZYbe/view?usp=sharing",
         "start": "2015",
         "end": "2015"

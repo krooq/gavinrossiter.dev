@@ -8,7 +8,6 @@ import { useEffect } from 'react';
 
 const useStyles = makeStyles((theme) => ({
   mainGrid: {
-    marginTop: theme.spacing(4),
   },
 }));
 
@@ -23,12 +22,9 @@ export default function Blog(props: any) {
 
   return (
     <React.Fragment>
-      <CssBaseline />
-      <Container >
-        <Grid container className={classes.mainGrid}>
-          <Main title="Posts" posts={[postMarkdown]} />
-        </Grid>
-      </Container>
+      <Grid container className={classes.mainGrid}>
+        <Main title="Posts" posts={[postMarkdown]} />
+      </Grid>
     </React.Fragment >
   );
 }

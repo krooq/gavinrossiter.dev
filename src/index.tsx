@@ -14,11 +14,15 @@ import { Router } from "@reach/router"
 // Learn more about service workers: https://cra.link/PWA
 serviceWorker.register();
 
+
 ReactDOM.render(
-  <Router>
-    <Home path="/" />
-    <Home path="/:section" />
-    <App path="/app" />
-  </Router>,
+  <div style={{ width: "100vw" }}>
+    {/* primary=false is to prevent the auto focus from the router scrolling the page */}
+    <Router primary={false}>
+      <Home path="/" />
+      <Home path="/:section" />
+      <App path="/app" />
+    </Router>
+  </div>,
   document.getElementById("root")
 )
