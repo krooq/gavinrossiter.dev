@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Box, ListItem, ListItemIcon, ListItemText, List, Grid, Link, Container, Typography } from "@material-ui/core"
+import { Avatar, Box, ListItem, ListItemIcon, ListItemText, List, Grid, Link, Typography } from "@material-ui/core"
 import GitHubIcon from '@material-ui/icons/GitHub';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import WebIcon from '@material-ui/icons/Web';
@@ -94,7 +94,7 @@ export function About(props: AboutProps) {
         <Box className={classes.about}>
             <Typography variant="h6" gutterBottom>About Me</Typography>
             <hr />
-            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(about)}</Typography>
+            <Typography variant="body2" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(about)}</Typography>
         </Box>
         :
         <React.Fragment />

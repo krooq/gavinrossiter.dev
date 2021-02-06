@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import Container from '@material-ui/core/Container';
-import { makeStyles } from '@material-ui/core/styles';
-import { Grid, CssBaseline, Box, createMuiTheme, ThemeProvider, List, ListItem, ListItemText } from "@material-ui/core";
+import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
+import { Grid, CssBaseline, Box, ThemeProvider, List, ListItem, ListItemText } from "@material-ui/core";
 import { Profile, About, LocalLink } from '../common/Components';
 import Blog from "../blog/Blog";
 import Resume from "../resume/Resume";
@@ -15,12 +15,30 @@ import skills from 'resources/about/skills.json'
 import DownloadResumeAsWordButton from "resume/ResumeDocx";
 
 const theme = createMuiTheme({
+    overrides: {
+        //@ts-ignore types dont exist for some reason, see source on github
+        MuiTimelineContent: {
+            root: {
+                paddingLeft: 0
+            }
+        },
+        MuiTimeline: {
+            root: {
+                paddingLeft: 0
+            }
+        },
+    },
     typography: {
-        fontSize: 12,
+        body1: {
+            fontSize: 14
+        },
+        body2: {
+            fontSize: 12
+        },
     }
 })
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
     home: {
         marginTop: theme.spacing(4),
     },
@@ -49,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
         padding: '8px',
         margin: '8px',
     },
-}))
+})
 
 function Home(props: any) {
     const section = props.section
@@ -96,7 +114,7 @@ function Nav(props: any) {
             <Box className={classes.nav}>
                 <List>
                     <ListItem><LocalLink href="/resume"><ListItemText primary="Resume" /></LocalLink></ListItem>
-                    {section == "resume" && <ListItem><DownloadResumeAsWordButton {...props} filename="GavinRossiter-Resume.docx" /></ListItem>}
+                    {section === "resume" && <ListItem><DownloadResumeAsWordButton {...props} filename="GavinRossiter-Resume.docx" /></ListItem>}
                     <ListItem><LocalLink href="/blog"><ListItemText primary="Blog" /></LocalLink></ListItem>
                 </List>
             </Box>

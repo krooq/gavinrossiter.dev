@@ -1,6 +1,6 @@
 // Generate a CV
 // Import from 'docx' rather than '../build' if you install from npm
-import { AlignmentType, Document, HeadingLevel, IParagraphOptions, IRunOptions, ITableCellOptions, ITableRowOptions, Packer, Paragraph, Table, TableCell, TableRow, TabStopPosition, TabStopType, TextRun, WidthType } from "docx";
+import { AlignmentType, Document, HeadingLevel, IParagraphOptions, IRunOptions, ITableCellOptions, ITableRowOptions, Packer, Paragraph, TableCell, TableRow, TabStopPosition, TabStopType, TextRun } from "docx";
 import React from "react";
 import { Button } from "@material-ui/core";
 // tslint:disable:no-shadowed-variable
@@ -110,68 +110,28 @@ function experienceTitle(title: string, date: string) {
 }
 
 // Paragraph Options
-const hr: IParagraphOptions = { border: { bottom: { color: "auto", space: 1, value: "single", size: 6, } } }
-const h3: IParagraphOptions = { heading: HeadingLevel.HEADING_3, spacing: { before: 150 } }
-const h5: IParagraphOptions = { heading: HeadingLevel.HEADING_5, spacing: { before: 75 } }
-const tb: IParagraphOptions = { tabStops: [{ type: TabStopType.LEFT, position: 1000, },] }
-const li: IParagraphOptions = { bullet: { level: 0, } };
+export const hr: IParagraphOptions = { border: { bottom: { color: "auto", space: 1, value: "single", size: 6, } } }
+export const h3: IParagraphOptions = { heading: HeadingLevel.HEADING_3, spacing: { before: 150 } }
+export const h5: IParagraphOptions = { heading: HeadingLevel.HEADING_5, spacing: { before: 75 } }
+export const tb: IParagraphOptions = { tabStops: [{ type: TabStopType.LEFT, position: 1000, },] }
+export const li: IParagraphOptions = { bullet: { level: 0, } };
 
 // TextRun Options
-const em: IRunOptions = { italics: true }
-const b: IRunOptions = { bold: true }
+export const em: IRunOptions = { italics: true }
+export const b: IRunOptions = { bold: true }
 
-function p(spans: string | TextRun[], paragraphOpts: IParagraphOptions = {}): Paragraph {
+export function p(spans: string | TextRun[], paragraphOpts: IParagraphOptions = {}): Paragraph {
     const text = typeof spans === 'string' ? [new TextRun(spans)] : spans
     return new Paragraph({ children: text, ...paragraphOpts });
 }
-function s(textOpts: string | IRunOptions = {}) {
+export function s(textOpts: string | IRunOptions = {}) {
     return new TextRun(textOpts)
 }
-function tr(opts: TableCell[] | ITableRowOptions = []) {
+export function tr(opts: TableCell[] | ITableRowOptions = []) {
     return new TableRow('children' in opts ? opts : { children: opts });
 }
-function td(opts: Paragraph[] | ITableCellOptions = []) {
+export function td(opts: Paragraph[] | ITableCellOptions = []) {
     return new TableCell('children' in opts ? opts : { children: opts });
-}
-
-
-// tslint:disable-next-line:no-any
-function createPositionDateText(startDate: any, endDate: any, isCurrent: boolean): string {
-    const startDateText = getMonthFromInt(startDate.month) + ". " + startDate.year;
-    const endDateText = isCurrent ? "Present" : `${getMonthFromInt(endDate.month)}.${endDate.year} `;
-
-    return `${startDateText} - ${endDateText} `;
-}
-
-function getMonthFromInt(value: number): string {
-    switch (value) {
-        case 1:
-            return "Jan";
-        case 2:
-            return "Feb";
-        case 3:
-            return "Mar";
-        case 4:
-            return "Apr";
-        case 5:
-            return "May";
-        case 6:
-            return "Jun";
-        case 7:
-            return "Jul";
-        case 8:
-            return "Aug";
-        case 9:
-            return "Sept";
-        case 10:
-            return "Oct";
-        case 11:
-            return "Nov";
-        case 12:
-            return "Dec";
-        default:
-            return "N/A";
-    }
 }
 
 export function GenerateAndDownloadResumeAsDocx(props: any) {
@@ -182,7 +142,7 @@ export function GenerateAndDownloadResumeAsDocx(props: any) {
 }
 
 export function DownloadResumeAsWordButton(props: any) {
-    return <Button onClick={e => GenerateAndDownloadResumeAsDocx(props)} >Download as Word doc</Button>
+    return <Button onClick={(e: any) => GenerateAndDownloadResumeAsDocx(props)} >Download Word doc</Button>
 }
 
 export default DownloadResumeAsWordButton;

@@ -1,52 +1,26 @@
 import React from "react";
-import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { CssBaseline, Link, Box } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import '../index.css'
-import { textBlock } from "../common/Util"
-import { DownloadResumeAsWordButton, GenerateAndDownloadResumeAsDocx } from "./ResumeDocx"
 import { About, ExternalLink } from "common/Components";
 
-const useStyles = makeStyles((theme) => ({
-    skills: {
-        paddingLeft: 32
-    },
-    timeline: {
-        padding: 0,
-        "& .MuiTimelineContent-root, & .MuiTimelineOppositeContent-root": {
-            padding: "4px 16px",
-
-        },
-        "& .MuiTimelineItem-root": {
-            minHeight: "0px",
-        },
-    },
-    table: {
-        '& .MuiTableCell-head': {
-            padding: 0
-        },
-        '& .MuiTableCell-body': {
-            padding: 0,
-            border: 0
-        }
-    },
+const useStyles = makeStyles({
     print: {
         '@media print': {
             display: 'block',
             pageBreakBefore: 'always',
         },
     },
-}))
+})
 
 function Resume(props: any) {
     const classes = { ...props.classes, ...useStyles() }
-    const { about, contact, employment, education, projects, skills } = props
-    // DownloadResumeAsDocx({ ...props, filename: "GavinRossiter-Resume.docx" })
+    const { contact, employment, education, projects, skills } = props
     return contact && employment && education && projects && skills
         ? <React.Fragment>
             <About {...props} />
@@ -57,17 +31,17 @@ function Resume(props: any) {
             <br />
             <Typography className={classes.print} variant="h6" gutterBottom >Skills</Typography>
             <hr />
-            <Box className={classes.skills}>
+            <Box>
                 <Typography variant="body1" style={{ fontWeight: "bold" }}>Languages</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>Expert: {skills.languages.expert.join(", ")}</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>Productive: {skills.languages.productive.join(", ")}</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>Familiar: {skills.languages.familiar.join(", ")}</Typography>
+                <Typography variant="body2" style={{ whiteSpace: 'pre-wrap' }}>Expert: {skills.languages.expert.join(", ")}</Typography>
+                <Typography variant="body2" style={{ whiteSpace: 'pre-wrap' }}>Productive: {skills.languages.productive.join(", ")}</Typography>
+                <Typography variant="body2" style={{ whiteSpace: 'pre-wrap' }}>Familiar: {skills.languages.familiar.join(", ")}</Typography>
                 <br />
                 <Typography variant="body1" gutterBottom style={{ fontWeight: "bold" }}>Tools</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.tools.join(", ")}</Typography>
+                <Typography variant="body2" style={{ whiteSpace: 'pre-wrap' }}>{skills.tools.join(", ")}</Typography>
                 <br />
                 <Typography variant="body1" gutterBottom style={{ fontWeight: "bold" }}>Frameworks</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.frameworks.join(", ")}</Typography>
+                <Typography variant="body2" style={{ whiteSpace: 'pre-wrap' }}>{skills.frameworks.join(", ")}</Typography>
                 <br />
             </Box>
         </React.Fragment >
