@@ -9,30 +9,10 @@ import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import '../index.css'
 import { textBlock } from "../common/Util"
+import { ResumeDocx, DownloadResumeAsDocx } from "./ResumeDocx"
+import { About } from "common/Components";
 
 const useStyles = makeStyles((theme) => ({
-    resume: {
-        marginTop: theme.spacing(4)
-    },
-    timeline: {
-        padding: 0,
-        "& .MuiTimelineContent-root, & .MuiTimelineOppositeContent-root": {
-            padding: "4px 16px",
-
-        },
-        "& .MuiTimelineItem-root": {
-            minHeight: "0px",
-        },
-    },
-    table: {
-        '& .MuiTableCell-head': {
-            padding: 0
-        },
-        '& .MuiTableCell-body': {
-            padding: 0,
-            border: 0
-        }
-    },
     print: {
         '@media print': {
             display: 'block',
@@ -42,43 +22,40 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function Resume(props: any) {
-    const classes = useStyles()
-    const { contact, experience, education, projects, skills } = props
-    const avatar = false
-    props = { ...props, classes, data: contact, avatar }
-
+    const classes = { ...props.classes, ...useStyles() }
+    const { about, contact, experience, education, projects, skills } = props
+    // DownloadResumeAsDocx({ ...props, filename: "GavinRossiter-Resume.docx" })
     return contact && experience && education && projects && skills
         ? <React.Fragment>
-            <CssBaseline />
-            <Container className={classes.resume}>
-                <ExperienceTimeline {...props} title="Experience" data={experience} />
-                <ExperienceTimeline {...props} title="Education" data={education} />
-                <ProjectTimeline {...props} title="Projects" data={projects} />
-                <br />
-                <Typography className={classes.print} variant="h6" gutterBottom >Skills</Typography>
-                <hr />
-                <Typography variant="overline" gutterBottom>Summary</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(skills.summary, "\n")}</Typography>
-                <br />
-                <Typography variant="overline" gutterBottom>Strengths</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(skills.strengths, "\n")}</Typography>
-                <br />
-                <Typography variant="overline">Primary languages</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.languages.primary.join("\n")}</Typography>
-                <br />
-                <Typography variant="overline">Secondary languages</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.languages.secondary.join("\n")}</Typography>
-                <br />
-                <Typography variant="overline" gutterBottom>Paradigms</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.paradigms.join("\n")}</Typography>
-                <br />
-                <Typography variant="overline" gutterBottom>Tools</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.tools.join("\n")}</Typography>
-                <br />
-                <Typography variant="overline" gutterBottom>Libraries and Frameworks</Typography>
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.ecosystem.join("\n")}</Typography>
-                <br />
-            </Container>
+            <About {...props} />
+            <br />
+            <ExperienceTimeline {...props} title="Experience" data={experience} />
+            <ExperienceTimeline {...props} title="Education" data={education} />
+            <ProjectTimeline {...props} title="Projects" data={projects} />
+            <br />
+            <Typography className={classes.print} variant="h6" gutterBottom >Skills</Typography>
+            <hr />
+            <Typography variant="overline" gutterBottom>Summary</Typography>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(skills.summary, "\n")}</Typography>
+            <br />
+            <Typography variant="overline" gutterBottom>Strengths</Typography>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(skills.strengths, "\n")}</Typography>
+            <br />
+            <Typography variant="overline">Expert languages</Typography>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.languages.expert.join("\n")}</Typography>
+            <br />
+            <Typography variant="overline">Productive languages</Typography>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.languages.productive.join("\n")}</Typography>
+            <br />
+            <Typography variant="overline" gutterBottom>Paradigms</Typography>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.paradigms.join("\n")}</Typography>
+            <br />
+            <Typography variant="overline" gutterBottom>Tools</Typography>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.tools.join("\n")}</Typography>
+            <br />
+            <Typography variant="overline" gutterBottom>Libraries and Frameworks</Typography>
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{skills.ecosystem.join("\n")}</Typography>
+            <br />
         </React.Fragment >
         : <React.Fragment />
 }
@@ -106,8 +83,8 @@ function ExperienceTimelineItem(props: any) {
             </TimelineContent>
             <TimelineOppositeContent style={{ flexGrow: 1, }}>
                 <Typography variant="body1" component="h1" align="left">{data.title}</Typography>
+                <Typography variant="body2" component="p" align="left">{data.organization}</Typography>
                 <Typography variant="body2" component="p" align="left">{data.domains.join(", ")}</Typography>
-                <Typography variant="body2" component="p" align="left">{data.organization} ({data.location})</Typography>
             </TimelineOppositeContent>
         </TimelineItem >
     )
@@ -130,7 +107,7 @@ function ProjectTimelineItem(props: any) {
     return (
         <TimelineItem>
             <TimelineContent style={{ flex: "none", width: "8rem" }}>
-                <Typography variant="subtitle2" align="right">{data.end}</Typography>
+                <Typography variant="subtitle2" align="right">{data.start} - {data.end}</Typography>
             </TimelineContent>
             <TimelineOppositeContent style={{ flexGrow: 1 }}>
                 <Typography variant="body1" component="h1" align="left">{data.title}</Typography>

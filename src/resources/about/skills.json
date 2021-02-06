@@ -23,24 +23,24 @@
         ]
     ],
     "languages": {
-        "primary": [
+        "expert": [
+            "Java"
+        ],
+        "productive": [
+            "C#",
             "Python",
-            "Java",
             "TypeScript",
             "JavaScript",
-            "Dart",
-            "Bash",
             "HTML",
             "CSS",
+            "Dart",
+            "Bash",
             "Rust"
         ],
-        "secondary": [
-            "C#",
+        "familiar": [
             "C",
             "C++",
-            "Scala"
-        ],
-        "tertiary": [
+            "Scala",
             "Lisp",
             "Haskell",
             "MATLAB",

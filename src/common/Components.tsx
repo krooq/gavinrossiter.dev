@@ -1,11 +1,12 @@
 import React from "react";
-import { Avatar, Box, ListItem, ListItemIcon, ListItemText, List, Grid, Link } from "@material-ui/core"
+import { Avatar, Box, ListItem, ListItemIcon, ListItemText, List, Grid, Link, Container, Typography } from "@material-ui/core"
 import GitHubIcon from '@material-ui/icons/GitHub';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import WebIcon from '@material-ui/icons/Web';
 import PhoneIcon from '@material-ui/icons/Phone';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
 import { Twitter } from "@material-ui/icons";
+import { textBlock } from "./Util";
 
 export function ContactItem(props: any) {
     return (
@@ -69,6 +70,24 @@ export function Social(props: any) {
                 <Grid item><LinkItem href={contact.twitter}><Twitter /></LinkItem></Grid>
             </Grid >
         </Box >
+        :
+        <React.Fragment />
+}
+
+type AboutProps = {
+    about: any
+    contact: any
+    classes: { about: any }
+}
+export function About(props: AboutProps) {
+    const { about, contact, classes } = props
+    return about && contact && classes
+        ?
+        <Box className={classes.about}>
+            <Typography variant="h6" gutterBottom>About Me</Typography>
+            <hr />
+            <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(about)}</Typography>
+        </Box>
         :
         <React.Fragment />
 }

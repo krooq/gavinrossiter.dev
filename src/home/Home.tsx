@@ -3,8 +3,7 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, CssBaseline, Box, createMuiTheme, ThemeProvider, List, ListItem, ListItemText } from "@material-ui/core";
-import { LinkItem, Profile } from '../common/Components';
-import { textBlock } from '../common/Util';
+import { LinkItem, Profile, About } from '../common/Components';
 import Blog from "../blog/Blog";
 import Resume from "../resume/Resume";
 import avatar from 'resources/about/avatar.jpg';
@@ -14,6 +13,7 @@ import experience from 'resources/about/experience.json'
 import education from 'resources/about/education.json'
 import projects from 'resources/about/projects.json'
 import skills from 'resources/about/skills.json'
+import ResumeDocx from "resume/ResumeDocx";
 
 const theme = createMuiTheme({
     typography: {
@@ -23,7 +23,7 @@ const theme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
     home: {
-        marginTop: '32px',
+        marginTop: theme.spacing(4),
     },
     nav: {
         margin: '16px',
@@ -76,7 +76,7 @@ function Home(props: any) {
                         {/* Main Content */}
                         <Grid item xs={12} md={10}>
                             <Box className={classes.content}>
-                                {section !== "blog" && <About {...props} />}
+                                {!section && <About {...props} />}
                                 {section === "resume" && <Resume {...props} />}
                                 {section === "blog" && <Blog {...props} />}
                             </Box>
@@ -90,13 +90,14 @@ function Home(props: any) {
 }
 
 function Nav(props: any) {
-    const { classes } = props
+    const { section, classes } = props
     return classes
         ?
         <React.Fragment>
             <Box className={classes.nav}>
                 <List>
-                    <ListItem ><LinkItem href="/resume"><ListItemText primary="Resume" /></LinkItem></ListItem>
+                    <ListItem><LinkItem href="/resume"><ListItemText primary="Resume" /></LinkItem></ListItem>
+                    {section == "resume" && <ListItem><ResumeDocx filename="GavinRossiter-Resume.docx"></ResumeDocx></ListItem>}
                     <ListItem><LinkItem href="/blog"><ListItemText primary="Blog" /></LinkItem></ListItem>
                 </List>
             </Box>
@@ -105,25 +106,7 @@ function Nav(props: any) {
         <React.Fragment />
 }
 
-type AboutProps = {
-    about: any
-    contact: any
-    classes: { about: any }
-}
-function About(props: AboutProps) {
-    const { about, contact, classes } = props
-    return about && contact && classes
-        ?
-        <Box className={classes.about}>
-            <Container>
-                <Typography variant="h6" gutterBottom>About Me</Typography>
-                <hr />
-                <Typography variant="body1" style={{ whiteSpace: 'pre-wrap' }}>{textBlock(about)}</Typography>
-            </Container>
-        </Box>
-        :
-        <React.Fragment />
-}
+
 
 
 export default Home

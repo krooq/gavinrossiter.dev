@@ -7,7 +7,8 @@
         ],
         "location": "Melbourne, Australia",
         "start": "2015",
-        "end": "2017"
+        "end": "2017",
+        "notes": []
     },
     {
         "title": "Bachelor of Science",
@@ -18,6 +19,7 @@
         ],
         "location": "Melbourne, Australia",
         "start": "2012",
-        "end": "2015"
+        "end": "2015",
+        "notes": []
     }
 ]
