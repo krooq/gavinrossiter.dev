@@ -5,10 +5,13 @@ import React from "react";
 import { Button } from "@material-ui/core";
 // tslint:disable:no-shadowed-variable
 import { saveAs } from "file-saver";
+import contact from 'resources/about/contact.json'
+import employment from 'resources/about/employment.json'
+import education from 'resources/about/education.json'
+import projects from 'resources/about/projects.json'
+import skills from 'resources/about/skills.json'
 
-function CreateResumeDocument(props: any): Document {
-    const { contact, employment, education, projects, skills } = props
-
+function CreateResumeDocument(): Document {
     const document = new Document({
         styles: {
             default: {
@@ -94,7 +97,6 @@ function experienceTitle(title: string, date: string) {
     //                     p({ text: date, ...b })],
     //             })
     //         ])
-
     //     ],
     // });
 
@@ -136,7 +138,7 @@ export function td(opts: Paragraph[] | ITableCellOptions = []) {
 
 export function GenerateAndDownloadResumeAsDocx(props: any) {
     const { filename } = props
-    Packer.toBlob(CreateResumeDocument(props)).then((blob) => {
+    Packer.toBlob(CreateResumeDocument()).then((blob) => {
         saveAs(blob, filename);
     })
 }

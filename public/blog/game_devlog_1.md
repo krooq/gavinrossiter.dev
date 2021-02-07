@@ -1,4 +1,5 @@
-# Game Devlog 1
+# Game Devlog #1
+
 #### Jan. 28, 2021 | Gavin Rossiter
 
 Welcome to my premiere of my devlog series! 

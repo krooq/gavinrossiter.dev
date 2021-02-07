@@ -1,18 +1,10 @@
 import React, { Fragment } from "react";
 import Container from '@material-ui/core/Container';
 import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
-import { Grid, CssBaseline, Box, ThemeProvider, List, ListItem, ListItemText } from "@material-ui/core";
-import { Profile, About, LocalLink } from '../common/Components';
-import Blog from "../blog/Blog";
-import Resume from "../resume/Resume";
-import avatar from 'resources/about/avatar.jpg';
-import about from 'resources/about/about.json'
-import contact from 'resources/about/contact.json'
-import employment from 'resources/about/employment.json'
-import education from 'resources/about/education.json'
-import projects from 'resources/about/projects.json'
-import skills from 'resources/about/skills.json'
-import DownloadResumeAsWordButton from "resume/ResumeDocx";
+import { Grid, CssBaseline, Box, ThemeProvider, List } from "@material-ui/core";
+import { Profile, About } from '../common/Components';
+import Blog, { BlogNav } from "../blog/Blog";
+import Resume, { ResumeNav } from "../resume/Resume";
 
 const theme = createMuiTheme({
     overrides: {
@@ -45,24 +37,6 @@ const useStyles = makeStyles({
     nav: {
         margin: '16px',
     },
-    about: {},
-    name: {
-        padding: '4px',
-        margin: '4px'
-    },
-    avatar: {
-        padding: '8px',
-        margin: '8px',
-        '& .MuiAvatar-root': {
-            height: theme.spacing(16),
-            width: theme.spacing(16),
-            margin: "auto"
-        }
-    },
-    social: {
-        padding: '4px',
-        margin: '4px',
-    },
     content: {
         padding: '8px',
         margin: '8px',
@@ -70,52 +44,44 @@ const useStyles = makeStyles({
 })
 
 function Home(props: any) {
-    const section = props.section
+    const { section } = props
     const classes = useStyles();
-    const renderLinks = false
 
-    props = {
-        ...props, classes, about, contact: { ...contact, avatar: avatar }, employment, education, projects, skills, renderLinks
-    }
+    props = { ...props, classes }
 
-    return about && contact
-        ?
-        <Fragment>
-            <ThemeProvider theme={theme} >
-                <CssBaseline />
-                <Container className={classes.home}>
-                    <Grid container direction="row">
-                        {/* Sidebar */}
-                        <Grid container direction="column" xs={12} md={2}>
-                            <Profile {...props} />
-                            <Nav {...props} />
-                        </Grid>
-                        {/* Main Content */}
-                        <Grid item xs={12} md={10}>
-                            <Box className={classes.content}>
-                                {!section && <About {...props} />}
-                                {section === "resume" && <Resume {...props} />}
-                                {section === "blog" && <Blog {...props} />}
-                            </Box>
-                        </Grid>
+    return <Fragment>
+        <ThemeProvider theme={theme} >
+            <CssBaseline />
+            <Container className={classes.home}>
+                <Grid container direction="row">
+                    {/* Sidebar */}
+                    <Grid item container direction="column" xs={12} md={2}>
+                        <Profile {...props} />
+                        <Nav {...props} />
                     </Grid>
-                </Container>
-            </ThemeProvider>
-        </Fragment >
-        :
-        <Fragment />
+                    {/* Main Content */}
+                    <Grid item xs={12} md={10}>
+                        <Box className={classes.content}>
+                            {!section && <About {...props} />}
+                            {section === "resume" && <Resume {...props} />}
+                            {section === "blog" && <Blog {...props} />}
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Container>
+        </ThemeProvider>
+    </Fragment >
 }
 
 function Nav(props: any) {
-    const { section, classes } = props
+    const { classes } = props
     return classes
         ?
         <React.Fragment>
             <Box className={classes.nav}>
                 <List>
-                    <ListItem><LocalLink href="/resume"><ListItemText primary="Resume" /></LocalLink></ListItem>
-                    {section === "resume" && <ListItem><DownloadResumeAsWordButton {...props} filename="GavinRossiter-Resume.docx" /></ListItem>}
-                    <ListItem><LocalLink href="/blog"><ListItemText primary="Blog" /></LocalLink></ListItem>
+                    <ResumeNav {...props} />
+                    <BlogNav {...props} />
                 </List>
             </Box>
         </React.Fragment>

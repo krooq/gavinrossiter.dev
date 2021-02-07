@@ -21,6 +21,7 @@ ReactDOM.render(
     <Router primary={false}>
       <Home path="/" />
       <Home path="/:section" />
+      <Home path="/:section/:post" />
       <App path="/app" />
     </Router>
   </div>,

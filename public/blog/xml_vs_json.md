@@ -1,4 +1,5 @@
-# XML vs JSON, what you need to know
+# XML vs JSON, ramblings about data formats
+
 #### Nov. 11, 2020 | Gavin Rossiter
 
 XML and JSON are very 2 popular human readable serialization formats.

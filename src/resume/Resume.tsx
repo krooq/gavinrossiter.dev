@@ -1,13 +1,20 @@
 import React from "react";
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box } from "@material-ui/core";
+import { Box, ListItem, ListItemText } from "@material-ui/core";
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineContent from '@material-ui/lab/TimelineContent';
 import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent';
 import '../index.css'
-import { About, ExternalLink } from "common/Components";
+import { About, ExternalLink, LocalLink } from "common/Components";
+import about from 'resources/about/about.json'
+import contact from 'resources/about/contact.json'
+import employment from 'resources/about/employment.json'
+import education from 'resources/about/education.json'
+import projects from 'resources/about/projects.json'
+import skills from 'resources/about/skills.json'
+import DownloadResumeAsWordButton from "./ResumeDocx";
 
 const useStyles = makeStyles({
     print: {
@@ -19,11 +26,11 @@ const useStyles = makeStyles({
 })
 
 function Resume(props: any) {
-    const classes = { ...props.classes, ...useStyles() }
-    const { contact, employment, education, projects, skills } = props
+    const classes = useStyles()
+    const aboutProps = { about, contact, classes }
     return contact && employment && education && projects && skills
         ? <React.Fragment>
-            <About {...props} />
+            <About {...aboutProps} />
             <br />
             <ExperienceTimeline {...props} title="Employment" data={employment} />
             <ExperienceTimeline {...props} title="Education" data={education} />
@@ -57,7 +64,7 @@ function ExperienceTimeline(props: any) {
         <React.Fragment>
             <Typography variant="h6" component="h2">{title}</Typography>
             <hr />
-            <Timeline className={props.classes.timeline}>{data.map((d: any) => <ExperienceTimelineItem data={d} />)}</Timeline>
+            <Timeline >{data.map((d: any) => <ExperienceTimelineItem data={d} />)}</Timeline>
         </React.Fragment >
     )
 }
@@ -78,6 +85,16 @@ function ExperienceTimelineItem(props: any) {
             </TimelineOppositeContent>
         </TimelineItem >
     )
+}
+
+
+
+export function ResumeNav(props: any) {
+    const { section } = props
+    return <React.Fragment>
+        <ListItem><LocalLink href="/resume"><ListItemText primary="Resume" /></LocalLink></ListItem>
+        {section === "resume" && <ListItem><DownloadResumeAsWordButton {...props} filename="GavinRossiter-Resume.docx" /></ListItem>}
+    </React.Fragment>
 }
 
 export default Resume;

@@ -17,11 +17,9 @@ export default function Main(props: MainProps) {
     <Grid container justify="center">
       <Grid item >
         {posts.map((post) => (
-          <React.Fragment>
-            <Markdown key={post.substring(0, 40)}>
-              {post}
-            </Markdown>
-          </React.Fragment>
+          <Markdown key={post.substring(0, 40)}>
+            {post}
+          </Markdown>
         ))}
       </Grid>
     </Grid>
