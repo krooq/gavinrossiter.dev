@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, ListItem, ListItemText } from "@material-ui/core";
+import { Box, List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import Timeline from '@material-ui/lab/Timeline';
 import TimelineItem from '@material-ui/lab/TimelineItem';
 import TimelineContent from '@material-ui/lab/TimelineContent';
@@ -55,7 +55,7 @@ function Resume(props: any) {
         : <React.Fragment />
 }
 
-type ExperienceData = { start: string, end: string, title: string, domains: Array<string>, organization: string, location: string, description: string, link: string }
+type ExperienceData = { start: string, end: string, title: string, domains: Array<string>, organization: string, location: string, description: string, link: string, notes: string[] }
 
 function ExperienceTimeline(props: any) {
     const title: string = props.title;
@@ -64,7 +64,7 @@ function ExperienceTimeline(props: any) {
         <React.Fragment>
             <Typography variant="h6" component="h2">{title}</Typography>
             <hr />
-            <Timeline >{data.map((d: any) => <ExperienceTimelineItem data={d} />)}</Timeline>
+            <Timeline >{data.map((d: any) => <ExperienceTimelineItem key={d?.title + d?.start + d?.end} data={d} />)}</Timeline>
         </React.Fragment >
     )
 }
@@ -79,6 +79,7 @@ function ExperienceTimelineItem(props: any) {
                 {data?.description && <Typography variant="body2" component="p" align="left">{data.description}</Typography>}
                 {data?.domains && data.domains.length > 0 && <Typography variant="body2" component="p" align="left">{data.domains.join(", ")}</Typography>}
                 {data?.link && <ExternalLink variant="body2" href={data.link}>{data.link}</ExternalLink>}
+                {data?.notes && <List dense disablePadding>{data?.notes.map((n: any) => <ListItem key={n}><ListItemText primary={`- ${n}`} /></ListItem>)}</List>}
             </TimelineContent>
             <TimelineOppositeContent style={{ flex: "none", width: "8rem" }}>
                 <Typography variant="subtitle2" align="right" style={{ fontWeight: "bold" }}>{data.start} - {data.end}</Typography>

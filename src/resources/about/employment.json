@@ -8,7 +8,16 @@
         "location": "Melbourne, Australia",
         "start": "2018",
         "end": "Today",
-        "notes": []
+        "notes": [
+            "Develop features in Java for the human machine interface (HMI) of the air traffic management system",
+            "Design and code supporting CSCIs for the HMI e.g. external application gateway server",
+            "Fix bugs and gaps in the solution identified by verification team",
+            "Write automated tests using the cucumber framework and Junit to run on jenkins",
+            "Derive and trace requirements from the SSS document to tests",
+            "Perform pre-verfication, application level integration testing",
+            "Review pull requests as the merge authority",
+            "Script micro-tools to speed up daily tasks"
+        ]
     },
     {
         "title": "Software Engineer, Intern",
@@ -19,6 +28,10 @@
         "location": "Melbourne, Australia",
         "start": "2016",
         "end": "2017",
-        "notes": []
+        "notes": [
+            "Design and prototype controller based innovation products",
+            "Demonstrate and pitch innovation products to visitors and management",
+            "Integrate existing ATM software into innovation products"
+        ]
     }
 ]

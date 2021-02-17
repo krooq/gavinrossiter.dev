@@ -2,7 +2,7 @@
     {
         "title": "Personal Website",
         "organization": null,
-        "description": "Personal website built with TypeScript, React and Material-UI",
+        "description": "Personal website built with TypeScript, React and Material-UI. Generates a word doc resume on demand using the same data as the web version. Has the beginnings of a blog generated from markdown.",
         "link": "https://gavinrossiter.dev",
         "start": "2020",
         "end": "Today"

@@ -19,6 +19,17 @@ const theme = createMuiTheme({
                 paddingLeft: 0
             }
         },
+        MuiListItemText: {
+            dense: {
+                margin: 0
+            }
+        },
+        MuiListItem: {
+            dense: {
+                paddingTop: 0,
+                paddingBottom: 0
+            }
+        }
     },
     typography: {
         body1: {
