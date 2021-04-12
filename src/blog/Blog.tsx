@@ -9,6 +9,7 @@ import { ExpandLess, ExpandMore } from '@material-ui/icons';
 
 
 const posts = new Map([
+  ["game_devlog_3", "Game Devlog 3"],
   ["game_devlog_2", "Game Devlog 2"],
   ["game_devlog_1", "Game Devlog 1"],
   ["xml_vs_json", "XML vs JSON"]
