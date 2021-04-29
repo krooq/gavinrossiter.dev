@@ -24,7 +24,6 @@ export default function Blog(props: any) {
   const classes = useStyles();
   const [postMarkdown, setPostMarkdown] = React.useState('');
 
-  // useEffect with an empty dependency array (`[]`) runs only once
   useEffect(() => {
     fetch(`${process.env.PUBLIC_URL}/blog/${post}.md`).then((response) => response.text()).then((text) => setPostMarkdown(text));
   }, [post]);

@@ -6,7 +6,7 @@ import App from './app/App';
 // import VisualXml from './vxml/VisualXml'
 import * as serviceWorker from './serviceWorker';
 import Home from './home/Home';
-
+import Vxml from './vxml/VisualXml';
 import { Router } from "@reach/router"
 
 // If you want your app to work offline and load faster, you can change
@@ -23,6 +23,7 @@ ReactDOM.render(
       <Home path="/:section" />
       <Home path="/:section/:post" />
       <App path="/app" />
+      <Vxml path="/vxml" />
     </Router>
   </div>,
   document.getElementById("root")

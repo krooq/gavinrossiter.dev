@@ -106,7 +106,7 @@ function TreeMapSection(props: TreeMapSectionProps) {
     )
 }
 
-function App() {
+function Vxml(props: any) {
   const [windowWidth, windowHeight] = useWindowDimensions();
   const [upload, setUpload] = useState<File>()
   const [treeMapNodes, setTreeMapNodes] = useState<Map<string, TreeMapNode>>()
@@ -182,7 +182,7 @@ function App() {
     }
   </div>
 }
-export default App
+export default Vxml
 
 function openNodes(
   tree: Tree,
