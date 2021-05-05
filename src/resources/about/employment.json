@@ -1,5 +1,21 @@
 [
     {
+        "title": "Developer",
+        "organization": "PHM Technology",
+        "domains": [
+            "Engineering"
+        ],
+        "location": "Melbourne, Australia",
+        "start": "2021",
+        "end": "Today",
+        "notes": [
+            "Code application features in Java using SWT, JavaFX, Eclipse RCP and JFace.",
+            "Design application solutions to satisfy engineering specifications and meet customer needs",
+            "Fix bugs identified by testing team",
+            "Perform peer review on pull requests"
+        ]
+    },
+    {
         "title": "Software Engineer",
         "organization": "Thales",
         "domains": [
@@ -7,7 +23,7 @@
         ],
         "location": "Melbourne, Australia",
         "start": "2018",
-        "end": "Today",
+        "end": "2021",
         "notes": [
             "Develop features in Java for the human machine interface (HMI) of the air traffic management system",
             "Design and code supporting CSCIs for the HMI e.g. external application gateway server",
