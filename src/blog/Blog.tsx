@@ -31,9 +31,9 @@ export default function Blog(props: any) {
 
   return (
     <React.Fragment>
-      <Grid container className={classes.mainGrid}>
+      {/* <Grid container className={classes.mainGrid}>
         <Main title="Posts" posts={[postMarkdown]} />
-      </Grid>
+      </Grid> */}
     </React.Fragment >
   );
 }

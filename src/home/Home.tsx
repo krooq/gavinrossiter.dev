@@ -92,7 +92,7 @@ function Nav(props: any) {
             <Box className={classes.nav}>
                 <List>
                     <ResumeNav {...props} />
-                    <BlogNav {...props} />
+                    {/* <BlogNav {...props} /> */}
                 </List>
             </Box>
         </React.Fragment>

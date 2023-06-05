@@ -10,7 +10,6 @@ import employment from 'resources/about/employment.json'
 import education from 'resources/about/education.json'
 import projects from 'resources/about/projects.json'
 import skills from 'resources/about/skills.json'
-
 function CreateResumeDocument(): Document {
     const document = new Document({
         styles: {
@@ -144,8 +143,10 @@ export function GenerateAndDownloadResumeAsDocx(props: any) {
 }
 
 export function DownloadResumeAsWordButton(props: any) {
-    return <Button onClick={(e: any) => GenerateAndDownloadResumeAsDocx(props)} >Download Word doc</Button>
+    return <Button onClick={(e: any) => GenerateAndDownloadResumeAsDocx(props)}>.docx</Button >
 }
+
+
 
 export default DownloadResumeAsWordButton;
 

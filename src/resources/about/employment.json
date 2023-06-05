@@ -9,10 +9,11 @@
         "start": "2021",
         "end": "Today",
         "notes": [
-            "Code application features in Java using SWT, JavaFX, Eclipse RCP and JFace.",
-            "Design application solutions to satisfy engineering specifications and meet customer needs",
-            "Fix bugs identified by testing team",
-            "Perform peer review on pull requests"
+            "Design and develop APIs",
+            "Collaborate with customers to provide software integrations",
+            "Lead small feature teams to deliver outcomes in line with the product roadmap",
+            "Code application features in Java using SWT, JavaFX, Eclipse RCP and JFace",
+            "Fix bugs and perform peer review on pull requests"
         ]
     },
     {
