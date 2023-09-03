@@ -27,56 +27,65 @@
             "Java"
         ],
         "productive": [
+            "TypeScript",
             "C#",
             "Python",
-            "TypeScript",
             "JavaScript",
             "HTML",
             "CSS",
-            "Dart",
             "Bash",
-            "Rust"
+            "PowerShell"
         ],
         "familiar": [
             "C",
             "C++",
             "Scala",
+            "MATLAB",
+            "Dart",
             "Lisp",
             "Haskell",
-            "MATLAB",
-            "PowerShell"
+            "Rust"
         ]
     },
-    "paradigms": [
-        "Reactive programming",
-        "Event driven architecture",
-        "Immutability",
-        "Functional programming",
-        "Data driven programming",
-        "Object oriented programming",
-        "Composition over Inheritance",
-        "Code generation",
-        "Dataflow modelling",
-        "Front end development",
-        "Integrated systems programming"
+    "abilities": [
+        "RESTful API design",
+        "CI/CD pipeline development",
+        "Unit and feature testing",
+        "Frontend development",
+        "Backend development",
+        "Data modelling",
+        "Software architecture",
+        "Mentoring and guidance",
+        "Code review",
+        "SDLC process development",
+        "Documentation e.g. Specifications, API reference, Data Flow Diagrams, Development Progress Reports",
+        "Software Integration and API Connector development",
+        "Real-time integrated systems development"
     ],
     "tools": [
-        "Visual Studio Code",
+        "VS Code",
+        "IntelliJ",
         "Eclipse",
-        "Unix",
-        "Jenkins",
-        "Git",
-        "GitHub",
         "Jira",
         "Confluence",
         "Bitbucket",
-        "Unity"
+        "Git",
+        "GitHub",
+        "Unix",
+        "Jenkins",
+        "Unity",
+        "AWS (limited)"
     ],
     "frameworks": [
+        "Node",
         "React",
-        "NumPy",
-        "SciPy",
+        "OpenAPI",
+        "Maven",
+        "Gradle",
+        "Cucumber",
+        "Next.js",
         "PyTorch",
-        "Cucumber"
+        "NumPy",
+        "SciPy"
     ]
 }

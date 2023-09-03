@@ -14,6 +14,7 @@ type VCS<T> = {
 
 function useVersionControl<T>(initialState: T, maxHistory = 50): VCS<T> {
     // Current state, view of one element in history + any non recorded mutations.
+    
     const [state, setState] = useState<T>(initialState)
     // Array of recorded states.
     const [history, setHistory] = useState<T[]>([initialState])
