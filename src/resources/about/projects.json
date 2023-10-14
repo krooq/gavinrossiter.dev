@@ -1,58 +1,66 @@
 [
-    {
-        "title": "Personal Website",
-        "organization": null,
-        "description": "Personal website built with TypeScript, React and Material-UI. Generates a word doc resume on demand using the same data as the web version.",
-        "link": "https://gavinrossiter.dev",
-        "start": "2020",
-        "end": "Today"
-    },
-    {
-        "title": "Interactive page designer",
-        "organization": null,
-        "description": "Interactive page design app built with TypeScript and React",
-        "link": "https://gavinrossiter.dev/app",
-        "start": "2020",
-        "end": "2020"
-    },
-    {
-        "title": "Arty",
-        "organization": null,
-        "description": "Command line based browser and artifact downloader for Jenkins built with Rust",
-        "link": "https://github.com/krooq/arty",
-        "start": "2020",
-        "end": "2020"
-    },
-    {
-        "title": "Spiritlevel",
-        "organization": null,
-        "description": "Small drink value calculator app built with Dart & Flutter",
-        "link": "https://play.google.com/store/apps/details?id=com.krooq.spiritlevel",
-        "start": "2020",
-        "end": "2020"
-    },
-    {
-        "title": "Jetpack - Attack of the Space Worms",
-        "organization": "Swinburne University & Gridstone",
-        "description": "Mobile game developed for final year industry partner project built with C# & Unity",
-        "link": "https://play.google.com/store/apps/details?id=com.xfastgames.jetpack",
-        "start": "2017",
-        "end": "2017"
-    },
-    {
-        "title": "Virus characterization via serial x-ray diffraction: A computational feasibility study",
-        "organization": "La Trobe University",
-        "description": "Computational simulation of virus characterization via x-ray diffraction built with MATLAB.",
-        "link": "https://drive.google.com/file/d/12Te7b4e79MOLEwnGCaHeTRGg3-_cZYbe/view?usp=sharing",
-        "start": "2015",
-        "end": "2015"
-    },
-    {
-        "title": "Piecewise linear periodic maps of the plane with integer coefficients",
-        "organization": "La Trobe University",
-        "description": "Investigation into the behaviour of a particular piecewise periodic linear map and its relation to the crystallographic restriction theorem",
-        "link": "https://arxiv.org/abs/1407.3364",
-        "start": "2014",
-        "end": "2014"
-    }
+  {
+    "title": "Toro Website",
+    "organization": null,
+    "description": "Dynamic website built with Spring backend, React frontend, CI/CD via Github actions, deployed as Docker containers on Amazon ECS.",
+    "link": "http://toro-bear.link",
+    "start": "2023",
+    "end": "Today"
+  },
+  {
+    "title": "Personal Website",
+    "organization": null,
+    "description": "Personal static website built with TypeScript, React and Material-UI. Generates a word doc resume on demand using the same data as the web version.",
+    "link": "https://gavinrossiter.dev",
+    "start": "2020",
+    "end": "Today"
+  },
+  {
+    "title": "Interactive page designer",
+    "organization": null,
+    "description": "Interactive page design app built with TypeScript and React",
+    "link": "https://gavinrossiter.dev/app",
+    "start": "2020",
+    "end": "2020"
+  },
+  {
+    "title": "Arty",
+    "organization": null,
+    "description": "Command line based browser and artifact downloader for Jenkins built with Rust",
+    "link": "https://github.com/krooq/arty",
+    "start": "2020",
+    "end": "2020"
+  },
+  {
+    "title": "Spiritlevel",
+    "organization": null,
+    "description": "Small drink value calculator app built with Dart & Flutter",
+    "link": "https://play.google.com/store/apps/details?id=com.krooq.spiritlevel",
+    "start": "2020",
+    "end": "2020"
+  },
+  {
+    "title": "Jetpack - Attack of the Space Worms",
+    "organization": "Swinburne University & Gridstone",
+    "description": "Mobile game developed for final year industry partner project built with C# & Unity",
+    "link": "https://play.google.com/store/apps/details?id=com.xfastgames.jetpack",
+    "start": "2017",
+    "end": "2017"
+  },
+  {
+    "title": "Virus characterization via serial x-ray diffraction: A computational feasibility study",
+    "organization": "La Trobe University",
+    "description": "Computational simulation of virus characterization via x-ray diffraction built with MATLAB.",
+    "link": "https://drive.google.com/file/d/12Te7b4e79MOLEwnGCaHeTRGg3-_cZYbe/view?usp=sharing",
+    "start": "2015",
+    "end": "2015"
+  },
+  {
+    "title": "Piecewise linear periodic maps of the plane with integer coefficients",
+    "organization": "La Trobe University",
+    "description": "Investigation into the behaviour of a particular piecewise periodic linear map and its relation to the crystallographic restriction theorem",
+    "link": "https://arxiv.org/abs/1407.3364",
+    "start": "2014",
+    "end": "2014"
+  }
 ]

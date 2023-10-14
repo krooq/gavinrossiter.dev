@@ -1,19 +1,20 @@
 {
-    "name": "Gavin Rossiter",
-    "avatar": "./images/linkedin-avatar.jpg",
-    "phone": "+61 0429586649",
-    "website": "https://gavinrossiter.dev",
-    "github": "https://github.com/krooq",
-    "linkedin": "https://linkedin.com/in/gavin-rossiter",
-    "location": {
-        "city": "Melbourne",
-        "country": "Australia",
-        "maps": "https://www.google.com/maps/place/Melbourne+VIC"
-    },
-    "interests": [
-        "Software",
-        "Game Development",
-        "Artificial Intelliegence & Machine Learning",
-        "Trading & Investing"
-    ]
+  "name": "Gavin Rossiter",
+  "avatar": "./images/linkedin-avatar.jpg",
+  "phone": "+61 0429586649",
+  "website": "https://gavinrossiter.dev",
+  "github": "https://github.com/krooq",
+  "linkedin": "https://linkedin.com/in/gavin-rossiter",
+  "location": {
+    "city": "Melbourne",
+    "country": "Australia",
+    "maps": "https://www.google.com/maps/place/Melbourne+VIC"
+  },
+  "interests": [
+    "Software",
+    "Game Development",
+    "Artificial Intelliegence & Machine Learning",
+    "Trading & Investing",
+    "Surfing, Snowboarding & Electric Skateboarding"
+  ]
 }
