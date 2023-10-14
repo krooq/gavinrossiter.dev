@@ -3,7 +3,7 @@
     "title": "Toro Website",
     "organization": null,
     "description": "Dynamic website built with Spring backend, React frontend, CI/CD via Github actions, deployed as Docker containers on Amazon ECS.",
-    "link": "http://toro-bear.link",
+    "link": "https://toro-bear.link",
     "start": "2023",
     "end": "Today"
   },
